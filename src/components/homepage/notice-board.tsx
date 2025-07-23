@@ -32,10 +32,25 @@ const notices = [
     {
     id: 5,
     title: "বিজ্ঞান মেলার আয়োজন",
-    date: "৫ জুলাই, ২০২৪",
+    date: "০৫ জুলাই, ২০২৪",
     fileUrl: "#",
   },
 ];
+
+const NoticeDate = ({ date }: { date: string }) => {
+    const parts = date.split(' ');
+    if (parts.length < 2) return null;
+
+    const day = parts[0].replace(',', '');
+    const month = parts[1].replace(',', '');
+
+    return (
+        <div className="flex flex-col items-center justify-center bg-primary/10 text-primary rounded-md p-2 w-16 h-16 shrink-0 text-center">
+            <span className="text-2xl font-bold leading-tight">{day}</span>
+            <span className="text-xs font-medium uppercase tracking-wide">{month}</span>
+        </div>
+    )
+}
 
 export default function NoticeBoard() {
   return (
@@ -49,10 +64,11 @@ export default function NoticeBoard() {
       <CardContent className="p-0">
         <ul className="divide-y divide-border">
           {notices.map((notice) => (
-            <li key={notice.id} className="p-4 flex justify-between items-center hover:bg-muted/50 transition-colors">
-              <div>
-                <p className="font-medium text-foreground">{notice.title}</p>
-                <p className="text-xs text-muted-foreground">{notice.date}</p>
+            <li key={notice.id} className="p-4 flex items-center gap-4 hover:bg-muted/50 transition-colors">
+              <NoticeDate date={notice.date} />
+              <div className="flex-grow">
+                <p className="font-medium text-foreground leading-snug">{notice.title}</p>
+                <p className="text-xs text-muted-foreground mt-1">{notice.date}</p>
               </div>
               <Button variant="ghost" size="icon" asChild>
                 <a href={notice.fileUrl} download>
