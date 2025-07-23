@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
@@ -31,12 +31,18 @@ const allStudents = [
   { roll: 103, name: "করিম শেখ", class: "১০ম", gender: "ছেলে" },
   { roll: 203, name: "সানিয়া কবির", class: "৯ম", gender: "মেয়ে" },
   { roll: 303, name: "ইমরান খান", class: "৮ম", gender: "ছেলে" },
+  { roll: 104, name: "আলিয়া ভাট", class: "১০ম", gender: "মেয়ে" },
+  { roll: 204, name: "রণবীর কাপুর", class: "৯ম", gender: "ছেলে" },
+  { roll: 304, name: "দীপিকা পাড়ুকোন", class: "৮ম", gender: "মেয়ে" },
 ];
+
+const STUDENTS_PER_PAGE = 5;
 
 export default function StudentsPage() {
   const [classFilter, setClassFilter] = useState("all");
   const [genderFilter, setGenderFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const filteredStudents = useMemo(() => {
     return allStudents.filter(student => 
@@ -45,6 +51,25 @@ export default function StudentsPage() {
       (student.name.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   }, [classFilter, genderFilter, searchTerm]);
+
+  const totalPages = Math.ceil(filteredStudents.length / STUDENTS_PER_PAGE);
+
+  const paginatedStudents = useMemo(() => {
+    const startIndex = (currentPage - 1) * STUDENTS_PER_PAGE;
+    return filteredStudents.slice(startIndex, startIndex + STUDENTS_PER_PAGE);
+  }, [currentPage, filteredStudents]);
+  
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [classFilter, genderFilter, searchTerm]);
+
+  const handlePreviousPage = () => {
+    setCurrentPage(prev => Math.max(prev - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage(prev => Math.min(prev + 1, totalPages));
+  };
 
   return (
     <div className="bg-white">
@@ -97,8 +122,8 @@ export default function StudentsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredStudents.length > 0 ? (
-                  filteredStudents.map((student) => (
+                {paginatedStudents.length > 0 ? (
+                  paginatedStudents.map((student) => (
                     <TableRow key={student.roll}>
                       <TableCell>{student.roll}</TableCell>
                       <TableCell>{student.name}</TableCell>
@@ -121,6 +146,29 @@ export default function StudentsPage() {
               </TableBody>
             </Table>
           </CardContent>
+          {totalPages > 1 && (
+            <CardFooter className="flex items-center justify-between pt-4">
+              <span className="text-sm text-muted-foreground">
+                পৃষ্ঠা {currentPage} এর {totalPages}
+              </span>
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline"
+                  onClick={handlePreviousPage}
+                  disabled={currentPage === 1}
+                >
+                  পূর্ববর্তী
+                </Button>
+                <Button 
+                  variant="outline"
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages}
+                >
+                  পরবর্তী
+                </Button>
+              </div>
+            </CardFooter>
+          )}
         </Card>
       </div>
     </div>
