@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Table,
@@ -59,7 +59,7 @@ export default function StudentsPage() {
     return filteredStudents.slice(startIndex, startIndex + STUDENTS_PER_PAGE);
   }, [currentPage, filteredStudents]);
   
-  React.useEffect(() => {
+  useEffect(() => {
     setCurrentPage(1);
   }, [classFilter, genderFilter, searchTerm]);
 
