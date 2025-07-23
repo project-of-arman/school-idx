@@ -83,3 +83,21 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+
+@layer utilities {
+  .page-break-after {
+    page-break-after: always;
+  }
+  @media print {
+    .print\:hidden {
+      display: none;
+    }
+    .print\:block {
+        display: block;
+    }
+    .print\:py-0 {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+  }
+}

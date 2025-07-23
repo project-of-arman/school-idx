@@ -6,7 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { User, Clock } from "lucide-react";
+import { User, Clock, Printer } from "lucide-react";
+import { Button } from '@/components/ui/button';
 
 const routineData = {
   "১০ম শ্রেণী": {
@@ -287,15 +288,27 @@ const classes = Object.keys(routineData);
 export default function RoutinePage() {
   const [selectedClass, setSelectedClass] = useState(classes[0]);
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
-    <div className="bg-white py-16 sm:py-20">
+    <div className="bg-white py-16 sm:py-20 print:py-0">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+        <div className="text-center mb-12 flex flex-col items-center justify-center relative">
           <h1 className="text-4xl font-bold text-primary font-headline">ক্লাস রুটিন</h1>
           <p className="text-muted-foreground mt-2">আমাদের প্রতিষ্ঠানের শ্রেণীভিত্তিক সময়সূচী</p>
+          <Button
+            variant="outline"
+            onClick={handlePrint}
+            className="absolute top-0 right-0 print:hidden"
+          >
+            <Printer className="mr-2 h-4 w-4" />
+            প্রিন্ট করুন
+          </Button>
         </div>
 
-        <Tabs defaultValue={selectedClass} onValueChange={setSelectedClass}>
+        <Tabs defaultValue={selectedClass} onValueChange={setSelectedClass} className="print:hidden">
           <div className="flex justify-center mb-8">
             <TabsList className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
               {classes.map((c) => (
@@ -303,59 +316,128 @@ export default function RoutinePage() {
               ))}
             </TabsList>
           </div>
-          
-          {classes.map((c) => (
-            <TabsContent key={c} value={c}>
-              <Card className="shadow-lg border-primary/20">
-                <CardHeader>
-                  <CardTitle className="text-2xl text-primary font-headline text-center">{c} রুটিন</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="overflow-x-auto">
-                    <Table className="border">
-                      <TableHeader className="bg-muted/50">
-                        <TableRow>
-                          <TableHead className="border w-[120px] text-center font-bold">বার/সময়</TableHead>
-                          {periods.map((period, index) => (
-                            <TableHead key={period} className="border text-center font-bold">
-                                <div className="flex flex-col items-center">
-                                    <span>{period} পিরিয়ড</span>
-                                    <span className="text-xs font-normal text-muted-foreground">{times[index]}</span>
-                                </div>
-                            </TableHead>
-                          ))}
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {days.map(day => (
-                          <TableRow key={day}>
-                            <TableCell className="border font-bold text-center">{day}</TableCell>
-                            {routineData[c][day]?.map((session, index) => (
-                              <TableCell key={index} className="border p-2 text-center align-top">
-                                <div className="flex flex-col h-full justify-center">
-                                    <p className="font-semibold text-foreground">{session.subject}</p>
-                                    <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground mt-1">
-                                        <User className="h-3 w-3" />
-                                        <span>{session.teacher}</span>
-                                    </div>
-                                </div>
-                              </TableCell>
-                            )) || <TableCell colSpan={periods.length} className="text-center border">ছুটি</TableCell>}
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          ))}
         </Tabs>
+        
+        {classes.map((c) => (
+            <div key={c} className={`${selectedClass === c ? 'block' : 'hidden'} print:block`}>
+                <Card className="shadow-lg border-primary/20">
+                    <CardHeader>
+                    <CardTitle className="text-2xl text-primary font-headline text-center">{c} রুটিন</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                    <div className="overflow-x-auto">
+                        <Table className="border">
+                        <TableHeader className="bg-muted/50">
+                            <TableRow>
+                            <TableHead className="border w-[120px] text-center font-bold">বার/সময়</TableHead>
+                            {periods.map((period, index) => (
+                                <TableHead key={period} className="border text-center font-bold">
+                                    <div className="flex flex-col items-center">
+                                        <span>{period} পিরিয়ড</span>
+                                        <span className="text-xs font-normal text-muted-foreground">{times[index]}</span>
+                                    </div>
+                                </TableHead>
+                            ))}
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {days.map(day => (
+                            <TableRow key={day}>
+                                <TableCell className="border font-bold text-center">{day}</TableCell>
+                                {routineData[c as keyof typeof routineData][day as keyof typeof routineData[keyof typeof routineData]]?.map((session, index) => (
+                                <TableCell key={index} className="border p-2 text-center align-top">
+                                    <div className="flex flex-col h-full justify-center">
+                                        <p className="font-semibold text-foreground">{session.subject}</p>
+                                        <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground mt-1">
+                                            <User className="h-3 w-3" />
+                                            <span>{session.teacher}</span>
+                                        </div>
+                                    </div>
+                                </TableCell>
+                                )) || <TableCell colSpan={periods.length} className="text-center border">ছুটি</TableCell>}
+                            </TableRow>
+                            ))}
+                        </TableBody>
+                        </Table>
+                    </div>
+                    </CardContent>
+                </Card>
+            </div>
+        ))}
+
+        <div className="hidden print:block">
+            {classes.map((c) => (
+                <div key={c} className="page-break-after">
+                    <Card className="shadow-none border-none">
+                        <CardHeader>
+                        <CardTitle className="text-2xl text-primary font-headline text-center">{c} রুটিন</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                        <div className="overflow-x-auto">
+                            <Table className="border">
+                            <TableHeader className="bg-muted/50">
+                                <TableRow>
+                                <TableHead className="border w-[120px] text-center font-bold">বার/সময়</TableHead>
+                                {periods.map((period, index) => (
+                                    <TableHead key={period} className="border text-center font-bold">
+                                        <div className="flex flex-col items-center">
+                                            <span>{period} পিরিয়ড</span>
+                                            <span className="text-xs font-normal text-muted-foreground">{times[index]}</span>
+                                        </div>
+                                    </TableHead>
+                                ))}
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {days.map(day => (
+                                <TableRow key={day}>
+                                    <TableCell className="border font-bold text-center">{day}</TableCell>
+                                    {routineData[c as keyof typeof routineData][day as keyof typeof routineData[keyof typeof routineData]]?.map((session, index) => (
+                                    <TableCell key={index} className="border p-2 text-center align-top">
+                                        <div className="flex flex-col h-full justify-center">
+                                            <p className="font-semibold text-foreground">{session.subject}</p>
+                                            <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground mt-1">
+                                                <User className="h-3 w-3" />
+                                                <span>{session.teacher}</span>
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                    )) || <TableCell colSpan={periods.length} className="text-center border">ছুটি</TableCell>}
+                                </TableRow>
+                                ))}
+                            </TableBody>
+                            </Table>
+                        </div>
+                        </CardContent>
+                    </Card>
+                </div>
+            ))}
+        </div>
+
       </div>
+        <style jsx global>{`
+          @media print {
+            body * {
+              visibility: hidden;
+            }
+            .printable-area, .printable-area * {
+              visibility: visible;
+            }
+            .printable-area {
+              position: absolute;
+              left: 0;
+              top: 0;
+              width: 100%;
+            }
+            .page-break-after {
+                page-break-after: always;
+            }
+          }
+          @page {
+            size: auto;
+            margin: 0.5in;
+          }
+        `}</style>
     </div>
   );
 }
-
-    
-
-    
