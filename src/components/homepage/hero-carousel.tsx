@@ -1,0 +1,101 @@
+"use client";
+
+import * as React from "react";
+import Image from "next/image";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+
+const carouselItems = [
+  {
+    src: "https://placehold.co/1600x800.png",
+    alt: "School campus",
+    title: "স্বাগতম শিক্ষা অঙ্গনে",
+    description: "একটি আদর্শ ও আধুনিক শিক্ষা প্রতিষ্ঠান",
+    dataAiHint: "school campus"
+  },
+  {
+    src: "https://placehold.co/1600x800.png",
+    alt: "Annual sports day",
+    title: "বার্ষিক ক্রীড়া প্রতিযোগিতা",
+    description: "শিক্ষার্থীদের শারীরিক ও মানসিক বিকাশে খেলাধুলার গুরুত্ব",
+    dataAiHint: "sports day"
+  },
+  {
+    src: "https://placehold.co/1600x800.png",
+    alt: "Science fair",
+    title: "বিজ্ঞান মেলা",
+    description: "নতুন প্রজন্মের উদ্ভাবনী শক্তির প্রকাশ",
+    dataAiHint: "science fair"
+  },
+];
+
+export default function HeroCarousel() {
+  const [api, setApi] = React.useState<any>();
+  const [current, setCurrent] = React.useState(0);
+
+  React.useEffect(() => {
+    if (!api) {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      api.scrollNext();
+    }, 5000); // Autoplay every 5 seconds
+
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap());
+    });
+    
+    return () => clearInterval(interval);
+  }, [api]);
+
+  return (
+    <section className="w-full">
+      <Carousel setApi={setApi} className="w-full" opts={{ loop: true }}>
+        <CarouselContent>
+          {carouselItems.map((item, index) => (
+            <CarouselItem key={index}>
+              <div className="relative h-[400px] md:h-[500px] lg:h-[600px] w-full">
+                <Image
+                  src={item.src}
+                  alt={item.alt}
+                  fill
+                  className="object-cover"
+                  data-ai-hint={item.dataAiHint}
+                />
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                  <div className="text-center text-white p-4">
+                    <h2 className="text-3xl md:text-5xl font-bold mb-2 font-headline animate-fade-in-down">
+                      {item.title}
+                    </h2>
+                    <p className="text-lg md:text-xl text-primary-foreground/90 animate-fade-in-up">
+                      {item.description}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 hidden md:flex" />
+        <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 hidden md:flex" />
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+            {carouselItems.map((_, index) => (
+                <button
+                    key={index}
+                    onClick={() => api?.scrollTo(index)}
+                    className={`h-2 w-2 rounded-full transition-all ${current === index ? 'w-4 bg-primary' : 'bg-white/50'}`}
+                    aria-label={`Go to slide ${index + 1}`}
+                />
+            ))}
+        </div>
+      </Carousel>
+    </section>
+  );
+}
