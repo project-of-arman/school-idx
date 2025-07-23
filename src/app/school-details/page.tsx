@@ -1,6 +1,9 @@
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { BookOpen, Target, Users, History, Award, Building } from "lucide-react";
+import ImageGallery from "@/components/school-details/image-gallery";
+import TeachersSection from "@/components/school-details/teachers-section";
+import VideoGallery from "@/components/homepage/video-gallery";
 
 const features = [
     {
@@ -38,13 +41,13 @@ const features = [
 export default function SchoolDetailsPage() {
   return (
     <div className="bg-white py-16 sm:py-20 lg:py-24">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 space-y-24">
              <div className="text-center mb-12">
               <h1 className="text-4xl font-bold text-primary font-headline">স্কুল সম্পর্কিত বিস্তারিত</h1>
               <p className="text-muted-foreground mt-2">আমাদের প্রতিষ্ঠান সম্পর্কে আরো জানুন</p>
             </div>
 
-            <div className="flex flex-col md:flex-row gap-12 items-center mb-16">
+            <div className="flex flex-col md:flex-row gap-12 items-center">
                 <div className="w-full md:w-5/12 relative">
                     <div className="absolute -top-4 -left-4 w-full h-full border-4 border-accent rounded-lg transform -rotate-2"></div>
                     <Card className="overflow-hidden shadow-lg relative rounded-lg">
@@ -79,6 +82,11 @@ export default function SchoolDetailsPage() {
                     </Card>
                 ))}
             </div>
+
+            <ImageGallery />
+            <TeachersSection />
+            <VideoGallery />
+
         </div>
     </div>
   );
