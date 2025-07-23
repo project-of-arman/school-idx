@@ -42,6 +42,18 @@ const navLinks = [
     href: '/notice',
   },
   {
+    title: 'রুটিন',
+    href: '/routine',
+  },
+  {
+    title: 'সিলেবাস',
+    href: '/syllabus',
+  },
+  {
+    title: 'ব্লগ',
+    href: '/blog',
+  },
+  {
     title: 'সোনালী সেবা',
     href: '/sonali-bank',
   },
