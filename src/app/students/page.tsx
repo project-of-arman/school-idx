@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from 'react';
+import Link from 'next/link';
 import {
   Table,
   TableBody,
@@ -18,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 const allStudents = [
   { roll: 101, name: "আরিফ হোসেন", class: "১০ম", gender: "ছেলে" },
@@ -91,6 +93,7 @@ export default function StudentsPage() {
                   <TableHead>নাম</TableHead>
                   <TableHead>শ্রেণী</TableHead>
                   <TableHead>লিঙ্গ</TableHead>
+                  <TableHead>অ্যাকশন</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -101,11 +104,16 @@ export default function StudentsPage() {
                       <TableCell>{student.name}</TableCell>
                       <TableCell>{student.class}</TableCell>
                       <TableCell>{student.gender}</TableCell>
+                      <TableCell>
+                        <Button asChild variant="link">
+                            <Link href={`/students/${student.roll}`}>বিস্তারিত</Link>
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={4} className="text-center">
+                    <TableCell colSpan={5} className="text-center">
                       কোনো শিক্ষার্থী পাওয়া যায়নি।
                     </TableCell>
                   </TableRow>
