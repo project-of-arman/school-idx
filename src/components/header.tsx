@@ -37,6 +37,10 @@ const navLinks = [
     title: 'ভর্তি নির্দেশিকা',
     href: '/admission-guidelines',
   },
+   {
+    title: 'নোটিশ',
+    href: '/notice',
+  },
   {
     title: 'সোনালী সেবা',
     href: '/sonali-bank',
@@ -83,7 +87,7 @@ const NavLink = ({ href, children, className, onClick }: { href: string; childre
 
 const NavDropdown = ({ title, subLinks, className }: { title: string; subLinks: { title: string; href: string }[], className?: string }) => {
   const pathname = usePathname();
-  const isActive = subLinks.some(link => pathname === link.href);
+  const isActive = subLinks.some(link => pathname.startsWith(link.href));
 
   return (
     <DropdownMenu>

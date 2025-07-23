@@ -1,10 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, Bell, ArrowRight } from "lucide-react";
-import Link from "next/link";
+import Link from 'next/link';
+import { ArrowLeft, Download, Calendar } from "lucide-react";
 
-const notices = [
+const allNotices = [
   {
     id: 1,
     title: "ভর্তি পরীক্ষার ফলাফল প্রকাশ",
@@ -42,53 +41,56 @@ const notices = [
   },
 ];
 
-const NoticeDate = ({ date }: { date: string }) => {
-    const parts = date.split(' ');
-    if (parts.length < 2) return null;
 
-    const day = parts[0].replace(',', '');
-    const month = parts[1].replace(',', '');
+export default function NoticeDetailsPage({ params }: { params: { id: string } }) {
+  const notice = allNotices.find(n => n.id.toString() === params.id);
 
+  if (!notice) {
     return (
-        <div className="flex flex-col items-center justify-center bg-primary/10 text-primary rounded-md p-2 w-16 h-16 shrink-0 text-center">
-            <span className="text-2xl font-bold leading-tight">{day}</span>
-            <span className="text-xs font-medium uppercase tracking-wide">{month}</span>
-        </div>
-    )
-}
+      <div className="container mx-auto px-4 py-16 text-center">
+        <h1 className="text-2xl font-bold">নোটিশ পাওয়া যায়নি।</h1>
+        <Button asChild className="mt-4">
+          <Link href="/notice">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            সকল নোটিশ দেখুন
+          </Link>
+        </Button>
+      </div>
+    );
+  }
 
-export default function NoticeBoard() {
   return (
-    <Card className="w-full shadow-lg border-primary/20">
-      <CardHeader className="bg-primary/5">
-        <CardTitle className="flex items-center gap-2 text-primary">
-          <Bell className="h-6 w-6" />
-          <span>নোটিশ বোর্ড</span>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-0">
-        <ul className="divide-y divide-border">
-          {notices.slice(0, 5).map((notice) => (
-            <li key={notice.id} className="p-4 flex items-center gap-4 hover:bg-muted/50 transition-colors">
-              <NoticeDate date={notice.date} />
-              <div className="flex-grow">
-                <Link href={`/notice/${notice.id}`} className="font-medium text-foreground leading-snug hover:text-primary transition-colors block">{notice.title}</Link>
-                <p className="text-xs text-muted-foreground mt-1">{notice.date}</p>
-              </div>
-              <Button variant="ghost" size="icon" asChild>
-                <Link href={`/notice/${notice.id}`}>
-                  <ArrowRight className="h-5 w-5 text-primary/80" />
-                </Link>
-              </Button>
-            </li>
-          ))}
-        </ul>
-      </CardContent>
-       <div className="p-4 border-t">
-          <Button variant="link" className="w-full" asChild>
-            <Link href="/notice">সকল নোটিশ দেখুন</Link>
-          </Button>
+    <div className="bg-white py-16">
+        <div className="container mx-auto px-4 max-w-3xl">
+            <div className="mb-8">
+                <Button asChild variant="outline">
+                  <Link href="/notice">
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    তালিকায় ফিরে যান
+                  </Link>
+                </Button>
+            </div>
+            <Card className="shadow-lg">
+                <CardHeader>
+                    <CardTitle className="text-2xl text-primary font-headline">{notice.title}</CardTitle>
+                    <div className="flex items-center text-sm text-muted-foreground pt-2">
+                        <Calendar className="h-4 w-4 mr-2" />
+                        <span>{notice.date}</span>
+                    </div>
+                </CardHeader>
+                <CardContent className="text-muted-foreground text-base leading-relaxed">
+                   <p>{notice.description}</p>
+                </CardContent>
+                <CardFooter>
+                    <Button asChild>
+                        <a href={notice.fileUrl} download>
+                            <Download className="mr-2 h-4 w-4" />
+                            ডাউনলোড করুন
+                        </a>
+                    </Button>
+                </CardFooter>
+            </Card>
         </div>
-    </Card>
+    </div>
   );
 }
