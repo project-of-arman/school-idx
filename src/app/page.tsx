@@ -18,15 +18,15 @@ export default function Home() {
               <AboutSchool />
               <div className="bg-white py-12 sm:py-16 lg:py-20 -mx-4 sm:-mx-6 md:-mx-8">
                 <div className="container mx-auto px-4">
+                  <ImportantLinks />
+                </div>
+              </div>
+              <div className="bg-white py-12 sm:py-16 lg:py-20 -mx-4 sm:-mx-6 md:-mx-8">
+                <div className="container mx-auto px-4">
                   <TeachersCarousel />
                 </div>
               </div>
               <VideoGallery />
-              <div className="bg-white py-12 sm:py-16 lg:py-20 -mx-4 sm:-mx-6 md:-mx-8">
-                <div className="container mx-auto px-4">
-                  <ImportantLinks />
-                </div>
-              </div>
             </div>
           </div>
           <div className="col-span-10 md:col-span-3">
