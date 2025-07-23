@@ -13,6 +13,7 @@ import {
   Sheet,
   SheetContent,
   SheetHeader,
+  SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { useState } from 'react';
@@ -61,12 +62,12 @@ const navLinks = [
   },
 ];
 
-const NavLink = ({ href, children, className }: { href: string; children: React.ReactNode, className?: string }) => {
+const NavLink = ({ href, children, className, onClick }: { href: string; children: React.ReactNode, className?: string, onClick?: () => void }) => {
   const pathname = usePathname();
   const isActive = pathname === href;
 
   return (
-    <Link href={href}>
+    <Link href={href} onClick={onClick}>
       <span
         className={cn(
           'text-sm font-medium transition-colors hover:text-primary',
@@ -141,10 +142,12 @@ export default function Header() {
             </SheetTrigger>
             <SheetContent side="left" className="w-full max-w-sm">
               <SheetHeader>
-                <Link href="/" className="flex items-center gap-2" onClick={() => setMenuOpen(false)}>
-                  <GraduationCap className="h-7 w-7 text-primary" />
-                  <span className="text-xl font-bold text-primary">Shikkha Angan</span>
-                </Link>
+                 <SheetTitle>
+                    <Link href="/" className="flex items-center gap-2" onClick={() => setMenuOpen(false)}>
+                      <GraduationCap className="h-7 w-7 text-primary" />
+                      <span className="text-xl font-bold text-primary">Shikkha Angan</span>
+                    </Link>
+                 </SheetTitle>
               </SheetHeader>
               <nav className="mt-8 flex flex-col gap-6">
                 {navLinks.map((link) =>
@@ -153,7 +156,7 @@ export default function Header() {
                       <p className="font-medium text-foreground/80">{link.title}</p>
                       <div className="pl-4 mt-2 flex flex-col gap-4">
                          {link.subLinks.map((subLink) => (
-                           <NavLink key={subLink.href} href={subLink.href} className="text-base" >
+                           <NavLink key={subLink.href} href={subLink.href} className="text-base" onClick={() => setMenuOpen(false)} >
                               {subLink.title}
                            </NavLink>
                          ))}
