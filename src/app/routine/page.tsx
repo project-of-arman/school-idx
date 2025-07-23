@@ -293,22 +293,22 @@ export default function RoutinePage() {
   };
 
   return (
-    <div className="bg-white py-16 sm:py-20 print:py-0">
+    <div className="routine-page bg-white py-16 sm:py-20 print:py-0">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12 flex flex-col items-center justify-center relative">
+        <div className="text-center mb-12 flex flex-col items-center justify-center relative non-printable">
           <h1 className="text-4xl font-bold text-primary font-headline">ক্লাস রুটিন</h1>
           <p className="text-muted-foreground mt-2">আমাদের প্রতিষ্ঠানের শ্রেণীভিত্তিক সময়সূচী</p>
           <Button
             variant="outline"
             onClick={handlePrint}
-            className="absolute top-0 right-0 print:hidden"
+            className="absolute top-0 right-0"
           >
             <Printer className="mr-2 h-4 w-4" />
             প্রিন্ট করুন
           </Button>
         </div>
 
-        <Tabs defaultValue={selectedClass} onValueChange={setSelectedClass} className="print:hidden">
+        <Tabs defaultValue={selectedClass} onValueChange={setSelectedClass} className="non-printable">
           <div className="flex justify-center mb-8">
             <TabsList className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
               {classes.map((c) => (
@@ -320,7 +320,7 @@ export default function RoutinePage() {
         
         <div id="printable-area">
             {classes.map((c) => (
-                <div key={c} className={`${selectedClass === c ? 'block' : 'hidden'} print:block print:page-break-after`}>
+                <div key={c} className={`${selectedClass === c ? 'block' : 'hidden'} print:block print:mb-8 print:break-after-page`}>
                     <Card className="shadow-lg border-primary/20 print:shadow-none print:border-none">
                         <CardHeader>
                         <CardTitle className="text-2xl text-primary font-headline text-center">{c} রুটিন</CardTitle>
@@ -369,18 +369,23 @@ export default function RoutinePage() {
       </div>
         <style jsx global>{`
           @media print {
-            body > *:not(#printable-area) {
-              display: none;
+            body * {
+              visibility: hidden;
+            }
+            #printable-area, #printable-area * {
+              visibility: visible;
             }
             #printable-area {
-              display: block;
               position: absolute;
               left: 0;
               top: 0;
               width: 100%;
             }
-            .page-break-after {
+            .print\\:break-after-page {
                 page-break-after: always;
+            }
+             .non-printable {
+                display: none;
             }
           }
           @page {
