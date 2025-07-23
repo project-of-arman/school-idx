@@ -318,57 +318,10 @@ export default function RoutinePage() {
           </div>
         </Tabs>
         
-        {classes.map((c) => (
-            <div key={c} className={`${selectedClass === c ? 'block' : 'hidden'} print:block`}>
-                <Card className="shadow-lg border-primary/20">
-                    <CardHeader>
-                    <CardTitle className="text-2xl text-primary font-headline text-center">{c} রুটিন</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                    <div className="overflow-x-auto">
-                        <Table className="border">
-                        <TableHeader className="bg-muted/50">
-                            <TableRow>
-                            <TableHead className="border w-[120px] text-center font-bold">বার/সময়</TableHead>
-                            {periods.map((period, index) => (
-                                <TableHead key={period} className="border text-center font-bold">
-                                    <div className="flex flex-col items-center">
-                                        <span>{period} পিরিয়ড</span>
-                                        <span className="text-xs font-normal text-muted-foreground">{times[index]}</span>
-                                    </div>
-                                </TableHead>
-                            ))}
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {days.map(day => (
-                            <TableRow key={day}>
-                                <TableCell className="border font-bold text-center">{day}</TableCell>
-                                {routineData[c as keyof typeof routineData][day as keyof typeof routineData[keyof typeof routineData]]?.map((session, index) => (
-                                <TableCell key={index} className="border p-2 text-center align-top">
-                                    <div className="flex flex-col h-full justify-center">
-                                        <p className="font-semibold text-foreground">{session.subject}</p>
-                                        <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground mt-1">
-                                            <User className="h-3 w-3" />
-                                            <span>{session.teacher}</span>
-                                        </div>
-                                    </div>
-                                </TableCell>
-                                )) || <TableCell colSpan={periods.length} className="text-center border">ছুটি</TableCell>}
-                            </TableRow>
-                            ))}
-                        </TableBody>
-                        </Table>
-                    </div>
-                    </CardContent>
-                </Card>
-            </div>
-        ))}
-
-        <div className="hidden print:block">
+        <div id="printable-area">
             {classes.map((c) => (
-                <div key={c} className="page-break-after">
-                    <Card className="shadow-none border-none">
+                <div key={c} className={`${selectedClass === c ? 'block' : 'hidden'} print:block print:page-break-after`}>
+                    <Card className="shadow-lg border-primary/20 print:shadow-none print:border-none">
                         <CardHeader>
                         <CardTitle className="text-2xl text-primary font-headline text-center">{c} রুটিন</CardTitle>
                         </CardHeader>
@@ -413,17 +366,14 @@ export default function RoutinePage() {
                 </div>
             ))}
         </div>
-
       </div>
         <style jsx global>{`
           @media print {
-            body * {
-              visibility: hidden;
+            body > *:not(#printable-area) {
+              display: none;
             }
-            .printable-area, .printable-area * {
-              visibility: visible;
-            }
-            .printable-area {
+            #printable-area {
+              display: block;
               position: absolute;
               left: 0;
               top: 0;
