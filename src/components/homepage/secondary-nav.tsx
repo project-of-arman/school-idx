@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -11,8 +11,15 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import * as React from 'react';
+
 
 const navLinks = [
+  {
+    title: 'হোম',
+    href: '/',
+    icon: Home,
+  },
   {
     title: 'স্কুল সম্পর্কিত',
     href: '/school-details',
@@ -47,21 +54,21 @@ const navLinks = [
 ];
 
 
-const NavLink = ({ href, children, className }: { href: string; children: React.ReactNode, className?: string }) => {
+const NavLink = ({ href, children, className, icon: Icon }: { href: string; children: React.ReactNode, className?: string, icon?: React.ElementType }) => {
   const pathname = usePathname();
   const isActive = pathname === href;
 
   return (
-    <Link href={href}>
-      <span
-        className={cn(
-          'text-sm font-medium transition-colors hover:text-primary',
+    <Link 
+      href={href}
+      className={cn(
+          'flex items-center gap-1.5 text-sm font-medium transition-colors hover:text-primary',
           isActive ? 'text-primary' : 'text-foreground/80',
           className
         )}
-      >
-        {children}
-      </span>
+    >
+      {Icon && <Icon className="h-4 w-4" />}
+      <span>{children}</span>
     </Link>
   );
 };
@@ -76,7 +83,7 @@ const NavDropdown = ({ title, subLinks, className }: { title: string; subLinks: 
         <Button
           variant="ghost"
           className={cn(
-            'text-sm font-medium transition-colors hover:text-primary hover:bg-transparent px-0',
+            'flex items-center gap-1.5 text-sm font-medium transition-colors hover:text-primary hover:bg-transparent px-0',
             isActive ? 'text-primary' : 'text-foreground/80',
             className
           )}
@@ -97,16 +104,38 @@ const NavDropdown = ({ title, subLinks, className }: { title: string; subLinks: 
 };
 
 export default function SecondaryNav() {
+  const [isSticky, setIsSticky] = React.useState(false);
+  
+  React.useEffect(() => {
+    const handleScroll = () => {
+      // The secondary nav is after the carousel which is 600px tall
+      if (window.scrollY > 600) {
+        setIsSticky(true);
+      } else {
+        setIsSticky(false);
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
-    <nav className="sticky top-0 z-40 h-12 items-center justify-center border-t border-b border-border/40 bg-background/95 hidden lg:flex backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className={cn(
+        "h-14 items-center justify-center border-b border-border/40 bg-background/95 hidden lg:flex backdrop-blur supports-[backdrop-filter]:bg-background/60",
+        isSticky && "sticky top-0 z-40"
+    )}>
         <div className="container mx-auto flex items-center justify-center gap-6 px-4">
             {navLinks.map((link) =>
                 link.subLinks ? (
-                <NavDropdown key={link.title} title={link.title} subLinks={link.subLinks} />
+                  <NavDropdown key={link.title} title={link.title} subLinks={link.subLinks} />
                 ) : (
-                <NavLink key={link.href} href={link.href!}>
-                    {link.title}
-                </NavLink>
+                  <NavLink key={link.href} href={link.href!} icon={link.icon}>
+                      {link.title}
+                  </NavLink>
                 )
             )}
         </div>
