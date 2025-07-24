@@ -39,6 +39,12 @@ const nextConfig: NextConfig = {
         hostname: 'dinajpureducationboard.gov.bd',
         port: '',
         pathname: '/**',
+      },
+       {
+        protocol: 'http',
+        hostname: 'dinajpureducationboard.portal.gov.bd',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
