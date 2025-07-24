@@ -186,7 +186,6 @@ export default function Header() {
           </Sheet>
         </div>
       </div>
-      <SecondaryNav />
     </header>
   );
 }
