@@ -71,12 +71,9 @@ export default function HeroCarousel() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-black/60 flex items-start justify-start p-8 md:p-12 lg:p-16">
                   <div className="text-left text-white max-w-lg">
-                    <h2 className="text-2xl md:text-4xl font-bold mb-2 font-headline animate-fade-in-down">
+                    <h2 className=" font-bold mb-2 font-headline animate-fade-in-down">
                       {item.title}
                     </h2>
-                    <p className="text-md md:text-lg text-primary-foreground/90 animate-fade-in-up">
-                      {item.description}
-                    </p>
                   </div>
                 </div>
               </div>

@@ -5,11 +5,30 @@ import TeachersCarousel from '@/components/homepage/teachers-carousel';
 import VideoGallery from '@/components/homepage/video-gallery';
 import ImportantLinks from '@/components/homepage/important-links';
 import ChairmanMessage from '@/components/homepage/chairman-message';
+import Image from 'next/image';
 
 export default function Home() {
   return (
     <>
       <HeroCarousel />
+      <section className="bg-white py-8">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-center sm:text-left">
+            <Image
+              src="https://placehold.co/80x80.png"
+              alt="Shikkha Angan Logo"
+              width={80}
+              height={80}
+              data-ai-hint="school logo"
+              className="rounded-full"
+            />
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold text-primary font-headline">শিক্ষা অঙ্গন</h1>
+              <p className="text-muted-foreground mt-1 text-base md:text-lg">একটি আদর্শ ও আধুনিক শিক্ষা প্রতিষ্ঠান</p>
+            </div>
+          </div>
+        </div>
+      </section>
       <div className="container mx-auto px-4 py-12 sm:py-16 lg:py-20">
         <div className="grid grid-cols-10 gap-8">
           <div className="col-span-10 md:col-span-7">
