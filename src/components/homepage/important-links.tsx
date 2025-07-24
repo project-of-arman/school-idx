@@ -29,7 +29,7 @@ const linkCards = [
 
 export default function ImportantLinks() {
     return (
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto ">
             <h2 className="text-3xl font-bold text-primary font-headline mb-8 text-center">গুরুত্বপূর্ণ লিংকসমূহ</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {linkCards.map((card, index) => (
@@ -39,7 +39,7 @@ export default function ImportantLinks() {
                         </CardHeader>
                         <CardContent>
                             <div className="flex flex-col sm:flex-row gap-6">
-                                <div className="w-full sm:w-1/3">
+                                <div className="w-44 sm:w-1/3">
                                     <Image 
                                         src={card.image} 
                                         alt={card.title}

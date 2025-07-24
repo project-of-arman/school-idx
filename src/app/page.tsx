@@ -21,8 +21,8 @@ function SecretaryMessage() {
           <Image
             src="https://dinajpureducationboard.portal.gov.bd/sites/default/files/files/dinajpureducationboard.portal.gov.bd/npfblock//Prof.%20Noor%20Md.%20Abdur%20Razzaque..jpeg"
             alt="সচিব"
-            width={280}
-            height={380}
+            width={260}
+            height={360}
             className="object-cover rounded"
             data-ai-hint="male portrait"
           />
@@ -64,7 +64,7 @@ export default function Home() {
             <div className="space-y-12">
               <NoticeBoard />
               <AboutSchool />
-              <div className="bg-white py-12 sm:py-16 lg:py-20 -mx-4 sm:-mx-6 md:-mx-8">
+              <div className="bg-white py-12 sm:py-16 lg:py-20">
                 <div className="container mx-auto px-4">
                   <ImportantLinks />
                 </div>
