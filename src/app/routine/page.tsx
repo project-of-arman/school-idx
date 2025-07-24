@@ -310,7 +310,7 @@ export default function RoutinePage() {
 
         <Tabs defaultValue={selectedClass} onValueChange={setSelectedClass} className="non-printable">
           <div className="flex justify-center mb-8">
-            <TabsList className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
+            <TabsList className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 h-auto">
               {classes.map((c) => (
                 <TabsTrigger key={c} value={c}>{c}</TabsTrigger>
               ))}
@@ -396,3 +396,5 @@ export default function RoutinePage() {
     </div>
   );
 }
+
+    
