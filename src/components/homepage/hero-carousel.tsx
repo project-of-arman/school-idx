@@ -56,7 +56,7 @@ export default function HeroCarousel() {
   }, [api]);
 
   return (
-    <section className="w-full">
+    <section className="w-full relative">
       <Carousel setApi={setApi} className="w-full" opts={{ loop: true }}>
         <CarouselContent>
           {carouselItems.map((item, index) => (
@@ -93,6 +93,25 @@ export default function HeroCarousel() {
             ))}
         </div>
       </Carousel>
+
+      <div className="absolute bottom-0 left-0 right-0 py-8 z-10">
+            <div className="container mx-auto px-4">
+            <div className="flex items-center justify-start gap-4 text-left">
+                <Image
+                src="https://placehold.co/80x80.png"
+                alt="School Logo"
+                width={80}
+                height={80}
+                data-ai-hint="school logo"
+                className="rounded-full"
+                />
+                <div>
+                <h1 className="text-3xl md:text-4xl font-bold text-white font-headline">মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়</h1>
+                <p className="text-white/80 mt-1 text-base md:text-lg">একটি আদর্শ ও আধুনিক শিক্ষা প্রতিষ্ঠান</p>
+                </div>
+            </div>
+            </div>
+        </div>
     </section>
   );
 }

@@ -19,6 +19,7 @@ import {
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import SecondaryNav from './secondary-nav';
 
 const navLinks = [
   {
@@ -185,6 +186,7 @@ export default function Header() {
           </Sheet>
         </div>
       </div>
+      <SecondaryNav />
     </header>
   );
 }
