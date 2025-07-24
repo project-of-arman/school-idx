@@ -151,7 +151,7 @@ export default function ResultsPage() {
                                 <div className="flex justify-center">
                                     <Image src="https://placehold.co/80x80.png" alt="School Logo" width={80} height={80} data-ai-hint="school logo" />
                                 </div>
-                                <h1 className="text-3xl font-bold text-primary font-headline">শিক্ষা অঙ্গন</h1>
+                                <h1 className="text-3xl font-bold text-primary font-headline">মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়</h1>
                                 <p className="text-muted-foreground">House #1, Road #1, Block #A, Mirpur, Dhaka-1216</p>
                                 <CardTitle className="text-xl pt-2 bg-primary/10 text-primary font-headline rounded-md p-2">একাডেমিক ট্রান্সক্রিপ্ট</CardTitle>
                             </CardHeader>

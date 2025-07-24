@@ -8,10 +8,10 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2">
             <GraduationCap className="h-7 w-7 text-primary" />
-            <span className="text-xl font-bold text-primary">Shikkha Angan</span>
+            <span className="text-xl font-bold text-primary">মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়</span>
           </div>
           <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} Shikkha Angan. All rights reserved.
+            &copy; {new Date().getFullYear()} মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
             <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">

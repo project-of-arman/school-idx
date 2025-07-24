@@ -15,7 +15,7 @@ const carouselItems = [
   {
     src: "https://placehold.co/1600x800.png",
     alt: "School campus",
-    title: "স্বাগতম শিক্ষা অঙ্গনে",
+    title: "স্বাগতম মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়ে",
     description: "একটি আদর্শ ও আধুনিক শিক্ষা প্রতিষ্ঠান",
     dataAiHint: "school campus"
   },

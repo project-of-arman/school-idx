@@ -17,14 +17,14 @@ export default function Home() {
             <div className="flex items-center justify-start gap-4 text-left">
                 <Image
                 src="https://placehold.co/80x80.png"
-                alt="Shikkha Angan Logo"
+                alt="School Logo"
                 width={80}
                 height={80}
                 data-ai-hint="school logo"
                 className="rounded-full"
                 />
                 <div>
-                <h1 className="text-3xl md:text-4xl font-bold text-white font-headline">শিক্ষা অঙ্গন</h1>
+                <h1 className="text-3xl md:text-4xl font-bold text-white font-headline">মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়</h1>
                 <p className="text-white/80 mt-1 text-base md:text-lg">একটি আদর্শ ও আধুনিক শিক্ষা প্রতিষ্ঠান</p>
                 </div>
             </div>

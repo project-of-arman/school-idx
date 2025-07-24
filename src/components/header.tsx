@@ -131,7 +131,7 @@ export default function Header() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
           <GraduationCap className="h-7 w-7 text-primary" />
-          <span className="text-xl font-bold text-primary">Shikkha Angan</span>
+          <span className="text-xl font-bold text-primary">মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়</span>
         </Link>
         <nav className="hidden items-center gap-6 lg:flex">
           {navLinks.map((link) =>
@@ -157,7 +157,7 @@ export default function Header() {
                  <SheetTitle>
                     <Link href="/" className="flex items-center gap-2" onClick={() => setMenuOpen(false)}>
                       <GraduationCap className="h-7 w-7 text-primary" />
-                      <span className="text-xl font-bold text-primary">Shikkha Angan</span>
+                      <span className="text-xl font-bold text-primary">মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়</span>
                     </Link>
                  </SheetTitle>
               </SheetHeader>
