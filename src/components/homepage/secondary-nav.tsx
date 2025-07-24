@@ -114,8 +114,15 @@ const NavDropdown = ({ title, subLinks, className }: { title: string; subLinks: 
 export default function SecondaryNav() {
   const [isSticky, setIsSticky] = React.useState(false);
   const [isMenuOpen, setMenuOpen] = React.useState(false);
+  const [isMounted, setIsMounted] = React.useState(false);
   
   React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  
+  React.useEffect(() => {
+    if (!isMounted) return;
+
     const handleScroll = () => {
       // The secondary nav is after the carousel which can be up to 600px tall
       if (window.scrollY > 600) {
@@ -130,13 +137,16 @@ export default function SecondaryNav() {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [isMounted]);
+
+  const navClasses = cn(
+    "h-14 flex items-center justify-start border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
+    isSticky && isMounted && "sticky top-0 z-40"
+  );
+
 
   return (
-    <nav className={cn(
-        "h-14 flex items-center justify-start border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
-        isSticky && "sticky top-0 z-40"
-    )}>
+    <nav className={navClasses}>
         <div className="container mx-auto flex items-center justify-between gap-6 px-4">
             <div className="hidden lg:flex items-center justify-start gap-6">
                 {navLinks.map((link) =>
