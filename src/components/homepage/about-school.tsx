@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function AboutSchool() {
   return (
-    <div className="bg-white py-12 sm:py-16 lg:py-20 -mx-4 sm:-mx-6 md:-mx-8">
+    <div className="bg-white py-12 sm:py-16 lg:py-20">
         <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row gap-12 items-center">
             <div className="w-full md:w-5/12 relative">
