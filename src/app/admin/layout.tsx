@@ -30,7 +30,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                     <GraduationCap className="h-6 w-6 text-primary" />
                     <span className="text-lg font-semibold text-primary">Shikkha Angan</span>
                 </Link>
-                <SidebarTrigger className="ml-auto" />
               </div>
           </SidebarHeader>
           <AdminSidebarNav />
