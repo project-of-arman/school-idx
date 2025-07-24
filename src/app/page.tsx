@@ -21,8 +21,8 @@ function SecretaryMessage() {
           <Image
             src="https://dinajpureducationboard.portal.gov.bd/sites/default/files/files/dinajpureducationboard.portal.gov.bd/npfblock//Prof.%20Noor%20Md.%20Abdur%20Razzaque..jpeg"
             alt="সচিব"
-            width={300}
-            height={400}
+            width={280}
+            height={380}
             className="object-cover rounded"
             data-ai-hint="male portrait"
           />
