@@ -13,21 +13,21 @@ import {
 
 const carouselItems = [
   {
-    src: "https://placehold.co/1600x800.png",
+    src: "https://jrgbp.edu.bd/wp-content/uploads/2023/09/2022-12-09.jpg",
     alt: "School campus",
     title: "স্বাগতম মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়ে",
     description: "একটি আদর্শ ও আধুনিক শিক্ষা প্রতিষ্ঠান",
     dataAiHint: "school campus"
   },
   {
-    src: "https://placehold.co/1600x800.png",
+    src: "https://narayanganjpreparatoryschool.edu.bd/wp-content/uploads/2024/01/IMG-20230714-WA0003.jpg",
     alt: "Annual sports day",
     title: "বার্ষিক ক্রীড়া প্রতিযোগিতা",
     description: "শিক্ষার্থীদের শারীরিক ও মানসিক বিকাশে খেলাধুলার গুরুত্ব",
     dataAiHint: "sports day"
   },
   {
-    src: "https://placehold.co/1600x800.png",
+    src: "https://lh3.googleusercontent.com/gps-cs-s/AC9h4npEppKeyl0u8huo4z74e9lsi3VkjV1r6IvhRzM80FtS3C4i0O8EleFmwOKE3qt3e-el8V7cO9mG5j4OKEZIm9OPc_lwM-m9wLWl6aliRYfFE8alPOzE5JIliGedNvM6cSKzTS9Brw=s680-w680-h510-rw",
     alt: "Science fair",
     title: "বিজ্ঞান মেলা",
     description: "নতুন প্রজন্মের উদ্ভাবনী শক্তির প্রকাশ",
