@@ -8,9 +8,14 @@ import AdminSidebarNav from '@/components/admin/sidebar-nav';
 import { GraduationCap } from 'lucide-react';
 import Link from 'next/link';
 import { Toaster } from '@/components/ui/toaster';
+import AdminHeader from '@/components/admin/header';
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+  };
 
   if (!isAuthenticated) {
     return <LoginPage onLoginSuccess={() => setIsAuthenticated(true)} />;
@@ -31,6 +36,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           <AdminSidebarNav />
         </Sidebar>
         <SidebarInset>
+            <AdminHeader onLogout={handleLogout} />
             <div className="p-4 sm:p-6 lg:p-8">
                 {children}
             </div>
