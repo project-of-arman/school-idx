@@ -19,9 +19,8 @@ import {
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import SecondaryNav from './secondary-nav';
 
-const navLinks = [
+const mainNavLinks = [
   {
     title: 'Home',
     href: '/',
@@ -75,6 +74,41 @@ const navLinks = [
   },
 ];
 
+const secondaryNavLinks = [
+  {
+    title: 'স্কুল সম্পর্কিত',
+    href: '/school-details',
+  },
+  {
+    title: 'কমিটি',
+    href: '/committee',
+  },
+  {
+    title: 'ভর্তি নির্দেশিকা',
+    href: '/admission-guidelines',
+  },
+  {
+    title: 'ফলাফল',
+    href: '/results',
+  },
+  {
+    title: 'সকল ফরমস',
+    href: '/forms',
+  },
+  {
+    title: 'যোগাযোগ ও ফিডব্যাক',
+    href: '/contact',
+  },
+  {
+    title: 'গ্যালারি',
+    subLinks: [
+      { title: 'ছবি গ্যালারি', href: '/gallery' },
+      { title: 'ভিডিও গ্যালারি', href: '/#video-gallery' },
+    ],
+  },
+];
+
+
 const NavLink = ({ href, children, className, onClick }: { href: string; children: React.ReactNode, className?: string, onClick?: () => void }) => {
   const pathname = usePathname();
   const isActive = pathname === href;
@@ -124,6 +158,25 @@ const NavDropdown = ({ title, subLinks, className }: { title: string; subLinks: 
   );
 };
 
+function SecondaryNav() {
+  return (
+    <nav className="h-12 items-center justify-center border-t border-border/40 bg-background/95 hidden lg:flex">
+        <div className="container mx-auto flex items-center justify-center gap-6 px-4">
+            {secondaryNavLinks.map((link) =>
+                link.subLinks ? (
+                <NavDropdown key={link.title} title={link.title} subLinks={link.subLinks} />
+                ) : (
+                <NavLink key={link.href} href={link.href!}>
+                    {link.title}
+                </NavLink>
+                )
+            )}
+        </div>
+    </nav>
+  );
+}
+
+
 export default function Header() {
   const [isMenuOpen, setMenuOpen] = useState(false);
 
@@ -135,7 +188,7 @@ export default function Header() {
           <span className="text-xl font-bold text-primary">মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়</span>
         </Link>
         <nav className="hidden items-center gap-6 lg:flex">
-          {navLinks.map((link) =>
+          {mainNavLinks.map((link) =>
             link.subLinks ? (
               <NavDropdown key={link.title} title={link.title} subLinks={link.subLinks} />
             ) : (
@@ -163,7 +216,7 @@ export default function Header() {
                  </SheetTitle>
               </SheetHeader>
               <nav className="mt-8 flex flex-col gap-6">
-                {navLinks.map((link) =>
+                {mainNavLinks.map((link) =>
                   link.subLinks ? (
                     <div key={link.title}>
                       <p className="font-medium text-foreground/80">{link.title}</p>
@@ -186,7 +239,7 @@ export default function Header() {
           </Sheet>
         </div>
       </div>
-      <SecondaryNav />
+       <SecondaryNav />
     </header>
   );
 }
