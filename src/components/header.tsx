@@ -54,10 +54,6 @@ const navLinks = [
     href: '/blog',
   },
   {
-    title: 'সোনালী সেবা',
-    href: '/sonali-bank',
-  },
-  {
     title: 'ফলাফল',
     href: '/results',
   },
