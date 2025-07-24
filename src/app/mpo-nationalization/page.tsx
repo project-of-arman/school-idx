@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from '@/components/ui/button';
-import { Download } from 'lucide-react';
+import { Download, BadgeCheck } from 'lucide-react';
 
 const mpoData = [
   { name: "এমপিও নীতিমালা-২০২১", fileUrl: "#" },
@@ -20,6 +20,24 @@ export default function MpoNationalizationPage() {
           <h1 className="text-4xl font-bold text-primary font-headline">এমপিও ও জাতীয়করণের তথ্য</h1>
           <p className="text-muted-foreground mt-2">এমপিও এবং জাতীয়করণ সংক্রান্ত প্রয়োজনীয় তথ্য ও ফরমসমূহ</p>
         </div>
+
+        <Card className="shadow-lg border-primary/20 mb-12">
+            <CardHeader>
+                <div className="flex items-center gap-4">
+                    <div className="flex-shrink-0 bg-primary/10 text-primary p-3 rounded-full">
+                        <BadgeCheck className="h-8 w-8" />
+                    </div>
+                    <CardTitle className="text-2xl text-primary font-headline">এমপিওভুক্তি তথ্য</CardTitle>
+                </div>
+            </CardHeader>
+            <CardContent>
+                <div className="space-y-3 text-muted-foreground">
+                    <p className="text-lg">
+                        আমাদের প্রতিষ্ঠানটি <span className="font-bold text-foreground">০১ জানুয়ারি, ১৯৯৫</span> তারিখে এমপিওভুক্ত হয়।
+                    </p>
+                </div>
+            </CardContent>
+        </Card>
 
         <Card className="shadow-lg border-primary/20">
             <CardHeader>
