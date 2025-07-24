@@ -7,7 +7,7 @@ import { ArrowRight } from "lucide-react";
 const linkCards = [
     {
         title: "শিক্ষা বোর্ড",
-        image: "https://placehold.co/300x200.png",
+        image: "https://placehold.co/110x110.png",
         dataAiHint: "education board",
         links: [
             { text: "ঢাকা শিক্ষা বোর্ড", href: "#" },
@@ -17,7 +17,7 @@ const linkCards = [
     },
     {
         title: "অন্যান্য",
-        image: "https://placehold.co/300x200.png",
+        image: "https://placehold.co/110x110.png",
         dataAiHint: "books library",
         links: [
             { text: "জাতীয় শিক্ষাক্রম ও পাঠ্যপুস্তক বোর্ড", href: "#" },
@@ -38,22 +38,22 @@ export default function ImportantLinks() {
                             <CardTitle className="text-primary">{card.title}</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="flex flex-col sm:flex-row gap-6">
-                                <div className="w-44 sm:w-1/3">
+                            <div className="flex flex-col sm:flex-row gap-6 items-center">
+                                <div className="w-[110px] h-[110px] flex-shrink-0">
                                     <Image 
                                         src={card.image} 
                                         alt={card.title}
-                                        width={300}
-                                        height={200}
-                                        className="rounded-lg object-cover"
+                                        width={110}
+                                        height={110}
+                                        className="rounded-lg w-full h-full object-cover"
                                         data-ai-hint={card.dataAiHint}
                                     />
                                 </div>
                                 <div className="w-full sm:w-2/3 space-y-2">
                                     {card.links.map((link, linkIndex) => (
-                                        <Button key={linkIndex} asChild variant="link" className="p-0 h-auto justify-start text-muted-foreground hover:text-primary">
-                                            <Link href={link.href} className="flex items-center gap-2">
-                                                <ArrowRight className="h-4 w-4 text-accent" />
+                                        <Button key={linkIndex} asChild variant="link" className="p-0 h-auto justify-start text-muted-foreground hover:text-primary text-left">
+                                            <Link href={link.href} className="flex items-start gap-2">
+                                                <ArrowRight className="h-4 w-4 text-accent mt-1 shrink-0" />
                                                 <span>{link.text}</span>
                                             </Link>
                                         </Button>
