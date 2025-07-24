@@ -62,6 +62,10 @@ const navLinks = [
     href: '/forms',
   },
   {
+    title: 'এমপিও ও জাতীয়করণ',
+    href: '/mpo-nationalization',
+  },
+  {
     title: 'যোগাযোগ ও ফিডব্যাক',
     href: '/contact',
   },
