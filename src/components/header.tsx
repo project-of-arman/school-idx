@@ -1,14 +1,8 @@
 "use client";
 
 import Link from 'next/link';
-import { GraduationCap, Menu, X, ChevronDown } from 'lucide-react';
+import { GraduationCap, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import {
   Sheet,
   SheetContent,
@@ -17,11 +11,9 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { useState } from 'react';
-import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
 
 const mainNavLinks = [
-  {
+    {
     title: 'Home',
     href: '/',
   },
@@ -74,55 +66,6 @@ const mainNavLinks = [
   },
 ];
 
-const NavLink = ({ href, children, className, onClick }: { href: string; children: React.ReactNode, className?: string, onClick?: () => void }) => {
-  const pathname = usePathname();
-  const isActive = pathname === href;
-
-  return (
-    <Link href={href} onClick={onClick}>
-      <span
-        className={cn(
-          'text-sm font-medium transition-colors hover:text-primary',
-          isActive ? 'text-primary' : 'text-foreground/80',
-          className
-        )}
-      >
-        {children}
-      </span>
-    </Link>
-  );
-};
-
-const NavDropdown = ({ title, subLinks, className }: { title: string; subLinks: { title: string; href: string }[], className?: string }) => {
-  const pathname = usePathname();
-  const isActive = subLinks.some(link => pathname.startsWith(link.href));
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className={cn(
-            'text-sm font-medium transition-colors hover:text-primary hover:bg-transparent px-0',
-            isActive ? 'text-primary' : 'text-foreground/80',
-            className
-          )}
-        >
-          {title}
-          <ChevronDown className="ml-1 h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        {subLinks.map((link) => (
-          <DropdownMenuItem key={link.href} asChild>
-            <Link href={link.href}>{link.title}</Link>
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-};
-
 
 export default function Header() {
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -134,17 +77,6 @@ export default function Header() {
           <GraduationCap className="h-7 w-7 text-primary" />
           <span className="text-xl font-bold text-primary">মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়</span>
         </Link>
-        <nav className="hidden items-center gap-6 lg:flex">
-          {mainNavLinks.map((link) =>
-            link.subLinks ? (
-              <NavDropdown key={link.title} title={link.title} subLinks={link.subLinks} />
-            ) : (
-              <NavLink key={link.href} href={link.href!}>
-                {link.title}
-              </NavLink>
-            )
-          )}
-        </nav>
         <div className="lg:hidden">
           <Sheet open={isMenuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild>
@@ -169,16 +101,16 @@ export default function Header() {
                       <p className="font-medium text-foreground/80">{link.title}</p>
                       <div className="pl-4 mt-2 flex flex-col gap-4">
                          {link.subLinks.map((subLink) => (
-                           <NavLink key={subLink.href} href={subLink.href} className="text-base" onClick={() => setMenuOpen(false)} >
+                           <Link key={subLink.href} href={subLink.href} className="text-base" onClick={() => setMenuOpen(false)} >
                               {subLink.title}
-                           </NavLink>
+                           </Link>
                          ))}
                       </div>
                     </div>
                   ) : (
-                    <NavLink key={link.href} href={link.href!} className="text-base" onClick={() => setMenuOpen(false)}>
+                    <Link key={link.href} href={link.href!} className="text-base" onClick={() => setMenuOpen(false)}>
                       {link.title}
-                    </NavLink>
+                    </Link>
                   )
                 )}
               </nav>
