@@ -19,7 +19,7 @@ function SecretaryMessage() {
       <CardContent className="p-4 text-center">
         <div className="flex justify-center">
           <Image
-            src="http://dinajpureducationboard.portal.gov.bd/sites/default/files/files/dinajpureducationboard.portal.gov.bd/npfblock//Prof.%20Noor%20Md.%20Abdur%20Razzaque..jpeg"
+            src="https://dinajpureducationboard.portal.gov.bd/sites/default/files/files/dinajpureducationboard.portal.gov.bd/npfblock//Prof.%20Noor%20Md.%20Abdur%20Razzaque..jpeg"
             alt="সচিব"
             width={300}
             height={400}
