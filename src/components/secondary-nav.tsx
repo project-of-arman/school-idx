@@ -87,7 +87,7 @@ const NavDropdown = ({ title, subLinks, className }: { title: string; subLinks: 
       <DropdownMenuContent>
         {subLinks.map((link) => (
           <DropdownMenuItem key={link.href} asChild>
-            <Link href={link.href}>{link.title}</Link>
+            <Link href={link.href}>{link.href === '/#video-gallery' ? 'ভিডিও গ্যালারি' : link.title}</Link>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
@@ -98,7 +98,7 @@ const NavDropdown = ({ title, subLinks, className }: { title: string; subLinks: 
 
 export default function SecondaryNav() {
   return (
-    <nav className="hidden lg:flex h-12 items-center justify-center border-t border-border/40 bg-background/95">
+    <nav className="h-12 items-center justify-center border-t border-border/40 bg-background/95 hidden lg:flex">
         <div className="container mx-auto flex items-center justify-center gap-6 px-4">
             {navLinks.map((link) =>
                 link.subLinks ? (
