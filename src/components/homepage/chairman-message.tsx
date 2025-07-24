@@ -12,7 +12,7 @@ export default function ChairmanMessage() {
       <CardContent className="p-4 text-center">
         <div className="flex justify-center">
             <Image
-                src="https://placehold.co/300x400.png"
+                src="https://dinajpureducationboard.gov.bd/sites/default/files/files/dinajpureducationboard.portal.gov.bd/officer_list/f9cf0e70_e4af_4764_8abe_83a9633483c9/Professor%20Md.%20Towhidul%20Islam.jpeg"
                 alt="চেয়ারম্যান মহোদয়"
                 width={300}
                 height={400}
