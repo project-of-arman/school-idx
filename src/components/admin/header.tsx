@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LogOut, User } from "lucide-react";
+import { SidebarTrigger } from "../ui/sidebar";
 
 interface AdminHeaderProps {
     onLogout: () => void;
@@ -19,7 +20,8 @@ interface AdminHeaderProps {
 
 export default function AdminHeader({ onLogout }: AdminHeaderProps) {
   return (
-    <header className="sticky top-0 z-40 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+    <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:px-6">
+        <SidebarTrigger className="md:hidden" />
         <div className="flex-1">
             {/* Can add breadcrumbs or other elements here later */}
         </div>

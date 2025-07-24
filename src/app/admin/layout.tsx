@@ -35,12 +35,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           </SidebarHeader>
           <AdminSidebarNav />
         </Sidebar>
-        <SidebarInset>
+        <div className="flex flex-col flex-1">
             <AdminHeader onLogout={handleLogout} />
-            <div className="p-4 sm:p-6 lg:p-8">
+            <main className="flex-1 p-4 sm:p-6 lg:p-8 bg-muted/40">
                 {children}
-            </div>
-        </SidebarInset>
+            </main>
+        </div>
     </SidebarProvider>
   );
 }
