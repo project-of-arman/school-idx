@@ -7,6 +7,7 @@ import ImportantLinks from '@/components/homepage/important-links';
 import ChairmanMessage from '@/components/homepage/chairman-message';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import SecondaryNav from '@/components/homepage/secondary-nav';
 
 function SecretaryMessage() {
   return (
@@ -38,6 +39,7 @@ export default function Home() {
   return (
     <>
       <HeroCarousel />
+      <SecondaryNav />
       <div className="container mx-auto px-4 py-12 sm:py-16 lg:py-20">
         <div className="grid grid-cols-10 gap-8">
           <div className="col-span-10 md:col-span-7">
