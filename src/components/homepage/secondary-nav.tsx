@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -125,10 +126,10 @@ export default function SecondaryNav() {
 
   return (
     <nav className={cn(
-        "h-14 items-center justify-center border-b border-border/40 bg-background/95 hidden lg:flex backdrop-blur supports-[backdrop-filter]:bg-background/60",
+        "h-14 items-center justify-start border-b border-border/40 bg-background/95 hidden lg:flex backdrop-blur supports-[backdrop-filter]:bg-background/60",
         isSticky && "sticky top-0 z-40"
     )}>
-        <div className="container mx-auto flex items-center justify-center gap-6 px-4">
+        <div className="container mx-auto flex items-center justify-start gap-6 px-4">
             {navLinks.map((link) =>
                 link.subLinks ? (
                   <NavDropdown key={link.title} title={link.title} subLinks={link.subLinks} />
