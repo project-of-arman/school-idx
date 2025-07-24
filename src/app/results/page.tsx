@@ -156,20 +156,15 @@ export default function ResultsPage() {
                                 <CardTitle className="text-xl pt-2 bg-primary/10 text-primary font-headline rounded-md p-2">একাডেমিক ট্রান্সক্রিপ্ট</CardTitle>
                             </CardHeader>
                             <CardContent className="p-6">
-                               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                                    <div className="md:col-span-3 space-y-4 text-sm">
-                                        <div className="grid grid-cols-2 gap-x-8 gap-y-2">
-                                            <div><span className="font-semibold">শিক্ষার্থীর নাম:</span> {studentResult.name}</div>
-                                            <div><span className="font-semibold">শ্রেণী:</span> {studentResult.class}</div>
-                                            <div><span className="font-semibold">পিতার নাম:</span> {studentResult.fatherName}</div>
-                                            <div><span className="font-semibold">রোল নং:</span> {studentResult.roll}</div>
-                                            <div><span className="font-semibold">মাতার নাম:</span> {studentResult.motherName}</div>
-                                            <div><span className="font-semibold">গ্রুপ:</span> {studentResult.group}</div>
-                                             <div><span className="font-semibold">পরীক্ষা:</span> {studentResult.exam}</div>
-                                        </div>
-                                    </div>
-                                    <div className="flex justify-center md:justify-end">
-                                        <Image src={studentResult.image} alt={studentResult.name} width={120} height={150} className="rounded-md border p-1" data-ai-hint={studentResult.dataAiHint} />
+                               <div className="space-y-4 text-sm mb-6">
+                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-2">
+                                        <div><span className="font-semibold">শিক্ষার্থীর নাম:</span> {studentResult.name}</div>
+                                        <div><span className="font-semibold">শ্রেণী:</span> {studentResult.class}</div>
+                                        <div><span className="font-semibold">রোল নং:</span> {studentResult.roll}</div>
+                                        <div><span className="font-semibold">পিতার নাম:</span> {studentResult.fatherName}</div>
+                                        <div><span className="font-semibold">মাতার নাম:</span> {studentResult.motherName}</div>
+                                        <div><span className="font-semibold">গ্রুপ:</span> {studentResult.group}</div>
+                                        <div className="md:col-span-2"><span className="font-semibold">পরীক্ষা:</span> {studentResult.exam}</div>
                                     </div>
                                </div>
 
