@@ -23,7 +23,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
   return (
     <SidebarProvider>
-        <Sidebar>
+        <Sidebar collapsible="offcanvas">
           <SidebarHeader>
               <div className="flex items-center gap-2 p-2">
                 <Link href="/" className="flex items-center gap-2" target="_blank">
