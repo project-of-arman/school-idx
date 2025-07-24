@@ -134,7 +134,7 @@ export default function SecondaryNav() {
 
   return (
     <nav className={cn(
-        "h-14 items-center justify-start border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
+        "h-14 flex items-center justify-start border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
         isSticky && "sticky top-0 z-40"
     )}>
         <div className="container mx-auto flex items-center justify-between gap-6 px-4">
@@ -149,18 +149,13 @@ export default function SecondaryNav() {
                     )
                 )}
             </div>
-
-            <div className="lg:hidden flex-grow">
-                 {/* This div is to help justify-end on mobile */}
-            </div>
-
-             <div className="lg:hidden">
-                <Sheet open={isMenuOpen} onOpenChange={setMenuOpen}>
+             <div className="lg:hidden flex-grow">
+                 <Sheet open={isMenuOpen} onOpenChange={setMenuOpen}>
                     <SheetTrigger asChild>
-                    <Button variant="ghost" size="icon">
-                        <Menu className="h-6 w-6" />
-                        <span className="sr-only">Open menu</span>
-                    </Button>
+                       <Button variant="outline" className="w-auto justify-start">
+                         <Menu className="mr-2 h-6 w-6" />
+                         <span>মেনু নির্বাচন করুন</span>
+                       </Button>
                     </SheetTrigger>
                     <SheetContent side="left" className="w-full max-w-sm">
                     <SheetHeader>
