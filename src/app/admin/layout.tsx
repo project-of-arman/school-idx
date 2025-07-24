@@ -7,6 +7,7 @@ import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader }
 import AdminSidebarNav from '@/components/admin/sidebar-nav';
 import { GraduationCap } from 'lucide-react';
 import Link from 'next/link';
+import { Toaster } from '@/components/ui/toaster';
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
