@@ -7,6 +7,7 @@ import { ArrowRight, Bell } from "lucide-react";
 import Link from "next/link";
 import { getNotices, Notice } from "@/lib/notice-data";
 import { useEffect, useState } from "react";
+import { Skeleton } from "../ui/skeleton";
 
 const NoticeDate = ({ date }: { date: string }) => {
     const parts = date.split(' ');
@@ -23,13 +24,32 @@ const NoticeDate = ({ date }: { date: string }) => {
     )
 }
 
+const NoticeBoardSkeleton = () => (
+    <div className="divide-y divide-border">
+        {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="p-2 flex items-center gap-4">
+                <Skeleton className="h-16 w-16 rounded-md" />
+                <div className="flex-grow space-y-2">
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-3 w-full" />
+                </div>
+                <Skeleton className="h-8 w-8 rounded-full" />
+            </div>
+        ))}
+    </div>
+);
+
+
 export default function NoticeBoard() {
   const [notices, setNotices] = useState<Notice[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchNotices() {
+      setLoading(true);
       const allNotices = await getNotices();
       setNotices(allNotices);
+      setLoading(false);
     }
     fetchNotices();
   }, []);
@@ -43,23 +63,27 @@ export default function NoticeBoard() {
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
-        <ul className="divide-y divide-border">
-          {notices.slice(0, 5).map((notice) => (
-            <li key={notice.id} className="p-2 flex items-center gap-4 hover:bg-muted/50 transition-colors">
-              <NoticeDate date={notice.date} />
-              <div className="flex-grow overflow-hidden">
-                <Link href={`/notice/${notice.id}`} className="font-medium text-foreground  leading-snug hover:text-primary transition-colors block">{notice.title}
-                <p className="text-xs whitespace-nowrap text-muted-foreground  mt-1">{notice.description}</p>
-                </Link>
-              </div>
-              <Button variant="ghost" size="icon" asChild>
-                <Link href={`/notice/${notice.id}`}>
-                  <ArrowRight className="h-5 w-5 text-primary/80" />
-                </Link>
-              </Button>
-            </li>
-          ))}
-        </ul>
+        {loading ? (
+            <NoticeBoardSkeleton />
+        ) : (
+            <ul className="divide-y divide-border">
+                {notices.slice(0, 5).map((notice) => (
+                    <li key={notice.id} className="p-2 flex items-center gap-4 hover:bg-muted/50 transition-colors">
+                    <NoticeDate date={notice.date} />
+                    <div className="flex-grow overflow-hidden">
+                        <Link href={`/notice/${notice.id}`} className="font-medium text-foreground  leading-snug hover:text-primary transition-colors block">{notice.title}
+                        <p className="text-xs whitespace-nowrap text-muted-foreground  mt-1">{notice.description}</p>
+                        </Link>
+                    </div>
+                    <Button variant="ghost" size="icon" asChild>
+                        <Link href={`/notice/${notice.id}`}>
+                        <ArrowRight className="h-5 w-5 text-primary/80" />
+                        </Link>
+                    </Button>
+                    </li>
+                ))}
+            </ul>
+        )}
       </CardContent>
        <div className="p-4 border-t">
           <Button variant="link" className="w-full" asChild>
