@@ -4,17 +4,26 @@ import HeroCarousel from '@/components/homepage/hero-carousel';
 import SecondaryNav from '@/components/homepage/secondary-nav';
 import DynamicSidebar from '@/components/homepage/dynamic-sidebar';
 import { Megaphone } from 'lucide-react';
+import { getNotices } from '@/lib/notice-data';
 
-const Marquee = () => {
+const Marquee = async () => {
+  const marqueeNotices = await getNotices({ is_marquee: true });
+
+  if (marqueeNotices.length === 0) {
+    return null;
+  }
+  
+  const marqueeText = marqueeNotices.map(notice => notice.title).join(' *** ');
+
   return (
     <div className="bg-primary text-primary-foreground py-2 my-4 overflow-hidden">
       <div className="marquee-container flex items-center">
-        <div className="flex-shrink-0 flex z-50 items-center gap-2 bg-primary px-3 py-1 rounded-md">
+        <div className="flex-shrink-0 flex z-50 items-center gap-2 bg-primary/80 px-3 py-1 rounded-md">
             <Megaphone className="h-5 w-5" />
             <span className="font-bold">জরুরী ঘোষণা:</span>
         </div>
         <div className="marquee whitespace-nowrap">
-          <span>সকলের অবগতির জন্য জানানো যাচ্ছে যে, আগামীকালের পরীক্ষা অনিবার্য কারণবশত স্থগিত করা হয়েছে। নতুন তারিখ পরবর্তীতে জানানো হবে।</span>
+          <span>{marqueeText}</span>
         </div>
       </div>
     </div>

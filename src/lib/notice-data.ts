@@ -9,6 +9,7 @@ export interface Notice {
   date: string;
   fileUrl: string;
   description: string;
+  is_marquee?: boolean;
 }
 
 const mockNotices: Notice[] = [
@@ -17,7 +18,8 @@ const mockNotices: Notice[] = [
     title: "ভর্তি পরীক্ষার ফলাফল প্রকাশ",
     date: "২০ জুলাই, ২০২৪",
     fileUrl: "#",
-    description: "২০২৪-২৫ শিক্ষাবর্ষের ভর্তি পরীক্ষার ফলাফল প্রকাশিত হয়েছে। উত্তীর্ণ শিক্ষার্থীদের তালিকা এবং ভর্তির পরবর্তী নির্দেশনা জানতে পারবেন συνημμένο ফাইল থেকে।"
+    description: "২০২৪-২৫ শিক্ষাবর্ষের ভর্তি পরীক্ষার ফলাফল প্রকাশিত হয়েছে। উত্তীর্ণ শিক্ষার্থীদের তালিকা এবং ভর্তির পরবর্তী নির্দেশনা জানতে পারবেন συνημμένο ফাইল থেকে।",
+    is_marquee: true,
   },
   {
     id: 2,
@@ -84,16 +86,33 @@ const mockNotices: Notice[] = [
   }
 ];
 
-export async function getNotices(): Promise<Notice[]> {
+export async function getNotices(options: { is_marquee?: boolean } = {}): Promise<Notice[]> {
+    const { is_marquee } = options;
+
     if (!pool) {
         console.warn("Database not connected. Returning mock data for notices.");
+        if (is_marquee) {
+            return mockNotices.filter(n => n.is_marquee);
+        }
         return mockNotices;
     }
+    
     try {
-        const [rows] = await pool.query('SELECT * FROM notices ORDER BY id DESC');
+        let query = 'SELECT * FROM notices ORDER BY id DESC';
+        const params: any[] = [];
+        
+        if (is_marquee) {
+            query = 'SELECT * FROM notices WHERE is_marquee = ? ORDER BY id DESC';
+            params.push(true);
+        }
+
+        const [rows] = await pool.query(query, params);
         return rows as Notice[];
     } catch (error) {
         console.error('Failed to fetch notices, returning mock data:', error);
+        if (is_marquee) {
+            return mockNotices.filter(n => n.is_marquee);
+        }
         return mockNotices;
     }
 }
