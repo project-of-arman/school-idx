@@ -12,45 +12,7 @@ import {
 } from "@/components/ui/carousel";
 import { Button } from "../ui/button";
 import Link from "next/link";
-
-const teachers = [
-  {
-    name: "মোঃ আব্দুল্লাহ আল-আমিন",
-    role: "প্রধান শিক্ষক",
-    image: "https://placehold.co/300x400.png",
-    dataAiHint: "male teacher portrait"
-  },
-  {
-    name: "ফাতেমা আক্তার",
-    role: "সহকারী প্রধান শিক্ষক",
-    image: "https://placehold.co/300x400.png",
-    dataAiHint: "female teacher portrait"
-  },
-  {
-    name: "রহিম উদ্দিন আহমেদ",
-    role: "সিনিয়র শিক্ষক (গণিত)",
-    image: "https://placehold.co/300x400.png",
-    dataAiHint: "male teacher portrait"
-  },
-  {
-    name: "সালমা চৌধুরী",
-    role: "সিনিয়র শিক্ষক (বিজ্ঞান)",
-    image: "https://placehold.co/300x400.png",
-    dataAiHint: "female teacher portrait"
-  },
-  {
-    name: "কামরুল হাসান",
-    role: "সহকারী শিক্ষক (ইংরেজি)",
-    image: "https://placehold.co/300x400.png",
-    dataAiHint: "male teacher portrait"
-  },
-  {
-    name: "আয়েশা সিদ্দিকা",
-    role: "সহকারী শিক্ষক (বাংলা)",
-    image: "https://placehold.co/300x400.png",
-    dataAiHint: "female teacher portrait"
-  },
-];
+import { teachers } from "@/lib/teacher-data";
 
 export default function TeachersCarousel() {
   const [api, setApi] = React.useState<any>();
@@ -88,21 +50,23 @@ export default function TeachersCarousel() {
           {teachers.map((teacher, index) => (
             <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/4">
               <div className="p-1">
-                <Card className="group overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
-                  <CardContent className="relative flex aspect-[3/4] items-center justify-center p-0">
-                    <Image
-                      src={teacher.image}
-                      alt={teacher.name}
-                      fill
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
-                      data-ai-hint={teacher.dataAiHint}
-                    />
-                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-                       <h3 className="text-lg font-semibold text-white">{teacher.name}</h3>
-                       <p className="text-sm text-primary-foreground/80">{teacher.role}</p>
-                    </div>
-                  </CardContent>
-                </Card>
+                 <Link href={`/teachers/${teacher.id}`}>
+                    <Card className="group overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <CardContent className="relative flex aspect-[3/4] items-center justify-center p-0">
+                        <Image
+                        src={teacher.image}
+                        alt={teacher.name}
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                        data-ai-hint={teacher.dataAiHint}
+                        />
+                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                        <h3 className="text-lg font-semibold text-white">{teacher.name}</h3>
+                        <p className="text-sm text-primary-foreground/80">{teacher.role}</p>
+                        </div>
+                    </CardContent>
+                    </Card>
+                </Link>
               </div>
             </CarouselItem>
           ))}

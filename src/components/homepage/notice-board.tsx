@@ -104,11 +104,12 @@ export default function NoticeBoard() {
       <CardContent className="p-0">
         <ul className="divide-y divide-border">
           {notices.slice(0, 5).map((notice) => (
-            <li key={notice.id} className="p-4 flex items-center gap-4 hover:bg-muted/50 transition-colors">
+            <li key={notice.id} className="p-2 flex items-center gap-4 hover:bg-muted/50 transition-colors">
               <NoticeDate date={notice.date} />
-              <div className="flex-grow">
-                <Link href={`/notice/${notice.id}`} className="font-medium text-foreground leading-snug hover:text-primary transition-colors block">{notice.title}</Link>
-                <p className="text-xs text-muted-foreground mt-1">{notice.date}</p>
+              <div className="flex-grow overflow-hidden">
+                <Link href={`/notice/${notice.id}`} className="font-medium text-foreground  leading-snug hover:text-primary transition-colors block">{notice.title}
+                <p className="text-xs whitespace-nowrap text-muted-foreground  mt-1">{notice.description}</p>
+                </Link>
               </div>
               <Button variant="ghost" size="icon" asChild>
                 <Link href={`/notice/${notice.id}`}>
