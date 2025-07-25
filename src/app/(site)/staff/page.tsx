@@ -42,20 +42,18 @@ export default async function StaffPage() {
                       </div>
                       <div className="flex items-center gap-2">
                           <Phone className="h-4 w-4 shrink-0" />
-                           <a 
-                              href={`tel:${person.phone}`} 
+                           <a
+                              href={`tel:${person.phone}`}
                               className="hover:text-primary z-10 relative"
-                              onClick={(e) => e.stopPropagation()}
                             >
                               {person.phone}
                             </a>
                       </div>
                       <div className="flex items-center gap-2">
                           <Mail className="h-4 w-4 shrink-0" />
-                          <a 
-                            href={`mailto:${person.email}`} 
+                          <a
+                            href={`mailto:${person.email}`}
                             className="hover:text-primary truncate z-10 relative"
-                            onClick={(e) => e.stopPropagation()}
                           >
                             {person.email}
                           </a>
