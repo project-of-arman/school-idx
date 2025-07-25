@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { ArrowLeft, Mail, MapPin, Phone } from "lucide-react";
 import Image from "next/image";
-import { teachers } from "@/lib/teacher-data";
+import { getTeacherById } from "@/lib/teacher-data";
 
 
-export default function TeacherDetailsPage({ params }: { params: { id: string } }) {
-  const teacher = teachers.find(s => s.id === params.id);
+export default async function TeacherDetailsPage({ params }: { params: { id: string } }) {
+  const teacher = await getTeacherById(params.id);
 
   if (!teacher) {
     return (

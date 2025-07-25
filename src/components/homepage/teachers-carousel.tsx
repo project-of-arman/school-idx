@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -12,10 +13,11 @@ import {
 } from "@/components/ui/carousel";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { teachers } from "@/lib/teacher-data";
+import { getTeachers, Teacher } from "@/lib/teacher-data";
 
 export default function TeachersCarousel() {
   const [api, setApi] = React.useState<any>();
+  const [teachers, setTeachers] = React.useState<Teacher[]>([]);
 
   React.useEffect(() => {
     if (!api) return;
@@ -29,6 +31,14 @@ export default function TeachersCarousel() {
     }, 5000); // autoplay
     return () => clearInterval(interval);
   }, [api]);
+  
+  React.useEffect(() => {
+    async function fetchTeachers() {
+      const fetchedTeachers = await getTeachers();
+      setTeachers(fetchedTeachers);
+    }
+    fetchTeachers();
+  }, []);
 
   return (
     <div className="container mx-auto px-4">

@@ -5,9 +5,21 @@ import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Phone, Mail, MapPin } from "lucide-react";
 import Link from "next/link";
-import { teachers } from "@/lib/teacher-data";
+import { getTeachers, Teacher } from "@/lib/teacher-data";
+import { useEffect, useState } from "react";
 
 export default function StaffPage() {
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
+
+  useEffect(() => {
+    async function fetchTeachers() {
+      const fetchedTeachers = await getTeachers();
+      setTeachers(fetchedTeachers);
+    }
+    fetchTeachers();
+  }, []);
+
+
   return (
     <div className="bg-white">
       <div className="container mx-auto px-4 py-16">
@@ -40,14 +52,22 @@ export default function StaffPage() {
                       </div>
                       <div className="flex items-center gap-2">
                           <Phone className="h-4 w-4 shrink-0" />
-                          <a href={`tel:${person.phone}`} className="hover:text-primary">
+                           <a 
+                              href={`tel:${person.phone}`} 
+                              className="hover:text-primary z-10 relative"
+                              onClick={(e) => e.stopPropagation()}
+                            >
                               {person.phone}
-                          </a>
+                            </a>
                       </div>
                       <div className="flex items-center gap-2">
                           <Mail className="h-4 w-4 shrink-0" />
-                          <a href={`mailto:${person.email}`} className="hover:text-primary truncate">
-                              {person.email}
+                          <a 
+                            href={`mailto:${person.email}`} 
+                            className="hover:text-primary truncate z-10 relative"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            {person.email}
                           </a>
                       </div>
                   </div>

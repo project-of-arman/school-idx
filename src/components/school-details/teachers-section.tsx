@@ -1,11 +1,24 @@
+
+"use client"
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { teachers } from "@/lib/teacher-data";
+import { Teacher, getTeachers } from "@/lib/teacher-data";
+import { useEffect, useState } from "react";
 
 
 export default function TeachersSection() {
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
+
+  useEffect(() => {
+    async function fetchTeachers() {
+      const fetchedTeachers = await getTeachers();
+      setTeachers(fetchedTeachers);
+    }
+    fetchTeachers();
+  }, []);
+
   return (
     <section id="teachers-section">
        <div className="flex justify-between items-center mb-8">
