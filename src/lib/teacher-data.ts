@@ -1,3 +1,4 @@
+
 export const teachers = [
   {
     id: "1",
@@ -59,4 +60,14 @@ export const teachers = [
     email: "ayesha.ban@shikkhaangan.edu",
     dataAiHint: "female teacher portrait"
   },
+  {
+    id: "7",
+    name: "আরিফুল ইসলাম",
+    role: "অফিস সহকারী",
+    image: "https://placehold.co/300x400.png",
+    address: "ঢাকা, বাংলাদেশ",
+    phone: "01400000000",
+    email: "arif.office@shikkhaangan.edu",
+    dataAiHint: "male staff portrait"
+  }
 ];

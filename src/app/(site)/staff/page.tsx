@@ -1,9 +1,12 @@
+
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Phone, Mail, MapPin } from "lucide-react";
+import Link from "next/link";
 
 const staff = [
   {
+    id: "1",
     name: "মোঃ আব্দুল্লাহ আল-আমিন",
     role: "প্রধান শিক্ষক",
     image: "https://placehold.co/300x400.png",
@@ -13,6 +16,7 @@ const staff = [
     dataAiHint: "male teacher portrait"
   },
   {
+    id: "2",
     name: "ফাতেমা আক্তার",
     role: "সহকারী প্রধান শিক্ষক",
     image: "https://placehold.co/300x400.png",
@@ -22,6 +26,7 @@ const staff = [
     dataAiHint: "female teacher portrait"
   },
   {
+    id: "3",
     name: "রহিম উদ্দিন আহমেদ",
     role: "সিনিয়র শিক্ষক (গণিত)",
     image: "https://placehold.co/300x400.png",
@@ -31,6 +36,7 @@ const staff = [
     dataAiHint: "male teacher portrait"
   },
   {
+    id: "4",
     name: "সালমা চৌধুরী",
     role: "সিনিয়র শিক্ষক (বিজ্ঞান)",
     image: "https://placehold.co/300x400.png",
@@ -40,6 +46,7 @@ const staff = [
     dataAiHint: "female teacher portrait"
   },
   {
+    id: "5",
     name: "কামরুল হাসান",
     role: "সহকারী শিক্ষক (ইংরেজি)",
     image: "https://placehold.co/300x400.png",
@@ -49,6 +56,7 @@ const staff = [
     dataAiHint: "male teacher portrait"
   },
   {
+    id: "6",
     name: "আয়েশা সিদ্দিকা",
     role: "সহকারী শিক্ষক (বাংলা)",
     image: "https://placehold.co/300x400.png",
@@ -58,6 +66,7 @@ const staff = [
     dataAiHint: "female teacher portrait"
   },
   {
+    id: "7",
     name: "আরিফুল ইসলাম",
     role: "অফিস সহকারী",
     image: "https://placehold.co/300x400.png",
@@ -77,38 +86,40 @@ export default function StaffPage() {
           <p className="text-muted-foreground mt-2">আমাদের প্রতিষ্ঠানের নিবেদিতপ্রাণ শিক্ষক এবং কর্মচারীবৃন্দ</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {staff.map((person, index) => (
-            <Card key={index} className="overflow-hidden group shadow-md hover:shadow-xl transition-all duration-300 text-center">
-              <CardContent className="p-0">
-                <div className="relative aspect-[3/4]">
-                  <Image
-                    src={person.image}
-                    alt={person.name}
-                    fill
-                    className="object-cover"
-                    data-ai-hint={person.dataAiHint}
-                  />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-lg font-bold text-primary">{person.name}</h3>
-                  <p className="text-sm text-accent-foreground font-medium mb-4">{person.role}</p>
-                  <div className="space-y-2 text-left text-sm text-muted-foreground">
-                    <div className="flex items-start gap-2">
-                        <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
-                        <span>{person.address}</span>
+          {staff.map((person) => (
+            <Link href={`/teachers/${person.id}`} key={person.id}>
+                <Card className="overflow-hidden group shadow-md hover:shadow-xl transition-all duration-300 text-center h-full">
+                <CardContent className="p-0">
+                    <div className="relative aspect-[3/4]">
+                    <Image
+                        src={person.image}
+                        alt={person.name}
+                        fill
+                        className="object-cover"
+                        data-ai-hint={person.dataAiHint}
+                    />
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Phone className="h-4 w-4 shrink-0" />
-                        <a href={`tel:${person.phone}`} className="hover:text-primary">{person.phone}</a>
+                    <div className="p-6">
+                    <h3 className="text-lg font-bold text-primary">{person.name}</h3>
+                    <p className="text-sm text-accent-foreground font-medium mb-4">{person.role}</p>
+                    <div className="space-y-2 text-left text-sm text-muted-foreground">
+                        <div className="flex items-start gap-2">
+                            <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
+                            <span>{person.address}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Phone className="h-4 w-4 shrink-0" />
+                            <a href={`tel:${person.phone}`} className="hover:text-primary">{person.phone}</a>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Mail className="h-4 w-4 shrink-0" />
+                            <a href={`mailto:${person.email}`} className="hover:text-primary truncate">{person.email}</a>
+                        </div>
                     </div>
-                     <div className="flex items-center gap-2">
-                        <Mail className="h-4 w-4 shrink-0" />
-                        <a href={`mailto:${person.email}`} className="hover:text-primary truncate">{person.email}</a>
                     </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+                </Card>
+            </Link>
           ))}
         </div>
       </div>

@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
@@ -37,7 +38,9 @@ export default function TeacherDetailsPage({ params }: { params: { id: string } 
             <div className="flex flex-col md:flex-row gap-8">
                 <div className="w-full md:w-1/3">
                     <Card className="overflow-hidden shadow-lg">
-                        <Image src={teacher.image} alt={teacher.name} width={300} height={400} className="w-full" data-ai-hint={teacher.dataAiHint} />
+                        <div className="relative aspect-[3/4]">
+                            <Image src={teacher.image} alt={teacher.name} fill className="object-cover" data-ai-hint={teacher.dataAiHint} />
+                        </div>
                     </Card>
                 </div>
                 <div className="w-full md:w-2/3">
