@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -11,6 +12,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Link from "next/link";
+import { getSchoolInfo, SchoolInfo } from "@/lib/school-data";
 
 const carouselItems = [
   {
@@ -39,6 +41,15 @@ const carouselItems = [
 export default function HeroCarousel() {
   const [api, setApi] = React.useState<any>();
   const [current, setCurrent] = React.useState(0);
+  const [schoolInfo, setSchoolInfo] = React.useState<SchoolInfo | null>(null);
+
+  React.useEffect(() => {
+    async function fetchSchoolInfo() {
+        const info = await getSchoolInfo();
+        setSchoolInfo(info);
+    }
+    fetchSchoolInfo();
+  }, []);
 
   React.useEffect(() => {
     if (!api) {
@@ -95,24 +106,26 @@ export default function HeroCarousel() {
         </div>
       </Carousel>
 
-      <div className="absolute bottom-0 z-50 left-0 right-0 py-8 z-10">
-            <Link href="/" className="container mx-auto px-4">
-            <div className="flex items-center justify-start gap-4 text-left">
-                <Image
-                src="https://placehold.co/80x80.png"
-                alt="School Logo"
-                width={80}
-                height={80}
-                data-ai-hint="school logo"
-                className="rounded-full"
-                />
-                <div>
-                <h1 className="text-xl md:text-2xl font-bold  text-white font-headline">মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়</h1>
-                <p className="text-base text-white bold ">কাফ্রিখাল, মিঠাপুকুর, রংপুর।</p>
-                </div>
-            </div>
-            </Link>
-        </div>
+      {schoolInfo && (
+        <div className="absolute bottom-0 z-50 left-0 right-0 py-8 z-10">
+              <Link href="/" className="container mx-auto px-4">
+              <div className="flex items-center justify-start gap-4 text-left">
+                  <Image
+                  src={schoolInfo.logo_url}
+                  alt="School Logo"
+                  width={80}
+                  height={80}
+                  data-ai-hint="school logo"
+                  className="rounded-full"
+                  />
+                  <div>
+                  <h1 className="text-xl md:text-2xl font-bold  text-white font-headline">{schoolInfo.name}</h1>
+                  <p className="text-base text-white bold ">{schoolInfo.address}</p>
+                  </div>
+              </div>
+              </Link>
+          </div>
+      )}
     </section>
   );
 }

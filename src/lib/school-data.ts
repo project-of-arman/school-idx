@@ -17,6 +17,14 @@ export interface AboutSchoolInfo {
     image_url: string;
 }
 
+export interface SchoolInfo {
+    id: number;
+    name: string;
+    address: string;
+    logo_url: string;
+}
+
+
 const mockFeatures: SchoolFeature[] = [
     {
         id: 1,
@@ -63,6 +71,13 @@ const mockAboutSchool: AboutSchoolInfo = {
     image_url: "https://placehold.co/400x500.png"
 };
 
+const mockSchoolInfo: SchoolInfo = {
+    id: 1,
+    name: "মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়",
+    address: "কাফ্রিখাল, মিঠাপুকুর, রংপুর।",
+    logo_url: "https://placehold.co/80x80.png"
+};
+
 export async function getSchoolFeatures(): Promise<SchoolFeature[]> {
     if (!pool) {
         console.warn("Database not connected. Returning mock data for school features.");
@@ -89,5 +104,20 @@ export async function getAboutSchool(): Promise<AboutSchoolInfo> {
     } catch (error) {
         console.error('Failed to fetch about school info, returning mock data:', error);
         return mockAboutSchool;
+    }
+}
+
+export async function getSchoolInfo(): Promise<SchoolInfo> {
+    if (!pool) {
+        console.warn("Database not connected. Returning mock data for school info.");
+        return mockSchoolInfo;
+    }
+    try {
+        const [rows] = await pool.query('SELECT * FROM school_info LIMIT 1');
+        const results = rows as SchoolInfo[];
+        return results[0] || mockSchoolInfo;
+    } catch (error) {
+        console.error('Failed to fetch school info, returning mock data:', error);
+        return mockSchoolInfo;
     }
 }
