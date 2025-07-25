@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -98,6 +99,22 @@
     .print\:py-0 {
         padding-top: 0;
         padding-bottom: 0;
+    }
+  }
+  .marquee-container {
+    width: 100%;
+    overflow: hidden;
+  }
+  .marquee {
+    display: inline-block;
+    animation: marquee-rtl 20s linear infinite;
+  }
+  @keyframes marquee-rtl {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(-100%);
     }
   }
 }
