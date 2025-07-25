@@ -19,7 +19,7 @@ const Marquee = async () => {
       <div className="marquee-container flex items-center">
         <div className="flex-shrink-0 flex z-50 items-center gap-2 bg-primary px-3 py-1 rounded-md">
             <Megaphone className="h-5 w-5" />
-            <span className="font-bold sm:hidden">জরুরী ঘোষণা:</span>
+            <span className="font-bold hidden sm:flex">জরুরী ঘোষণা:</span>
         </div>
         <div className="marquee whitespace-nowrap">
           <div className="flex">

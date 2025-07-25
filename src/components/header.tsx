@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -10,6 +11,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { useState } from 'react';
 
 const mainNavLinks = [
@@ -94,21 +101,25 @@ export default function Header() {
                     </Link>
                  </SheetTitle>
               </SheetHeader>
-              <nav className="mt-8 flex flex-col gap-6">
+              <nav className="mt-8 flex flex-col gap-2">
                 {mainNavLinks.map((link) =>
                   link.subLinks ? (
-                    <div key={link.title}>
-                      <p className="font-medium text-foreground/80">{link.title}</p>
-                      <div className="pl-4 mt-2 flex flex-col gap-4">
-                         {link.subLinks.map((subLink) => (
-                           <Link key={subLink.href} href={subLink.href} className="text-base" onClick={() => setMenuOpen(false)} >
-                              {subLink.title}
-                           </Link>
-                         ))}
-                      </div>
-                    </div>
+                     <Accordion type="single" collapsible key={link.title} className="w-full -my-2">
+                      <AccordionItem value="item-1" className="border-b-0">
+                        <AccordionTrigger className="text-base font-normal hover:no-underline py-2">{link.title}</AccordionTrigger>
+                        <AccordionContent className="pb-2">
+                           <div className="pl-4 flex flex-col gap-4 border-l ml-2">
+                            {link.subLinks.map((subLink) => (
+                              <Link key={subLink.href} href={subLink.href} className="text-base" onClick={() => setMenuOpen(false)} >
+                                  {subLink.title}
+                              </Link>
+                            ))}
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
                   ) : (
-                    <Link key={link.href} href={link.href!} className="text-base" onClick={() => setMenuOpen(false)}>
+                    <Link key={link.href} href={link.href!} className="text-base py-2" onClick={() => setMenuOpen(false)}>
                       {link.title}
                     </Link>
                   )
