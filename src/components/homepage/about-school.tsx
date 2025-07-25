@@ -3,9 +3,21 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Target, Users } from "lucide-react";
 import Link from "next/link";
-import { getAboutSchool, AboutSchoolInfo } from "@/lib/school-data";
+import { getAboutSchool, getSchoolFeatures, AboutSchoolInfo, SchoolFeature } from "@/lib/school-data";
+import * as LucideIcons from "lucide-react";
 
-async function AboutSchoolContent({ aboutInfo }: { aboutInfo: AboutSchoolInfo }) {
+type IconName = keyof typeof LucideIcons;
+
+const IconComponent = ({ name }: { name: string }) => {
+    const Icon = LucideIcons[name as IconName] as React.ElementType;
+    if (!Icon) {
+        return <BookOpen className="h-5 w-5" />;
+    }
+    return <Icon className="h-5 w-5" />;
+};
+
+
+async function AboutSchoolContent({ aboutInfo, features }: { aboutInfo: AboutSchoolInfo, features: SchoolFeature[] }) {
   return (
     <div className="flex flex-col md:flex-row gap-12 items-center">
       <div className="w-full md:w-5/12 relative">
@@ -27,33 +39,17 @@ async function AboutSchoolContent({ aboutInfo }: { aboutInfo: AboutSchoolInfo })
           {aboutInfo.description}
         </p>
         <div className="space-y-4 mb-8">
-          <div className="flex items-start gap-4">
-            <div className="flex-shrink-0 bg-primary/10 text-primary p-2 rounded-full">
-              <BookOpen className="h-5 w-5" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-foreground">আধুনিক শিক্ষা</h3>
-              <p className="text-muted-foreground text-sm">আমরা মানসম্মত এবং যুগোপযোগী শিক্ষা প্রদান করি।</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-4">
-            <div className="flex-shrink-0 bg-primary/10 text-primary p-2 rounded-full">
-              <Users className="h-5 w-5" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-foreground">অভিজ্ঞ শিক্ষক</h3>
-              <p className="text-muted-foreground text-sm">আমাদের রয়েছে একদল অভিজ্ঞ এবং নিবেদিতপ্রাণ শিক্ষক।</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-4">
-            <div className="flex-shrink-0 bg-primary/10 text-primary p-2 rounded-full">
-              <Target className="h-5 w-5" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-foreground">মূল্যবোধ গঠন</h3>
-              <p className="text-muted-foreground text-sm">শিক্ষার্থীদের মাঝে নৈতিক ও সামাজিক মূল্যবোধ তৈরিতে আমরা সচেষ্ট।</p>
-            </div>
-          </div>
+            {features.slice(0, 3).map((feature) => (
+              <div key={feature.id} className="flex items-start gap-4">
+                <div className="flex-shrink-0 bg-primary/10 text-primary p-2 rounded-full">
+                  <IconComponent name={feature.icon} />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground">{feature.title}</h3>
+                  <p className="text-muted-foreground text-sm">{feature.description.substring(0, 100)}</p>
+                </div>
+              </div>
+            ))}
         </div>
         <Button asChild>
           <Link href="/school-details">আরো জানুন</Link>
@@ -66,10 +62,11 @@ async function AboutSchoolContent({ aboutInfo }: { aboutInfo: AboutSchoolInfo })
 
 export default async function AboutSchool() {
   const aboutInfo = await getAboutSchool();
+  const features = await getSchoolFeatures();
   return (
     <div className="bg-white py-12 sm:py-16 lg:py-20">
       <div className="container mx-auto px-4">
-        <AboutSchoolContent aboutInfo={aboutInfo} />
+        <AboutSchoolContent aboutInfo={aboutInfo} features={features} />
       </div>
     </div>
   );
