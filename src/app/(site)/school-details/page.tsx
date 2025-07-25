@@ -6,42 +6,26 @@ import ImageGallery from "@/components/school-details/image-gallery";
 import TeachersSection from "@/components/school-details/teachers-section";
 import VideoGallery from "@/components/homepage/video-gallery";
 import { getTeachers } from "@/lib/teacher-data";
+import { getAboutSchool, getSchoolFeatures, SchoolFeature } from "@/lib/school-data";
+import * as LucideIcons from "lucide-react";
 
-const features = [
-    {
-        icon: History,
-        title: "আমাদের ইতিহাস",
-        description: "মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয় প্রতিষ্ঠিত হয়েছিল ১৯৯০ সালে। প্রতিষ্ঠার পর থেকে আমরা জ্ঞানের আলো ছড়িয়ে যাচ্ছি এবং হাজারো শিক্ষার্থীর भविष्य গড়ে তুলেছি। আমাদের রয়েছে দীর্ঘদিনের গৌরবময় ইতিহাস।"
-    },
-    {
-        icon: Target,
-        title: "আমাদের লক্ষ্য ও উদ্দেশ্য",
-        description: "আমাদের মূল লক্ষ্য হলো প্রতিটি শিক্ষার্থীকে নৈতিক ও মানবিক মূল্যবোধে উদ্বুদ্ধ করে একজন আদর্শ নাগরিক হিসেবে গড়ে তোলা। আমরা সৃজনশীলতা ও মননশীলতার বিকাশে বিশ্বাসী।"
-    },
-    {
-        icon: BookOpen,
-        title: "একাডেমিক কার্যক্রম",
-        description: "আমরা জাতীয় শিক্ষাক্রম অনুসরণ করে থাকি। প্রাথমিক থেকে উচ্চ মাধ্যমিক পর্যন্ত আমাদের শিক্ষা কার্যক্রম পরিচালিত হয়। সহশিক্ষা কার্যক্রমের অংশ হিসেবে রয়েছে বিতর্ক, খেলাধুলা, এবং সাংস্কৃতিক চর্চা।"
-    },
-    {
-        icon: Users,
-        title: "অভিজ্ঞ শিক্ষক মণ্ডলী",
-        description: "আমাদের প্রতিষ্ঠানে রয়েছেন একদল অভিজ্ঞ, প্রশিক্ষণপ্রাপ্ত এবং নিবেদিতপ্রাণ শিক্ষক। তারা শিক্ষার্থীদের সঠিক পথপ্রদর্শক হিসেবে কাজ করেন।"
-    },
-    {
-        icon: Building,
-        title: "অবকাঠামো",
-        description: "আমাদের রয়েছে একটি সুবিশাল ক্যাম্পাস, আধুনিক শ্রেণীকক্ষ, সমৃদ্ধ লাইব্রেরি, বিজ্ঞানাগার এবং খেলার মাঠ। শিক্ষার্থীদের জন্য সকল সুযোগ-সুবিধা নিশ্চিত করা হয়েছে।"
-    },
-    {
-        icon: Award,
-        title: "অর্জনসমূহ",
-        description: "বিগত বছরগুলোতে আমাদের শিক্ষার্থীরা বিভিন্ন জাতীয় ও আন্তর্জাতিক প্রতিযোগিতায় অংশগ্রহণ করে অসংখ্য পুরস্কার অর্জন করেছে, যা আমাদের জন্য অত্যন্ত গৌরবের।"
+type IconName = keyof typeof LucideIcons;
+
+const IconComponent = ({ name }: { name: string }) => {
+    const Icon = LucideIcons[name as IconName] as React.ElementType;
+    if (!Icon) {
+        // Return a default icon or null if the icon name is invalid
+        return <BookOpen className="h-8 w-8" />;
     }
-]
+    return <Icon className="h-8 w-8" />;
+};
+
 
 export default async function SchoolDetailsPage() {
   const teachers = await getTeachers();
+  const aboutSchool = await getAboutSchool();
+  const features = await getSchoolFeatures();
+
   return (
     <div className="bg-white py-16 sm:py-20 lg:py-24">
         <div className="container mx-auto px-4 space-y-24">
@@ -55,8 +39,8 @@ export default async function SchoolDetailsPage() {
                     <div className="absolute -top-4 -left-4 w-full h-full border-4 border-accent rounded-lg transform -rotate-2"></div>
                     <Card className="overflow-hidden shadow-lg relative rounded-lg">
                     <Image
-                        src="https://placehold.co/400x500.png"
-                        alt="School Building"
+                        src={aboutSchool.imageUrl}
+                        alt={aboutSchool.title}
                         width={400}
                         height={500}
                         className="object-cover w-full h-full"
@@ -65,9 +49,9 @@ export default async function SchoolDetailsPage() {
                     </Card>
                 </div>
                 <div className="w-full md:w-7/12">
-                    <h2 className="text-3xl font-bold text-primary mb-4 font-headline">মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়: একটি আদর্শ বিদ্যাপীঠ</h2>
+                    <h2 className="text-3xl font-bold text-primary mb-4 font-headline">{aboutSchool.title}</h2>
                     <p className="text-muted-foreground mb-6 text-base leading-relaxed">
-                    মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয় একটি ঐতিহ্যবাহী এবং স্বনামধন্য শিক্ষা প্রতিষ্ঠান। আমরা শিক্ষার্থীদের মধ্যে জ্ঞান, সৃজনশীলতা এবং নৈতিক মূল্যবোধের বিকাশ ঘটাতে প্রতিশ্রুতিবদ্ধ। আমাদের লক্ষ্য হলো প্রতিটি শিক্ষার্থীকে একজন দায়িত্বশীল নাগরিক হিসেবে গড়ে তোলা। একটি অভিজ্ঞ শিক্ষক মণ্ডলী, আধুনিক শ্রেণীকক্ষ এবং সমৃদ্ধ লাইব্রেরি নিয়ে আমাদের পথচলা। আমরা বিশ্বাস করি, সঠিক পরিচর্যা এবং অনুকূল পরিবেশ পেলে প্রতিটি শিক্ষার্থীই তার সুপ্ত প্রতিভা বিকশিত করতে পারে।
+                        {aboutSchool.description}
                     </p>
                 </div>
             </div>
@@ -77,7 +61,7 @@ export default async function SchoolDetailsPage() {
                     <Card key={index} className="p-6 text-center shadow-md hover:shadow-xl transition-shadow">
                         <div className="flex justify-center mb-4">
                             <div className="flex-shrink-0 bg-primary/10 text-primary p-4 rounded-full">
-                                <feature.icon className="h-8 w-8" />
+                                <IconComponent name={feature.icon} />
                             </div>
                         </div>
                         <h3 className="text-xl font-bold text-primary mb-2">{feature.title}</h3>
