@@ -5,6 +5,7 @@ import SecondaryNav from '@/components/homepage/secondary-nav';
 import DynamicSidebar from '@/components/homepage/dynamic-sidebar';
 import { Megaphone } from 'lucide-react';
 import { getNotices } from '@/lib/notice-data';
+import Link from 'next/link';
 
 const Marquee = async () => {
   const marqueeNotices = await getNotices({ is_marquee: true });
@@ -13,8 +14,6 @@ const Marquee = async () => {
     return null;
   }
   
-  const marqueeText = marqueeNotices.map(notice => notice.title).join(' *** ');
-
   return (
     <div className="bg-primary text-primary-foreground py-2 my-4 overflow-hidden">
       <div className="marquee-container flex items-center">
@@ -23,7 +22,13 @@ const Marquee = async () => {
             <span className="font-bold">জরুরী ঘোষণা:</span>
         </div>
         <div className="marquee whitespace-nowrap">
-          <span>{marqueeText}</span>
+          <div className="flex">
+            {marqueeNotices.map(notice => (
+                <Link href={`/notice/${notice.id}`} key={notice.id} className="hover:underline px-4">
+                    {notice.title}
+                </Link>
+            ))}
+          </div>
         </div>
       </div>
     </div>

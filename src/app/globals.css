@@ -109,6 +109,9 @@
     display: inline-block;
     animation: marquee-rtl 20s linear infinite;
   }
+  .marquee-container:hover .marquee {
+    animation-play-state: paused;
+  }
   @keyframes marquee-rtl {
     0% {
       transform: translateX(100%);
