@@ -1,6 +1,8 @@
 
 'use server';
 
+import pool from './db';
+
 export interface Video {
   id: string;
   title: string;
@@ -63,12 +65,32 @@ const mockVideos: Video[] = [
 
 
 export async function getVideos(): Promise<Video[]> {
-    // In a real app, you would fetch this from a database
-    return Promise.resolve(mockVideos);
+    if (!pool) {
+        console.warn("Database not connected. Returning mock data for videos.");
+        return mockVideos;
+    }
+    try {
+        const [rows] = await pool.query('SELECT * FROM videos ORDER BY id ASC');
+        return rows as Video[];
+    } catch (error) {
+        console.error('Failed to fetch videos, returning mock data:', error);
+        return mockVideos;
+    }
 }
 
 export async function getVideoById(id: string): Promise<Video | null> {
-    // In a real app, you would fetch this from a database
-    const video = mockVideos.find(v => v.id === id) || null;
-    return Promise.resolve(video);
+    if (!pool) {
+        console.warn("Database not connected. Returning mock data for video.");
+        const video = mockVideos.find(v => v.id === id) || null;
+        return video;
+    }
+    try {
+        const [rows] = await pool.query('SELECT * FROM videos WHERE id = ?', [id]);
+        const videos = rows as Video[];
+        return videos[0] || null;
+    } catch (error) {
+        console.error(`Failed to fetch video by id ${id}, returning mock data:`, error);
+        const video = mockVideos.find(v => v.id === id) || null;
+        return video;
+    }
 }

@@ -17,8 +17,8 @@ export default async function VideosPage() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {videos.map((video) => (
-            <Link href={`/videos/${video.id}`} key={video.id}>
-                <Card className="group overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer">
+            <Card key={video.id} className="group overflow-hidden shadow-md hover:shadow-xl transition-all duration-300">
+                <Link href={`/videos/${video.id}`} className="block w-full h-full">
                     <CardContent className="relative p-0 aspect-video">
                         <Image
                             src={video.thumbnail}
@@ -34,8 +34,8 @@ export default async function VideosPage() {
                             <h3 className="text-lg font-semibold text-white">{video.title}</h3>
                         </div>
                     </CardContent>
-                </Card>
-            </Link>
+                </Link>
+            </Card>
           ))}
         </div>
       </div>
