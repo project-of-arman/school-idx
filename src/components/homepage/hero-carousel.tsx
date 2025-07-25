@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -12,47 +11,37 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Link from "next/link";
-import { getSchoolInfo, SchoolInfo } from "@/lib/school-data";
+import { getSchoolInfo, SchoolInfo, getCarouselItems, CarouselItem as CarouselItemType } from "@/lib/school-data";
+import { Skeleton } from "../ui/skeleton";
 
-const carouselItems = [
-  {
-    src: "https://jrgbp.edu.bd/wp-content/uploads/2023/09/2022-12-09.jpg",
-    alt: "School campus",
-    title: "স্বাগতম মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়ে",
-    description: "একটি আদর্শ ও আধুনিক শিক্ষা প্রতিষ্ঠান",
-    dataAiHint: "school campus"
-  },
-  {
-    src: "https://narayanganjpreparatoryschool.edu.bd/wp-content/uploads/2024/01/IMG-20230714-WA0003.jpg",
-    alt: "Annual sports day",
-    title: "বার্ষিক ক্রীড়া প্রতিযোগিতা",
-    description: "শিক্ষার্থীদের শারীরিক ও মানসিক বিকাশে খেলাধুলার গুরুত্ব",
-    dataAiHint: "sports day"
-  },
-  {
-    src: "https://lh3.googleusercontent.com/gps-cs-s/AC9h4npEppKeyl0u8huo4z74e9lsi3VkjV1r6IvhRzM80FtS3C4i0O8EleFmwOKE3qt3e-el8V7cO9mG5j4OKEZIm9OPc_lwM-m9wLWl6aliRYfFE8alPOzE5JIliGedNvM6cSKzTS9Brw=s680-w680-h510-rw",
-    alt: "Science fair",
-    title: "বিজ্ঞান মেলা",
-    description: "নতুন প্রজন্মের উদ্ভাবনী শক্তির প্রকাশ",
-    dataAiHint: "science fair"
-  },
-];
+
+const HeroCarouselSkeleton = () => (
+    <div className="relative h-[400px] md:h-[500px] lg:h-[600px] w-full">
+        <Skeleton className="w-full h-full" />
+    </div>
+)
 
 export default function HeroCarousel() {
   const [api, setApi] = React.useState<any>();
   const [current, setCurrent] = React.useState(0);
   const [schoolInfo, setSchoolInfo] = React.useState<SchoolInfo | null>(null);
+  const [carouselItems, setCarouselItems] = React.useState<CarouselItemType[]>([]);
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    async function fetchSchoolInfo() {
+    async function fetchData() {
+        setLoading(true);
         const info = await getSchoolInfo();
         setSchoolInfo(info);
+        const items = await getCarouselItems();
+        setCarouselItems(items);
+        setLoading(false);
     }
-    fetchSchoolInfo();
+    fetchData();
   }, []);
 
   React.useEffect(() => {
-    if (!api) {
+    if (!api || loading) {
       return;
     }
 
@@ -65,14 +54,18 @@ export default function HeroCarousel() {
     });
     
     return () => clearInterval(interval);
-  }, [api]);
+  }, [api, loading]);
+
+  if (loading) {
+    return <HeroCarouselSkeleton />;
+  }
 
   return (
     <section className="w-full relative">
       <Carousel setApi={setApi} className="w-full" opts={{ loop: true }}>
         <CarouselContent>
           {carouselItems.map((item, index) => (
-            <CarouselItem key={index}>
+            <CarouselItem key={item.id}>
               <div className="relative h-[400px] md:h-[500px] lg:h-[600px] w-full">
                 <Image
                   src={item.src}

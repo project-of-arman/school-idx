@@ -3,6 +3,16 @@
 
 import pool from './db';
 
+export interface CarouselItem {
+  id: number;
+  src: string;
+  alt: string;
+  title: string;
+  description: string;
+  dataAiHint: string;
+  sort_order: number;
+}
+
 export interface SchoolFeature {
   id: number;
   icon: string;
@@ -23,6 +33,36 @@ export interface SchoolInfo {
     address: string;
     logo_url: string;
 }
+
+const mockCarouselItems: CarouselItem[] = [
+  {
+    id: 1,
+    src: "https://jrgbp.edu.bd/wp-content/uploads/2023/09/2022-12-09.jpg",
+    alt: "School campus",
+    title: "স্বাগতম মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়ে",
+    description: "একটি আদর্শ ও আধুনিক শিক্ষা প্রতিষ্ঠান",
+    dataAiHint: "school campus",
+    sort_order: 1
+  },
+  {
+    id: 2,
+    src: "https://narayanganjpreparatoryschool.edu.bd/wp-content/uploads/2024/01/IMG-20230714-WA0003.jpg",
+    alt: "Annual sports day",
+    title: "বার্ষিক ক্রীড়া প্রতিযোগিতা",
+    description: "শিক্ষার্থীদের শারীরিক ও মানসিক বিকাশে খেলাধুলার গুরুত্ব",
+    dataAiHint: "sports day",
+    sort_order: 2
+  },
+  {
+    id: 3,
+    src: "https://lh3.googleusercontent.com/gps-cs-s/AC9h4npEppKeyl0u8huo4z74e9lsi3VkjV1r6IvhRzM80FtS3C4i0O8EleFmwOKE3qt3e-el8V7cO9mG5j4OKEZIm9OPc_lwM-m9wLWl6aliRYfFE8alPOzE5JIliGedNvM6cSKzTS9Brw=s680-w680-h510-rw",
+    alt: "Science fair",
+    title: "বিজ্ঞান মেলা",
+    description: "নতুন প্রজন্মের উদ্ভাবনী শক্তির প্রকাশ",
+    dataAiHint: "science fair",
+    sort_order: 3
+  },
+];
 
 
 const mockFeatures: SchoolFeature[] = [
@@ -77,6 +117,20 @@ const mockSchoolInfo: SchoolInfo = {
     address: "কাফ্রিখাল, মিঠাপুকুর, রংপুর।",
     logo_url: "https://placehold.co/80x80.png"
 };
+
+export async function getCarouselItems(): Promise<CarouselItem[]> {
+    if (!pool) {
+        console.warn("Database not connected. Returning mock data for carousel items.");
+        return mockCarouselItems;
+    }
+    try {
+        const [rows] = await pool.query('SELECT * FROM carousel_items ORDER BY sort_order ASC');
+        return rows as CarouselItem[];
+    } catch (error) {
+        console.error('Failed to fetch carousel items, returning mock data:', error);
+        return mockCarouselItems;
+    }
+}
 
 export async function getSchoolFeatures(): Promise<SchoolFeature[]> {
     if (!pool) {
