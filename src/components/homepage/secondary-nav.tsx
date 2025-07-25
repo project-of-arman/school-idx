@@ -71,7 +71,7 @@ const NavLink = ({ href, children, className, icon: Icon }: { href: string; chil
       href={href}
       className={cn(
           'flex items-center gap-1.5 text-sm font-medium transition-colors hover:text-primary border px-3 py-1.5 rounded-md',
-          isActive ? 'text-primary border-primary bg-primary/10' : 'text-foreground/80 border',
+          isActive ? 'text-primary border-primary bg-primary/10' : 'text-foreground/80 border-border',
           className
         )}
     >
@@ -92,7 +92,7 @@ const NavDropdown = ({ title, subLinks, className }: { title: string; subLinks: 
           variant="ghost"
           className={cn(
             'flex items-center gap-1.5 text-sm font-medium transition-colors hover:text-primary hover:bg-transparent border px-3 py-1.5 rounded-md',
-            isActive ? 'text-primary border-primary bg-primary/10' : 'text-foreground/80 border',
+            isActive ? 'text-primary border-primary bg-primary/10' : 'text-foreground/80 border-border',
             className
           )}
         >
@@ -125,7 +125,8 @@ export default function SecondaryNav() {
 
     const handleScroll = () => {
       // The secondary nav is after the carousel which can be up to 600px tall
-      if (window.scrollY > 600) {
+      const heroCarouselHeight = 600; 
+      if (window.scrollY > heroCarouselHeight) {
         setIsSticky(true);
       } else {
         setIsSticky(false);
@@ -133,6 +134,7 @@ export default function SecondaryNav() {
     };
     
     window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Check on mount
     
     return () => {
       window.removeEventListener('scroll', handleScroll);
@@ -141,15 +143,13 @@ export default function SecondaryNav() {
 
   const navClasses = cn(
     "h-16 flex items-center justify-start border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
-    isMounted && isSticky && "sticky top-0 z-40"
+    isSticky && "sticky top-0 z-40"
   );
-  
-  if (!isMounted) {
-    return (
-        <nav className="h-16 flex items-center justify-start border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60" />
-    );
-  }
 
+  if (!isMounted) {
+    // Render a placeholder on the server to avoid hydration mismatch
+    return <div className="h-16 w-full" />;
+  }
 
   return (
     <nav className={navClasses}>
