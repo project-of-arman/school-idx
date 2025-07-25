@@ -112,9 +112,9 @@ const NavDropdown = ({ title, subLinks, className }: { title: string; subLinks: 
 };
 
 export default function SecondaryNav() {
+  const [isMounted, setIsMounted] = React.useState(false);
   const [isSticky, setIsSticky] = React.useState(false);
   const [isMenuOpen, setMenuOpen] = React.useState(false);
-  const [isMounted, setIsMounted] = React.useState(false);
   
   React.useEffect(() => {
     setIsMounted(true);
@@ -141,15 +141,14 @@ export default function SecondaryNav() {
     };
   }, [isMounted]);
 
+  if (!isMounted) {
+    return null;
+  }
+
   const navClasses = cn(
     "h-16 flex items-center justify-start border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
     isSticky && "sticky top-0 z-40"
   );
-
-  if (!isMounted) {
-    // Render a placeholder on the server to avoid hydration mismatch
-    return <div className="h-16 w-full" />;
-  }
 
   return (
     <nav className={navClasses}>
