@@ -62,16 +62,13 @@ const navLinks = [
 ];
 
 
-const NavLink = ({ href, children, className, icon: Icon }: { href: string; children: React.ReactNode, className?: string, icon?: React.ElementType }) => {
-  const pathname = usePathname();
-  const isActive = pathname === href;
-
+const NavLink = ({ href, children, className, icon: Icon, isActive }: { href: string; children: React.ReactNode, className?: string, icon?: React.ElementType, isActive: boolean }) => {
   return (
     <Link 
       href={href}
       className={cn(
-          'flex items-center gap-1.5 text-sm font-medium transition-colors hover:text-primary border px-3 py-1.5 rounded-md',
-          isActive ? 'text-primary border-primary bg-primary/10' : 'text-foreground/80 border-border',
+          'flex items-center gap-1.5 text-sm font-medium transition-colors hover:text-primary border px-3 py-1.5 rounded-md border-border',
+          isActive ? 'text-primary border-primary bg-primary/10' : 'text-foreground/80',
           className
         )}
     >
@@ -81,18 +78,15 @@ const NavLink = ({ href, children, className, icon: Icon }: { href: string; chil
   );
 };
 
-const NavDropdown = ({ title, subLinks, className }: { title: string; subLinks: { title: string; href: string }[], className?: string }) => {
-  const pathname = usePathname();
-  const isActive = subLinks.some(link => pathname.startsWith(link.href));
-
+const NavDropdown = ({ title, subLinks, className, isActive }: { title: string; subLinks: { title: string; href: string }[], className?: string, isActive: boolean }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
           className={cn(
-            'flex items-center gap-1.5 text-sm font-medium transition-colors hover:text-primary hover:bg-transparent border px-3 py-1.5 rounded-md',
-            isActive ? 'text-primary border-primary bg-primary/10' : 'text-foreground/80 border-border',
+            'flex items-center gap-1.5 text-sm font-medium transition-colors hover:text-primary hover:bg-transparent border px-3 py-1.5 rounded-md border-border',
+            isActive ? 'text-primary border-primary bg-primary/10' : 'text-foreground/80',
             className
           )}
         >
@@ -115,16 +109,12 @@ export default function SecondaryNav() {
   const [isMounted, setIsMounted] = React.useState(false);
   const [isSticky, setIsSticky] = React.useState(false);
   const [isMenuOpen, setMenuOpen] = React.useState(false);
+  const pathname = usePathname();
   
   React.useEffect(() => {
     setIsMounted(true);
-  }, []);
-  
-  React.useEffect(() => {
-    if (!isMounted) return;
 
     const handleScroll = () => {
-      // The secondary nav is after the carousel which can be up to 600px tall
       const heroCarouselHeight = 600; 
       if (window.scrollY > heroCarouselHeight) {
         setIsSticky(true);
@@ -134,20 +124,17 @@ export default function SecondaryNav() {
     };
     
     window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Check on mount
+    handleScroll();
     
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [isMounted]);
+  }, []);
 
-  if (!isMounted) {
-    return null;
-  }
 
   const navClasses = cn(
     "h-16 flex items-center justify-start border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
-    isSticky && "sticky top-0 z-40"
+    isMounted && isSticky && "sticky top-0 z-40"
   );
 
   return (
@@ -156,9 +143,14 @@ export default function SecondaryNav() {
             <div className="hidden lg:flex items-center justify-start gap-2">
                 {navLinks.map((link) =>
                     link.subLinks ? (
-                    <NavDropdown key={link.title} title={link.title} subLinks={link.subLinks} />
+                    <NavDropdown 
+                      key={link.title} 
+                      title={link.title} 
+                      subLinks={link.subLinks} 
+                      isActive={isMounted && link.subLinks.some(subLink => pathname.startsWith(subLink.href))}
+                    />
                     ) : (
-                    <NavLink key={link.href} href={link.href!} icon={link.icon}>
+                    <NavLink key={link.href} href={link.href!} icon={link.icon} isActive={isMounted && pathname === link.href!}>
                         {link.title}
                     </NavLink>
                     )
