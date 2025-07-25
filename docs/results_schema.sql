@@ -1,65 +1,73 @@
+-- Drop tables if they exist to start fresh
+-- Note: Order matters due to foreign key constraints. Drop referencing table first.
+DROP TABLE IF EXISTS `subject_grades`;
+DROP TABLE IF EXISTS `results`;
 
--- Create the results table
-CREATE TABLE IF NOT EXISTS `results` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `roll` VARCHAR(20) NOT NULL,
-  `class_name` VARCHAR(50) NOT NULL,
-  `name` VARCHAR(100) NOT NULL,
-  `exam_name` VARCHAR(100) NOT NULL,
-  `group_name` VARCHAR(50),
-  `father_name` VARCHAR(100),
-  `mother_name` VARCHAR(100),
-  `image` VARCHAR(255),
-  `data_ai_hint` VARCHAR(255),
-  `final_gpa` DECIMAL(4, 2) NOT NULL,
-  `status` VARCHAR(50) NOT NULL,
-  INDEX `roll_class_idx` (`roll`, `class_name`)
-);
+-- Create the main results table
+CREATE TABLE `results` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `roll` varchar(255) NOT NULL,
+  `class_name` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `exam_name` varchar(255) NOT NULL,
+  `group_name` varchar(255) DEFAULT NULL,
+  `father_name` varchar(255) DEFAULT NULL,
+  `mother_name` varchar(255) DEFAULT NULL,
+  `image` varchar(255) DEFAULT NULL,
+  `data_ai_hint` varchar(255) DEFAULT NULL,
+  `final_gpa` decimal(4,2) NOT NULL,
+  `status` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Create the subject_grades table
-CREATE TABLE IF NOT EXISTS `subject_grades` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `result_id` INT NOT NULL,
-  `subject_name` VARCHAR(100) NOT NULL,
-  `grade` VARCHAR(5) NOT NULL,
-  `gpa` DECIMAL(4, 2) NOT NULL,
-  FOREIGN KEY (`result_id`) REFERENCES `results`(`id`) ON DELETE CASCADE
-);
+-- Create the table for subject-wise grades
+CREATE TABLE `subject_grades` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `result_id` int(11) NOT NULL,
+  `subject_name` varchar(255) NOT NULL,
+  `grade` varchar(10) NOT NULL,
+  `gpa` decimal(4,2) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `result_id` (`result_id`),
+  CONSTRAINT `subject_grades_ibfk_1` FOREIGN KEY (`result_id`) REFERENCES `results` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Truncate tables before inserting to avoid duplicate data on re-run
+-- Disable foreign key checks before truncating
+SET FOREIGN_KEY_CHECKS=0;
+
+-- Truncate tables to clear any existing data
 TRUNCATE TABLE `subject_grades`;
 TRUNCATE TABLE `results`;
 
--- Insert sample data for result 1
-INSERT INTO `results` (`roll`, `class_name`, `name`, `exam_name`, `group_name`, `father_name`, `mother_name`, `image`, `data_ai_hint`, `final_gpa`, `status`) VALUES
-('101', '১০ম', 'আরিফ হোসেন', 'বার্ষিক পরীক্ষা - ২০২৪', 'বিজ্ঞান', 'মোঃ আব্দুল্লাহ', 'ফাতেমা বেগম', 'https://placehold.co/300x400.png', 'male student portrait', 4.44, 'Promoted');
+-- Re-enable foreign key checks
+SET FOREIGN_KEY_CHECKS=1;
 
-SET @last_result_id = LAST_INSERT_ID();
+-- Insert mock data for a student in class 10
+INSERT INTO `results` (`id`, `roll`, `class_name`, `name`, `exam_name`, `group_name`, `father_name`, `mother_name`, `image`, `data_ai_hint`, `final_gpa`, `status`) VALUES
+(1, '101', '১০ম', 'আরিফ হোসেন', 'বার্ষিক পরীক্ষা - ২০২৪', 'বিজ্ঞান', 'মোঃ আব্দুল্লাহ', 'ফাতেমা বেগম', 'https://placehold.co/300x400.png', 'male student portrait', 4.44, 'Promoted');
 
+-- Insert subject grades for the above student
 INSERT INTO `subject_grades` (`result_id`, `subject_name`, `grade`, `gpa`) VALUES
-(@last_result_id, 'বাংলা ১ম পত্র', 'A+', 5.00),
-(@last_result_id, 'বাংলা ২য় পত্র', 'A', 4.00),
-(@last_result_id, 'ইংরেজি ১ম পত্র', 'A', 4.00),
-(@last_result_id, 'ইংরেজি ২য় পত্র', 'A', 4.00),
-(@last_result_id, 'গণিত', 'A+', 5.00),
-(@last_result_id, 'পদার্থবিজ্ঞান', 'A', 4.00),
-(@last_result_id, 'রসায়ন', 'A-', 3.50),
-(@last_result_id, 'জীববিজ্ঞান', 'A+', 5.00);
+(1, 'বাংলা ১ম পত্র', 'A+', 5.00),
+(1, 'বাংলা ২য় পত্র', 'A', 4.00),
+(1, 'ইংরেজি ১ম পত্র', 'A', 4.00),
+(1, 'ইংরেজি ২য় পত্র', 'A', 4.00),
+(1, 'গণিত', 'A+', 5.00),
+(1, 'পদার্থবিজ্ঞান', 'A', 4.00),
+(1, 'রসায়ন', 'A-', 3.50),
+(1, 'জীববিজ্ঞান', 'A+', 5.00);
 
+-- Insert mock data for a student in class 9
+INSERT INTO `results` (`id`, `roll`, `class_name`, `name`, `exam_name`, `group_name`, `father_name`, `mother_name`, `image`, `data_ai_hint`, `final_gpa`, `status`) VALUES
+(2, '201', '৯ম', 'জাহিদ হাসান', 'বার্ষিক পরীক্ষা - ২০২৪', 'ব্যবসায় শিক্ষা', 'মোঃ হাসান', 'জোহরা বেগম', 'https://placehold.co/300x400.png', 'male student portrait', 3.88, 'Promoted');
 
--- Insert sample data for result 2
-INSERT INTO `results` (`roll`, `class_name`, `name`, `exam_name`, `group_name`, `father_name`, `mother_name`, `image`, `data_ai_hint`, `final_gpa`, `status`) VALUES
-('201', '৯ম', 'জাহিদ হাসান', 'বার্ষিক পরীক্ষা - ২০২৪', 'ব্যবসায় শিক্ষা', 'মোঃ হাসান', 'জোহরা বেগম', 'https://placehold.co/300x400.png', 'male student portrait', 3.88, 'Promoted');
-
-SET @last_result_id = LAST_INSERT_ID();
-
+-- Insert subject grades for the above student
 INSERT INTO `subject_grades` (`result_id`, `subject_name`, `grade`, `gpa`) VALUES
-(@last_result_id, 'বাংলা ১ম পত্র', 'A', 4.00),
-(@last_result_id, 'বাংলা ২য় পত্র', 'A-', 3.50),
-(@last_result_id, 'ইংরেজি ১ম পত্র', 'A', 4.00),
-(@last_result_id, 'ইংরেজি ২য় পত্র', 'B', 3.00),
-(@last_result_id, 'গণিত', 'A', 4.00),
-(@last_result_id, 'বিজ্ঞান', 'A-', 3.50),
-(@last_result_id, 'হিসাববিজ্ঞান', 'A', 4.00),
-(@last_result_id, 'ব্যবসায় উদ্যোগ', 'A+', 5.00);
-
+(2, 'বাংলা ১ম পত্র', 'A', 4.00),
+(2, 'বাংলা ২য় পত্র', 'A-', 3.50),
+(2, 'ইংরেজি ১ম পত্র', 'A', 4.00),
+(2, 'ইংরেজি ২য় পত্র', 'B', 3.00),
+(2, 'গণিত', 'A', 4.00),
+(2, 'বিজ্ঞান', 'A-', 3.50),
+(2, 'হিসাববিজ্ঞান', 'A', 4.00),
+(2, 'ব্যবসায় উদ্যোগ', 'A+', 5.00);
