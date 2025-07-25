@@ -23,6 +23,13 @@ import * as React from 'react';
 import { ScrollArea } from '../ui/scroll-area';
 import { getNavLinks, NavLink as NavLinkType } from '@/lib/nav-data';
 import * as LucideIcons from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+
 
 type IconName = keyof typeof LucideIcons;
 
@@ -155,21 +162,25 @@ export default function SecondaryNav() {
                             </SheetTitle>
                         </SheetHeader>
                         <ScrollArea className="flex-grow">
-                            <nav className="mt-8 flex flex-col gap-6 pr-6">
+                            <nav className="mt-8 flex flex-col gap-2 pr-4">
                                 {navLinks.map((link) =>
-                                link.subLinks && link.subLinks.length > 0 ? (
-                                    <div key={link.id}>
-                                    <p className="font-medium text-foreground/80">{link.title}</p>
-                                    <div className="pl-4 mt-2 flex flex-col gap-4">
-                                        {link.subLinks.map((subLink) => (
-                                        <Link key={subLink.id} href={subLink.href!} className="text-base" onClick={() => setMenuOpen(false)} >
-                                            {subLink.title}
-                                        </Link>
-                                        ))}
-                                    </div>
-                                    </div>
+                                (link.subLinks && link.subLinks.length > 0) ? (
+                                    <Accordion type="single" collapsible key={link.id} className="w-full">
+                                    <AccordionItem value={link.title} className="border-b-0">
+                                        <AccordionTrigger className="text-base font-medium py-3 hover:no-underline">{link.title}</AccordionTrigger>
+                                        <AccordionContent>
+                                        <div className="pl-4 flex flex-col gap-4 border-l ml-2">
+                                            {link.subLinks.map((subLink) => (
+                                            <Link key={subLink.id} href={subLink.href!} className="text-base" onClick={() => setMenuOpen(false)} >
+                                                {subLink.title}
+                                            </Link>
+                                            ))}
+                                        </div>
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                    </Accordion>
                                 ) : (
-                                    <Link key={link.id} href={link.href!} className="text-base flex items-center gap-2" onClick={() => setMenuOpen(false)}>
+                                    <Link key={link.id} href={link.href!} className="text-base flex items-center gap-2 py-3" onClick={() => setMenuOpen(false)}>
                                      <IconComponent name={link.icon} />
                                     {link.title}
                                     </Link>
