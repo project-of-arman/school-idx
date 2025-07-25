@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Target, Users } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import Link from "next/link";
 import { getAboutSchool, getSchoolFeatures, AboutSchoolInfo, SchoolFeature } from "@/lib/school-data";
 import * as LucideIcons from "lucide-react";
@@ -17,7 +17,7 @@ const IconComponent = ({ name }: { name: string }) => {
 };
 
 
-async function AboutSchoolContent({ aboutInfo, features }: { aboutInfo: AboutSchoolInfo, features: SchoolFeature[] }) {
+function AboutSchoolContent({ aboutInfo, features }: { aboutInfo: AboutSchoolInfo, features: SchoolFeature[] }) {
   return (
     <div className="flex flex-col md:flex-row gap-12 items-center">
       <div className="w-full md:w-5/12 relative">
@@ -46,7 +46,7 @@ async function AboutSchoolContent({ aboutInfo, features }: { aboutInfo: AboutSch
                 </div>
                 <div>
                   <h3 className="font-semibold text-foreground">{feature.title}</h3>
-                  <p className="text-muted-foreground text-sm">{feature.description.substring(0, 100)}</p>
+                  <p className="text-muted-foreground text-sm">{feature.description.substring(0, 100)}...</p>
                 </div>
               </div>
             ))}
