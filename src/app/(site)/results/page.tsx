@@ -1,98 +1,31 @@
+
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableFooter } from "@/components/ui/table";
-import { RefreshCw, Search, Printer, ArrowLeft } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableFooter as ResultsTableFooter } from "@/components/ui/table";
+import { Search, Printer, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
+import { getResultByRollAndClass, StudentResult } from '@/lib/results-data';
 
-const generateCaptcha = () => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let captcha = '';
-    for (let i = 0; i < 6; i++) {
-        captcha += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return captcha;
-};
-
-const mockResults = [
-  { 
-    roll: '101', 
-    class: '১০ম', 
-    name: 'আরিফ হোসেন',
-    exam: 'বার্ষিক পরীক্ষা - ২০২৪',
-    group: 'বিজ্ঞান',
-    fatherName: 'মোঃ আব্দুল্লাহ',
-    motherName: 'ফাতেমা বেগম',
-    image: 'https://placehold.co/300x400.png',
-    dataAiHint: 'male student portrait',
-    subjects: [
-        { name: 'বাংলা ১ম পত্র', grade: 'A+', gpa: 5.00 },
-        { name: 'বাংলা ২য় পত্র', grade: 'A', gpa: 4.00 },
-        { name: 'ইংরেজি ১ম পত্র', grade: 'A', gpa: 4.00 },
-        { name: 'ইংরেজি ২য় পত্র', grade: 'A', gpa: 4.00 },
-        { name: 'গণিত', grade: 'A+', gpa: 5.00 },
-        { name: 'পদার্থবিজ্ঞান', grade: 'A', gpa: 4.00 },
-        { name: 'রসায়ন', grade: 'A-', gpa: 3.50 },
-        { name: 'জীববিজ্ঞান', grade: 'A+', gpa: 5.00 },
-    ],
-    finalGpa: 4.44,
-    status: 'Promoted'
-  },
-  { 
-    roll: '201', 
-    class: '৯ম', 
-    name: 'জাহিদ হাসান',
-    exam: 'বার্ষিক পরীক্ষা - ২০২৪',
-    group: 'ব্যবসায় শিক্ষা',
-    fatherName: 'মোঃ হাসান',
-    motherName: 'জোহরা বেগম',
-    image: 'https://placehold.co/300x400.png',
-    dataAiHint: 'male student portrait',
-    subjects: [
-        { name: 'বাংলা ১ম পত্র', grade: 'A', gpa: 4.00 },
-        { name: 'বাংলা ২য় পত্র', grade: 'A-', gpa: 3.50 },
-        { name: 'ইংরেজি ১ম পত্র', grade: 'A', gpa: 4.00 },
-        { name: 'ইংরেজি ২য় পত্র', grade: 'B', gpa: 3.00 },
-        { name: 'গণিত', grade: 'A', gpa: 4.00 },
-        { name: 'বিজ্ঞান', grade: 'A-', gpa: 3.50 },
-        { name: 'হিসাববিজ্ঞান', grade: 'A', gpa: 4.00 },
-        { name: 'ব্যবসায় উদ্যোগ', grade: 'A+', gpa: 5.00 },
-    ],
-    finalGpa: 3.88,
-    status: 'Promoted'
-  },
-];
-
-
-type StudentResult = typeof mockResults[0] | null;
 
 export default function ResultsPage() {
     const [roll, setRoll] = useState('');
     const [selectedClass, setSelectedClass] = useState('');
-    const [captchaInput, setCaptchaInput] = useState('');
-    const [generatedCaptcha, setGeneratedCaptcha] = useState('');
-    const [studentResult, setStudentResult] = useState<StudentResult>(null);
+    const [studentResult, setStudentResult] = useState<StudentResult | null>(null);
+    const [loading, setLoading] = useState(false);
     const { toast } = useToast();
-
-    const refreshCaptcha = useCallback(() => {
-        setGeneratedCaptcha(generateCaptcha());
-    }, []);
-
-    useEffect(() => {
-        refreshCaptcha();
-    }, [refreshCaptcha]);
 
     const handlePrint = () => {
         window.print();
     }
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!roll || !selectedClass) {
             toast({
@@ -102,32 +35,31 @@ export default function ResultsPage() {
             });
             return;
         }
-        if (captchaInput !== generatedCaptcha) {
+
+        setLoading(true);
+        try {
+            const result = await getResultByRollAndClass(roll, selectedClass);
+
+            if (result) {
+                setStudentResult(result);
+            } else {
+                toast({
+                    title: 'কোনো ফলাফল পাওয়া যায়নি',
+                    description: 'আপনার প্রদত্ত তথ্যের জন্য কোনো ফলাফল নেই।',
+                    variant: 'destructive'
+                });
+                setStudentResult(null);
+            }
+        } catch (error) {
+            console.error(error);
             toast({
                 title: 'ত্রুটি',
-                description: 'ক্যাপচাটি সঠিক নয়।',
+                description: 'ফলাফল আনতে একটি সমস্যা হয়েছে।',
                 variant: 'destructive'
             });
-            refreshCaptcha();
-            setCaptchaInput('');
-            return;
+        } finally {
+            setLoading(false);
         }
-        
-        const result = mockResults.find(r => r.roll === roll && r.class === selectedClass);
-
-        if (result) {
-            setStudentResult(result);
-        } else {
-             toast({
-                title: 'কোনো ফলাফল পাওয়া যায়নি',
-                description: 'আপনার প্রদত্ত তথ্যের জন্য কোনো ফলাফল নেই।',
-                variant: 'destructive'
-            });
-            setStudentResult(null);
-        }
-        
-        setCaptchaInput('');
-        refreshCaptcha();
     };
 
     if (studentResult) {
@@ -159,12 +91,12 @@ export default function ResultsPage() {
                                <div className="space-y-4 text-sm mb-6">
                                     <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-2">
                                         <div><span className="font-semibold">শিক্ষার্থীর নাম:</span> {studentResult.name}</div>
-                                        <div><span className="font-semibold">শ্রেণী:</span> {studentResult.class}</div>
+                                        <div><span className="font-semibold">শ্রেণী:</span> {studentResult.class_name}</div>
                                         <div><span className="font-semibold">রোল নং:</span> {studentResult.roll}</div>
-                                        <div><span className="font-semibold">পিতার নাম:</span> {studentResult.fatherName}</div>
-                                        <div><span className="font-semibold">মাতার নাম:</span> {studentResult.motherName}</div>
-                                        <div><span className="font-semibold">গ্রুপ:</span> {studentResult.group}</div>
-                                        <div className="md:col-span-2"><span className="font-semibold">পরীক্ষা:</span> {studentResult.exam}</div>
+                                        <div><span className="font-semibold">পিতার নাম:</span> {studentResult.father_name}</div>
+                                        <div><span className="font-semibold">মাতার নাম:</span> {studentResult.mother_name}</div>
+                                        <div><span className="font-semibold">গ্রুপ:</span> {studentResult.group_name}</div>
+                                        <div className="md:col-span-2"><span className="font-semibold">পরীক্ষা:</span> {studentResult.exam_name}</div>
                                     </div>
                                </div>
 
@@ -186,12 +118,12 @@ export default function ResultsPage() {
                                             </TableRow>
                                             ))}
                                         </TableBody>
-                                        <TableFooter>
+                                        <ResultsTableFooter>
                                              <TableRow className="bg-muted/50 font-bold">
                                                 <TableCell colSpan={2} className="text-right">মোট জিপিএ:</TableCell>
-                                                <TableCell className="text-right">{studentResult.finalGpa.toFixed(2)}</TableCell>
+                                                <TableCell className="text-right">{studentResult.final_gpa.toFixed(2)}</TableCell>
                                              </TableRow>
-                                        </TableFooter>
+                                        </ResultsTableFooter>
                                     </Table>
                                 </div>
                                 <div className="mt-8 flex justify-between items-center text-sm">
@@ -231,7 +163,6 @@ export default function ResultsPage() {
         );
     }
 
-
     return (
         <div className="bg-white py-16 sm:py-20">
             <div className="container mx-auto px-4 flex justify-center">
@@ -249,7 +180,7 @@ export default function ResultsPage() {
                             <CardContent className="space-y-6">
                                 <div className="space-y-2">
                                     <Label htmlFor="class">শ্রেণী</Label>
-                                    <Select onValueChange={setSelectedClass} value={selectedClass}>
+                                    <Select onValueChange={setSelectedClass} value={selectedClass} required>
                                         <SelectTrigger id="class">
                                             <SelectValue placeholder="আপনার শ্রেণী নির্বাচন করুন" />
                                         </SelectTrigger>
@@ -273,38 +204,10 @@ export default function ResultsPage() {
                                         required
                                     />
                                 </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="captcha">ক্যাপচা</Label>
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-1/2 select-none rounded-md border bg-muted flex items-center justify-center h-10">
-                                            <span className="text-xl font-bold tracking-widest" style={{ fontFamily: 'monospace', textDecoration: 'line-through', fontStyle: 'italic' }}>
-                                                {generatedCaptcha}
-                                            </span>
-                                        </div>
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            size="icon"
-                                            onClick={refreshCaptcha}
-                                            aria-label="Refresh captcha"
-                                        >
-                                            <RefreshCw className="h-4 w-4" />
-                                        </Button>
-                                    </div>
-                                    <Input
-                                        id="captcha"
-                                        placeholder="উপরের ক্যাপচাটি লিখুন"
-                                        value={captchaInput}
-                                        onChange={(e) => setCaptchaInput(e.target.value)}
-                                        required
-                                        autoComplete="off"
-                                    />
-                                </div>
                             </CardContent>
                             <CardFooter>
-                                <Button type="submit" className="w-full" size="lg">
-                                    <Search className="mr-2 h-5 w-5" />
-                                    ফলাফল দেখুন
+                                <Button type="submit" className="w-full" size="lg" disabled={loading}>
+                                    {loading ? 'অনুসন্ধান চলছে...' : <><Search className="mr-2 h-5 w-5" />ফলাফল দেখুন</>}
                                 </Button>
                             </CardFooter>
                         </form>
@@ -314,3 +217,4 @@ export default function ResultsPage() {
         </div>
     );
 }
+
