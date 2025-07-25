@@ -71,7 +71,7 @@ const NavLink = ({ href, children, className, icon: Icon }: { href: string; chil
       href={href}
       className={cn(
           'flex items-center gap-1.5 text-sm font-medium transition-colors hover:text-primary border px-3 py-1.5 rounded-md',
-          isActive ? 'text-primary border-primary bg-primary/10' : 'text-foreground/80 border-transparent',
+          isActive ? 'text-primary border-primary bg-primary/10' : 'text-foreground/80 border',
           className
         )}
     >
@@ -92,7 +92,7 @@ const NavDropdown = ({ title, subLinks, className }: { title: string; subLinks: 
           variant="ghost"
           className={cn(
             'flex items-center gap-1.5 text-sm font-medium transition-colors hover:text-primary hover:bg-transparent border px-3 py-1.5 rounded-md',
-            isActive ? 'text-primary border-primary bg-primary/10' : 'text-foreground/80 border-transparent',
+            isActive ? 'text-primary border-primary bg-primary/10' : 'text-foreground/80 border',
             className
           )}
         >
