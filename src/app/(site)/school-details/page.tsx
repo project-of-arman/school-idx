@@ -72,7 +72,11 @@ export default async function SchoolDetailsPage() {
 
             <ImageGallery />
             <TeachersSection teachers={teachers} />
-            <VideoGallery />
+            <div className="bg-white py-12 sm:py-16 lg:py-20">
+              <div className="container mx-auto px-4">
+                <VideoGallery />
+              </div>
+            </div>
 
         </div>
     </div>
