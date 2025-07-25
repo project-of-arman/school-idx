@@ -70,8 +70,8 @@ const NavLink = ({ href, children, className, icon: Icon }: { href: string; chil
     <Link 
       href={href}
       className={cn(
-          'flex items-center gap-1.5 text-sm font-medium transition-colors hover:text-primary',
-          isActive ? 'text-primary' : 'text-foreground/80',
+          'flex items-center gap-1.5 text-sm font-medium transition-colors hover:text-primary border px-3 py-1.5 rounded-md',
+          isActive ? 'text-primary border-primary bg-primary/10' : 'text-foreground/80 border-transparent',
           className
         )}
     >
@@ -91,8 +91,8 @@ const NavDropdown = ({ title, subLinks, className }: { title: string; subLinks: 
         <Button
           variant="ghost"
           className={cn(
-            'flex items-center gap-1.5 text-sm font-medium transition-colors hover:text-primary hover:bg-transparent px-0',
-            isActive ? 'text-primary' : 'text-foreground/80',
+            'flex items-center gap-1.5 text-sm font-medium transition-colors hover:text-primary hover:bg-transparent border px-3 py-1.5 rounded-md',
+            isActive ? 'text-primary border-primary bg-primary/10' : 'text-foreground/80 border-transparent',
             className
           )}
         >
@@ -140,15 +140,15 @@ export default function SecondaryNav() {
   }, [isMounted]);
 
   const navClasses = cn(
-    "h-14 flex items-center justify-start border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
-    isSticky && isMounted && "sticky top-0 z-40"
+    "h-16 flex items-center justify-start border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
+    isMounted && isSticky && "sticky top-0 z-40"
   );
 
 
   return (
     <nav className={navClasses}>
         <div className="container mx-auto flex items-center justify-between gap-6 px-4">
-            <div className="hidden lg:flex items-center justify-start gap-6">
+            <div className="hidden lg:flex items-center justify-start gap-2">
                 {navLinks.map((link) =>
                     link.subLinks ? (
                     <NavDropdown key={link.title} title={link.title} subLinks={link.subLinks} />
