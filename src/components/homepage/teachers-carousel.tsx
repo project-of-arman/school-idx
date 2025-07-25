@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import * as React from "react";
@@ -33,11 +34,11 @@ export default function TeachersCarousel() {
   }, [api]);
   
   React.useEffect(() => {
-    async function fetchTeachers() {
+    async function fetchTeachersData() {
       const fetchedTeachers = await getTeachers();
       setTeachers(fetchedTeachers);
     }
-    fetchTeachers();
+    fetchTeachersData();
   }, []);
 
   return (

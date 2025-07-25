@@ -1,9 +1,11 @@
+
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, Target, Users, History, Award, Building } from "lucide-react";
 import ImageGallery from "@/components/school-details/image-gallery";
 import TeachersSection from "@/components/school-details/teachers-section";
 import VideoGallery from "@/components/homepage/video-gallery";
+import { getTeachers } from "@/lib/teacher-data";
 
 const features = [
     {
@@ -38,7 +40,8 @@ const features = [
     }
 ]
 
-export default function SchoolDetailsPage() {
+export default async function SchoolDetailsPage() {
+  const teachers = await getTeachers();
   return (
     <div className="bg-white py-16 sm:py-20 lg:py-24">
         <div className="container mx-auto px-4 space-y-24">
@@ -84,7 +87,7 @@ export default function SchoolDetailsPage() {
             </div>
 
             <ImageGallery />
-            <TeachersSection />
+            <TeachersSection teachers={teachers} />
             <VideoGallery />
 
         </div>

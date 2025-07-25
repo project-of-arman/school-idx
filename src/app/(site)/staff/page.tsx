@@ -1,23 +1,13 @@
 
-"use client";
 
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Phone, Mail, MapPin } from "lucide-react";
 import Link from "next/link";
 import { getTeachers, Teacher } from "@/lib/teacher-data";
-import { useEffect, useState } from "react";
 
-export default function StaffPage() {
-  const [teachers, setTeachers] = useState<Teacher[]>([]);
-
-  useEffect(() => {
-    async function fetchTeachers() {
-      const fetchedTeachers = await getTeachers();
-      setTeachers(fetchedTeachers);
-    }
-    fetchTeachers();
-  }, []);
+export default async function StaffPage() {
+  const teachers = await getTeachers();
 
 
   return (

@@ -1,23 +1,13 @@
 
-"use client"
+
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { Teacher, getTeachers } from "@/lib/teacher-data";
-import { useEffect, useState } from "react";
+import { Teacher } from "@/lib/teacher-data";
 
 
-export default function TeachersSection() {
-  const [teachers, setTeachers] = useState<Teacher[]>([]);
-
-  useEffect(() => {
-    async function fetchTeachers() {
-      const fetchedTeachers = await getTeachers();
-      setTeachers(fetchedTeachers);
-    }
-    fetchTeachers();
-  }, []);
+export default function TeachersSection({ teachers }: { teachers: Teacher[] }) {
 
   return (
     <section id="teachers-section">
