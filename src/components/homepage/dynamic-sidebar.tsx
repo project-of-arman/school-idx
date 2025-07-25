@@ -110,7 +110,7 @@ export default function DynamicSidebar() {
     }, []);
 
     return (
-        <>
+        <div className="space-y-8">
             {widgets.map(widget => {
                 switch (widget.widget_type) {
                     case 'profile':
@@ -123,6 +123,6 @@ export default function DynamicSidebar() {
                         return null;
                 }
             })}
-        </>
+        </div>
     );
 }

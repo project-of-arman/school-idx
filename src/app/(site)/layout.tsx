@@ -19,7 +19,7 @@ export default function SiteLayout({
             <div className="col-span-10 md:col-span-7">
                 {children}
             </div>
-            <div className="col-span-10 md:col-span-3 space-y-8">
+            <div className="col-span-10 md:col-span-3">
                 <DynamicSidebar />
             </div>
             </div>
