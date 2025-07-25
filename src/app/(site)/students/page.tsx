@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useMemo, useEffect } from 'react';
@@ -20,37 +21,42 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-
-const allStudents = [
-  { roll: 101, name: "আরিফ হোসেন", class: "১০ম", gender: "ছেলে" },
-  { roll: 102, name: "সুমি আক্তার", class: "১০ম", gender: "মেয়ে" },
-  { roll: 201, name: "জাহিদ হাসান", class: "৯ম", gender: "ছেলে" },
-  { roll: 202, name: "রিয়া চৌধুরী", class: "৯ম", gender: "মেয়ে" },
-  { roll: 301, name: "সাইফুল ইসলাম", class: "৮ম", gender: "ছেলে" },
-  { roll: 302, name: "নাবিলা রহমান", class: "৮ম", gender: "মেয়ে" },
-  { roll: 103, name: "করিম শেখ", class: "১০ম", gender: "ছেলে" },
-  { roll: 203, name: "সানিয়া কবির", class: "৯ম", gender: "মেয়ে" },
-  { roll: 303, name: "ইমরান খান", class: "৮ম", gender: "ছেলে" },
-  { roll: 104, name: "আলিয়া ভাট", class: "১০ম", gender: "মেয়ে" },
-  { roll: 204, name: "রণবীর কাপুর", class: "৯ম", gender: "ছেলে" },
-  { roll: 304, name: "দীপিকা পাড়ুকোন", class: "৮ম", gender: "মেয়ে" },
-];
+import { getStudents, Student } from '@/lib/student-data';
 
 const STUDENTS_PER_PAGE = 5;
 
 export default function StudentsPage() {
+  const [allStudents, setAllStudents] = useState<Student[]>([]);
   const [classFilter, setClassFilter] = useState("all");
   const [genderFilter, setGenderFilter] = useState("all");
+  const [yearFilter, setYearFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchStudents() {
+        setLoading(true);
+        const students = await getStudents();
+        setAllStudents(students);
+        setLoading(false);
+    }
+    fetchStudents();
+  }, []);
+
+  const years = useMemo(() => {
+    const uniqueYears = [...new Set(allStudents.map(s => s.year))];
+    return uniqueYears.sort((a, b) => b - a);
+  }, [allStudents]);
 
   const filteredStudents = useMemo(() => {
     return allStudents.filter(student => 
-      (classFilter === "all" || student.class === classFilter) &&
+      (classFilter === "all" || student.class_name === classFilter) &&
       (genderFilter === "all" || student.gender === genderFilter) &&
+      (yearFilter === "all" || student.year.toString() === yearFilter) &&
       (student.name.toLowerCase().includes(searchTerm.toLowerCase()))
     );
-  }, [classFilter, genderFilter, searchTerm]);
+  }, [classFilter, genderFilter, yearFilter, searchTerm, allStudents]);
 
   const totalPages = Math.ceil(filteredStudents.length / STUDENTS_PER_PAGE);
 
@@ -61,7 +67,7 @@ export default function StudentsPage() {
   
   useEffect(() => {
     setCurrentPage(1);
-  }, [classFilter, genderFilter, searchTerm]);
+  }, [classFilter, genderFilter, yearFilter, searchTerm]);
 
   const handlePreviousPage = () => {
     setCurrentPage(prev => Math.max(prev - 1, 1));
@@ -96,6 +102,8 @@ export default function StudentsPage() {
                   <SelectItem value="১০ম">১০ম শ্রেণী</SelectItem>
                   <SelectItem value="৯ম">৯ম শ্রেণী</SelectItem>
                   <SelectItem value="৮ম">৮ম শ্রেণী</SelectItem>
+                  <SelectItem value="৭ম">৭ম শ্রেণী</SelectItem>
+                  <SelectItem value="৬ষ্ঠ">৬ষ্ঠ শ্রেণী</SelectItem>
                 </SelectContent>
               </Select>
               <Select value={genderFilter} onValueChange={setGenderFilter}>
@@ -108,6 +116,17 @@ export default function StudentsPage() {
                   <SelectItem value="মেয়ে">মেয়ে</SelectItem>
                 </SelectContent>
               </Select>
+              <Select value={yearFilter} onValueChange={setYearFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="বছর নির্বাচন করুন" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">সকল বছর</SelectItem>
+                  {years.map(year => (
+                    <SelectItem key={year} value={year.toString()}>{year}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </CardHeader>
           <CardContent>
@@ -118,17 +137,25 @@ export default function StudentsPage() {
                   <TableHead>নাম</TableHead>
                   <TableHead>শ্রেণী</TableHead>
                   <TableHead>লিঙ্গ</TableHead>
+                  <TableHead>বছর</TableHead>
                   <TableHead>অ্যাকশন</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {paginatedStudents.length > 0 ? (
+                {loading ? (
+                    <TableRow>
+                        <TableCell colSpan={6} className="text-center">
+                            লোড হচ্ছে...
+                        </TableCell>
+                    </TableRow>
+                ) : paginatedStudents.length > 0 ? (
                   paginatedStudents.map((student) => (
-                    <TableRow key={student.roll}>
+                    <TableRow key={student.id}>
                       <TableCell>{student.roll}</TableCell>
                       <TableCell>{student.name}</TableCell>
-                      <TableCell>{student.class}</TableCell>
+                      <TableCell>{student.class_name}</TableCell>
                       <TableCell>{student.gender}</TableCell>
+                      <TableCell>{student.year}</TableCell>
                       <TableCell>
                         <Button asChild variant="link">
                             <Link href={`/students/${student.roll}`}>বিস্তারিত</Link>
@@ -138,7 +165,7 @@ export default function StudentsPage() {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center">
+                    <TableCell colSpan={6} className="text-center">
                       কোনো শিক্ষার্থী পাওয়া যায়নি।
                     </TableCell>
                   </TableRow>

@@ -1,23 +1,14 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
+import { getStudentByRoll } from "@/lib/student-data";
 
-const allStudents = [
-  { roll: 101, name: "আরিফ হোসেন", class: "১০ম", gender: "ছেলে", image: "https://placehold.co/300x400.png", dataAiHint: "male student portrait" },
-  { roll: 102, name: "সুমি আক্তার", class: "১০ম", gender: "মেয়ে", image: "https://placehold.co/300x400.png", dataAiHint: "female student portrait" },
-  { roll: 201, name: "জাহিদ হাসান", class: "৯ম", gender: "ছেলে", image: "https://placehold.co/300x400.png", dataAiHint: "male student portrait" },
-  { roll: 202, name: "রিয়া চৌধুরী", class: "৯ম", gender: "মেয়ে", image: "https://placehold.co/300x400.png", dataAiHint: "female student portrait" },
-  { roll: 301, name: "সাইফুল ইসলাম", class: "৮ম", gender: "ছেলে", image: "https://placehold.co/300x400.png", dataAiHint: "male student portrait" },
-  { roll: 302, name: "নাবিলা রহমান", class: "৮ম", gender: "মেয়ে", image: "https://placehold.co/300x400.png", dataAiHint: "female student portrait" },
-  { roll: 103, name: "করিম শেখ", class: "১০ম", gender: "ছেলে", image: "https://placehold.co/300x400.png", dataAiHint: "male student portrait" },
-  { roll: 203, name: "সানিয়া কবির", class: "৯ম", gender: "মেয়ে", image: "https://placehold.co/300x400.png", dataAiHint: "female student portrait" },
-  { roll: 303, name: "ইমরান খান", class: "৮ম", gender: "ছেলে", image: "https://placehold.co/300x400.png", dataAiHint: "male student portrait" },
-];
 
-export default function StudentDetailsPage({ params }: { params: { roll: string } }) {
-  const student = allStudents.find(s => s.roll.toString() === params.roll);
+export default async function StudentDetailsPage({ params }: { params: { roll: string } }) {
+  const student = await getStudentByRoll(params.roll);
 
   if (!student) {
     return (
@@ -47,7 +38,7 @@ export default function StudentDetailsPage({ params }: { params: { roll: string 
             <div className="flex flex-col md:flex-row gap-8">
                 <div className="w-full md:w-1/3">
                     <Card className="overflow-hidden shadow-lg">
-                        <Image src={student.image} alt={student.name} width={300} height={400} className="w-full" data-ai-hint={student.dataAiHint} />
+                        <Image src={student.image || "https://placehold.co/300x400.png"} alt={student.name} width={300} height={400} className="w-full" data-ai-hint={student.data_ai_hint || 'student portrait'} />
                     </Card>
                 </div>
                 <div className="w-full md:w-2/3">
@@ -63,11 +54,15 @@ export default function StudentDetailsPage({ params }: { params: { roll: string 
                                 </div>
                                 <div>
                                     <p className="font-semibold">শ্রেণী:</p>
-                                    <p className="text-muted-foreground">{student.class}</p>
+                                    <p className="text-muted-foreground">{student.class_name}</p>
                                 </div>
                                 <div>
                                     <p className="font-semibold">লিঙ্গ:</p>
                                     <p className="text-muted-foreground">{student.gender}</p>
+                                </div>
+                                <div>
+                                    <p className="font-semibold">বছর:</p>
+                                    <p className="text-muted-foreground">{student.year}</p>
                                 </div>
                             </div>
                         </CardContent>
