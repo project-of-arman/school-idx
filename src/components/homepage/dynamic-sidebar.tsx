@@ -85,7 +85,7 @@ function ImageLinkWidget({ widget }: { widget: SidebarWidget }) {
     if (!widget.link_url || !widget.image_url) return null;
     return (
         <Link href={widget.link_url} target="_blank" rel="noopener noreferrer">
-            <Card className="overflow-hidden shadow-md hover:shadow-xl transition-shadow">
+            <Card className="overflow-hidden shadow-md my-3 hover:shadow-xl transition-shadow">
                 <Image 
                     src={widget.image_url}
                     alt={widget.title || "Banner"}
