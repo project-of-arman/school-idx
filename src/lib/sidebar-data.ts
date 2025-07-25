@@ -57,29 +57,9 @@ const mockEServicesWidget: SidebarWidget = {
     sort_order: 3
 };
 
-const mockMyGovWidget: SidebarWidget = {
-    id: 4,
-    widget_type: 'image_link',
-    title: 'myGov',
-    subtitle: null,
-    image_url: 'http://dinajpureducationboard.portal.gov.bd/sites/default/files/files/dinajpureducationboard.portal.gov.bd/page/73f019a5_e642_4099_a371_95e69e41f0d3/2021-04-05-14-38-09f45e3fab3c0628004f2ef68f3b1456.png',
-    link_url: 'https://www.mygov.bd/',
-    link_text: null,
-    content: null,
-    sort_order: 4
-};
 
-const mockDigitalServiceWidget: SidebarWidget = {
-    id: 5,
-    widget_type: 'image_link',
-    title: 'Digital Service',
-    subtitle: null,
-    image_url: 'http://dinajpureducationboard.portal.gov.bd/sites/default/files/files/dinajpureducationboard.portal.gov.bd/page/3a223c34_e20a_42f0_a7f8_696773534b31/2021-04-05-14-39-e58f000300ef6393b7625143a59339a0.png',
-    link_url: '#',
-    link_text: null,
-    content: null,
-    sort_order: 5
-};
+
+
 
 const mockNationalPortalWidget: SidebarWidget = {
     id: 7,
@@ -126,12 +106,10 @@ const mockInternalEserviceWidget: SidebarWidget = {
 const mockWidgets: SidebarWidget[] = [
     mockChairmanWidget,
     mockSecretaryWidget,
-    mockEServicesWidget,
-    mockMyGovWidget,
-    mockDigitalServiceWidget,
+    mockEServicesWidget, 
+    mockInternalEserviceWidget, 
     mockNationalPortalWidget,
     mockImportantLinksWidget,
-    mockInternalEserviceWidget,
 ].sort((a, b) => a.sort_order - b.sort_order);
 
 
