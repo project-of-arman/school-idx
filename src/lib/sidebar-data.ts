@@ -110,6 +110,18 @@ const mockImportantLinksWidget: SidebarWidget = {
     sort_order: 7
 };
 
+const mockInternalEserviceWidget: SidebarWidget = {
+    id: 8,
+    widget_type: 'image_link',
+    title: 'Internal E-Service',
+    subtitle: null,
+    image_url: 'https://dinajpureducationboard.gov.bd/sites/default/files/files/bmeb.portal.gov.bd/page/f35745b2_55a9_4633_afe5_a2ccd180add8/internal_eservice2.gif',
+    link_url: '#',
+    link_text: null,
+    content: null,
+    sort_order: 8
+};
+
 
 const mockWidgets: SidebarWidget[] = [
     mockChairmanWidget,
@@ -119,6 +131,7 @@ const mockWidgets: SidebarWidget[] = [
     mockDigitalServiceWidget,
     mockNationalPortalWidget,
     mockImportantLinksWidget,
+    mockInternalEserviceWidget,
 ].sort((a, b) => a.sort_order - b.sort_order);
 
 
