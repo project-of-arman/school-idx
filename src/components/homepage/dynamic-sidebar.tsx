@@ -1,10 +1,13 @@
 
+"use client";
+
 import { getSidebarWidgets, SidebarWidget } from "@/lib/sidebar-data";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, CheckCircle } from "lucide-react";
+import { useEffect, useState } from "react";
 
 function ProfileWidget({ widget }: { widget: SidebarWidget }) {
     return (
@@ -95,8 +98,16 @@ function ImageLinkWidget({ widget }: { widget: SidebarWidget }) {
 }
 
 
-export default async function DynamicSidebar() {
-    const widgets = await getSidebarWidgets();
+export default function DynamicSidebar() {
+    const [widgets, setWidgets] = useState<SidebarWidget[]>([]);
+
+    useEffect(() => {
+        async function fetchWidgets() {
+            const fetchedWidgets = await getSidebarWidgets();
+            setWidgets(fetchedWidgets);
+        }
+        fetchWidgets();
+    }, []);
 
     return (
         <>
