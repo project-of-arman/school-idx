@@ -51,6 +51,12 @@ const nextConfig: NextConfig = {
         hostname: 'dinajpureducationboard.portal.gov.bd',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
