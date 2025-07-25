@@ -39,7 +39,7 @@ export default async function SchoolDetailsPage() {
                     <div className="absolute -top-4 -left-4 w-full h-full border-4 border-accent rounded-lg transform -rotate-2"></div>
                     <Card className="overflow-hidden shadow-lg relative rounded-lg">
                     <Image
-                        src={aboutSchool.imageUrl}
+                        src={aboutSchool.image_url}
                         alt={aboutSchool.title}
                         width={400}
                         height={500}
