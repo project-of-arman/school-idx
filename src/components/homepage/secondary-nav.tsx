@@ -143,6 +143,12 @@ export default function SecondaryNav() {
     "h-16 flex items-center justify-start border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
     isMounted && isSticky && "sticky top-0 z-40"
   );
+  
+  if (!isMounted) {
+    return (
+        <nav className="h-16 flex items-center justify-start border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60" />
+    );
+  }
 
 
   return (
