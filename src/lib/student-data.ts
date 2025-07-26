@@ -3,6 +3,23 @@
 
 import pool from './db';
 
+/*
+SQL for creating the students table:
+
+CREATE TABLE `students` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `roll` varchar(50) NOT NULL UNIQUE,
+  `name` varchar(255) NOT NULL,
+  `class_name` varchar(100) NOT NULL,
+  `gender` varchar(50) NOT NULL,
+  `year` int NOT NULL,
+  `image` text,
+  `data_ai_hint` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);
+
+*/
+
 export interface Student {
     id: number;
     roll: string;
