@@ -1,83 +1,51 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
-
-const syllabusData = {
-  "১০ম শ্রেণী": [
-    { subject: "বাংলা ১ম পত্র", fileUrl: "#" },
-    { subject: "বাংলা ২য় পত্র", fileUrl: "#" },
-    { subject: "ইংরেজি ১ম পত্র", fileUrl: "#" },
-    { subject: "ইংরেজি ২য় পত্র", fileUrl: "#" },
-    { subject: "গণিত", fileUrl: "#" },
-    { subject: "উচ্চতর গণিত", fileUrl: "#" },
-    { subject: "পদার্থবিজ্ঞান", fileUrl: "#" },
-    { subject: "রসায়ন", fileUrl: "#" },
-    { subject: "জীববিজ্ঞান", fileUrl: "#" },
-    { subject: "তথ্য ও যোগাযোগ প্রযুক্তি", fileUrl: "#" },
-    { subject: "বাংলাদেশ ও বিশ্ব পরিচয়", fileUrl: "#" },
-    { subject: "ধর্ম ও নৈতিক শিক্ষা", fileUrl: "#" },
-  ],
-  "৯ম শ্রেণী": [
-    { subject: "বাংলা ১ম পত্র", fileUrl: "#" },
-    { subject: "বাংলা ২য় পত্র", fileUrl: "#" },
-    { subject: "ইংরেজি ১ম পত্র", fileUrl: "#" },
-    { subject: "ইংরেজি ২য় পত্র", fileUrl: "#" },
-    { subject: "গণিত", fileUrl: "#" },
-    { subject: "উচ্চতর গণিত", fileUrl: "#" },
-    { subject: "পদার্থবিজ্ঞান", fileUrl: "#" },
-    { subject: "রসায়ন", fileUrl: "#" },
-    { subject: "জীববিজ্ঞান", fileUrl: "#" },
-    { subject: "তথ্য ও যোগাযোগ প্রযুক্তি", fileUrl: "#" },
-    { subject: "বাংলাদেশ ও বিশ্ব পরিচয়", fileUrl: "#" },
-    { subject: "ধর্ম ও নৈতিক শিক্ষা", fileUrl: "#" },
-  ],
-  "৮ম শ্রেণী": [
-    { subject: "বাংলা ১ম পত্র", fileUrl: "#" },
-    { subject: "বাংলা ২য় পত্র", fileUrl: "#" },
-    { subject: "ইংরেজি ১ম পত্র", fileUrl: "#" },
-    { subject: "ইংরেজি ২য় পত্র", fileUrl: "#" },
-    { subject: "গণিত", fileUrl: "#" },
-    { subject: "বিজ্ঞান", fileUrl: "#" },
-    { subject: "তথ্য ও যোগাযোগ প্রযুক্তি", fileUrl: "#" },
-    { subject: "বাংলাদেশ ও বিশ্ব পরিচয়", fileUrl: "#" },
-    { subject: "ধর্ম ও নৈতিক শিক্ষা", fileUrl: "#" },
-    { subject: "কৃষি শিক্ষা", fileUrl: "#" },
-  ],
-  "৭ম শ্রেণী": [
-    { subject: "বাংলা ১ম পত্র", fileUrl: "#" },
-    { subject: "বাংলা ২য় পত্র", fileUrl: "#" },
-    { subject: "ইংরেজি ১ম পত্র", fileUrl: "#" },
-    { subject: "ইংরেজি ২য় পত্র", fileUrl: "#" },
-    { subject: "গণিত", fileUrl: "#" },
-    { subject: "বিজ্ঞান", fileUrl: "#" },
-    { subject: "তথ্য ও যোগাযোগ প্রযুক্তি", fileUrl: "#" },
-    { subject: "বাংলাদেশ ও বিশ্ব পরিচয়", fileUrl: "#" },
-    { subject: "ধর্ম ও নৈতিক শিক্ষা", fileUrl: "#" },
-  ],
-  "৬ষ্ঠ শ্রেণী": [
-    { subject: "বাংলা", fileUrl: "#" },
-    { subject: "ইংরেজি", fileUrl: "#" },
-    { subject: "গণিত", fileUrl: "#" },
-    { subject: "বিজ্ঞান", fileUrl: "#" },
-    { subject: "ইতিহাস ও সামাজিক বিজ্ঞান", fileUrl: "#" },
-    { subject: "ডিজিটাল প্রযুক্তি", fileUrl: "#" },
-    { subject: "স্বাস্থ্য সুরক্ষা", fileUrl: "#" },
-    { subject: "জীবন ও জীবিকা", fileUrl: "#" },
-    { subject: "শিল্প ও সংস্কৃতি", fileUrl: "#" },
-    { subject: "ইসলাম শিক্ষা", fileUrl: "#" },
-  ],
-};
-
-const classes = Object.keys(syllabusData);
+import { getSyllabuses, Syllabus } from '@/lib/syllabus-data';
 
 export default function SyllabusPage() {
-  const [selectedClass, setSelectedClass] = useState(classes[0]);
+  const [allSyllabuses, setAllSyllabuses] = useState<Syllabus[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchSyllabuses() {
+      setLoading(true);
+      const data = await getSyllabuses();
+      setAllSyllabuses(data);
+      setLoading(false);
+    }
+    fetchSyllabuses();
+  }, []);
+  
+  const syllabusByClass = allSyllabuses.reduce((acc, syllabus) => {
+    (acc[syllabus.class_name] = acc[syllabus.class_name] || []).push(syllabus);
+    return acc;
+  }, {} as Record<string, Syllabus[]>);
+
+  const classes = Object.keys(syllabusByClass);
+  const [selectedClass, setSelectedClass] = useState(classes[0] || '');
+  
+  useEffect(() => {
+    if (classes.length > 0 && !selectedClass) {
+      setSelectedClass(classes[0]);
+    }
+  }, [classes, selectedClass]);
+
+  if (loading) {
+      return (
+          <div className="bg-white py-16">
+              <div className="container mx-auto px-4">
+                  <p>লোড হচ্ছে...</p>
+              </div>
+          </div>
+      )
+  }
 
   return (
     <div className="bg-white py-16">
@@ -89,7 +57,7 @@ export default function SyllabusPage() {
 
         <Card className="shadow-lg border-primary/20">
             <CardHeader>
-                 <Tabs defaultValue={selectedClass} onValueChange={setSelectedClass} className="w-full">
+                 <Tabs value={selectedClass} onValueChange={setSelectedClass} className="w-full">
                     <div className="flex justify-center mb-4">
                         <TabsList className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 h-auto">
                         {classes.map((c) => (
@@ -111,17 +79,21 @@ export default function SyllabusPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {(syllabusData[selectedClass as keyof typeof syllabusData] || []).map((item, index) => (
-                                <TableRow key={index}>
+                            {(syllabusByClass[selectedClass] || []).map((item, index) => (
+                                <TableRow key={item.id}>
                                     <TableCell>{index + 1}</TableCell>
                                     <TableCell className="font-medium">{item.subject}</TableCell>
                                     <TableCell className="text-right">
-                                        <Button asChild variant="outline" size="sm">
-                                            <a href={item.fileUrl} download>
-                                                <Download className="mr-2 h-4 w-4" />
-                                                ডাউনলোড
-                                            </a>
-                                        </Button>
+                                        {item.file_url ? (
+                                            <Button asChild variant="outline" size="sm">
+                                                <a href={item.file_url} download target="_blank" rel="noopener noreferrer">
+                                                    <Download className="mr-2 h-4 w-4" />
+                                                    ডাউনলোড
+                                                </a>
+                                            </Button>
+                                        ): (
+                                            <span className="text-muted-foreground text-xs">ফাইল নেই</span>
+                                        )}
                                     </TableCell>
                                 </TableRow>
                             ))}
