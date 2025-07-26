@@ -129,12 +129,14 @@ export default function SecondaryNav({ schoolName }: { schoolName: string }) {
     return (
       <nav className={cn(navClasses, "sticky top-0 z-40")}>
         <div className="container mx-auto flex items-center justify-between gap-6 px-4">
-            <div className="lg:hidden flex-grow">
+            <div className="lg:hidden flex items-center gap-2">
                  <Button variant="outline" className="w-auto justify-start">
                      <Menu className="mr-2 h-6 w-6" />
-                     <span>মেনু</span>
-                 </Button>
+                     <span>মেনু</span> 
+                 </Button> 
+                 <p className="text-sm font-medium text-primary">{schoolName}</p>
             </div>
+          
         </div>
       </nav>
     );
@@ -159,7 +161,7 @@ export default function SecondaryNav({ schoolName }: { schoolName: string }) {
                     )
                 )}
             </div>
-             <div className="lg:hidden flex-grow">
+             <div className="lg:hidden flex items-center gap-2">
                  <Sheet open={isMenuOpen} onOpenChange={setMenuOpen}>
                     <SheetTrigger asChild>
                        <Button variant="outline" className="w-auto justify-start">
@@ -205,10 +207,12 @@ export default function SecondaryNav({ schoolName }: { schoolName: string }) {
                         </ScrollArea>
                     </SheetContent>
                 </Sheet>
+                 <p className="text-sm font-medium text-primary hidden sm:block">{schoolName}</p>
             </div>
-            <div className="hidden lg:flex items-center">
-              <p className="text-sm font-medium text-primary">{schoolName}</p>
-            </div>
+             <div className="hidden lg:flex items-center text-sm font-medium text-primary">
+                {schoolName}
+             </div>
+          
         </div>
     </nav>
   );
