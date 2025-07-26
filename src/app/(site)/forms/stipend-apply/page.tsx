@@ -137,7 +137,7 @@ export default function StipendApplyPage() {
                     <FormMessage name="birthCertPhoto" />
                 </FormItem>
                 <FormItem>
-                    <Label htmlFor="nidPhoto">বাবা/মা/অভিভাবকের NID ফটোকপি</Label>
+                    <Label htmlFor="nidPhoto">মা, বাবা, দুই জনের ই এন আই ডি লাগবে। যদি না থাকে তাহলে একজন অভিভাবকের হলেই হবে ।</Label>
                     <Input id="nidPhoto" type="file" accept="image/*,application/pdf" {...register("nidPhoto")} />
                     <FormMessage name="nidPhoto" />
                 </FormItem>
