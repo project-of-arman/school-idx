@@ -18,6 +18,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowRight, User, School, Users2, MapPin, Upload } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { saveAdmissionApplication } from "./actions";
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+const ACCEPTED_DOCUMENT_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp", "application/pdf"];
 
 const admissionFormSchema = z.object({
   // Student Info
@@ -48,29 +53,66 @@ const admissionFormSchema = z.object({
   permanentAddress: z.string().min(1, "স্থায়ী ঠিকানা আবশ্যক"),
 
   // File Uploads
-  studentPhoto: z.any().refine(files => files?.length == 1, "শিক্ষার্থীর ছবি আবশ্যক।"),
-  birthCertPhoto: z.any().refine(files => files?.length == 1, "জন্ম নিবন্ধন সনদের কপি আবশ্যক।"),
+  studentPhoto: z.any()
+    .refine((files) => files?.length == 1, "শিক্ষার্থীর ছবি আবশ্যক।")
+    .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, `ফাইলের সর্বোচ্চ আকার 5MB।`)
+    .refine(
+      (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
+      "শুধুমাত্র .jpg, .jpeg, .png এবং .webp ফরম্যাট সাপোর্ট করবে।"
+    ),
+  birthCertPhoto: z.any()
+    .refine((files) => files?.length == 1, "জন্ম নিবন্ধন সনদের কপি আবশ্যক।")
+    .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, `ফাইলের সর্বোচ্চ আকার 5MB।`)
+    .refine(
+      (files) => ACCEPTED_DOCUMENT_TYPES.includes(files?.[0]?.type),
+      "শুধুমাত্র .jpg, .jpeg, .png, .webp এবং .pdf ফরম্যাট সাপোর্ট করবে।"
+    ),
 });
 
 type FormValues = z.infer<typeof admissionFormSchema>;
 
 export default function AdmissionApplyPage() {
   const { toast } = useToast();
-  const { register, handleSubmit, control, formState: { errors }, reset } = useForm<FormValues>({
+  const { register, handleSubmit, control, formState: { errors, isSubmitting }, reset } = useForm<FormValues>({
     resolver: zodResolver(admissionFormSchema),
   });
 
-  function onSubmit(values: FormValues) {
-    console.log(values);
-    toast({
-      title: "আবেদন সফল হয়েছে",
-      description: "আপনার ভর্তির আবেদন সফলভাবে জমা দেওয়া হয়েছে।",
+  async function onSubmit(values: FormValues) {
+    const formData = new FormData();
+    Object.entries(values).forEach(([key, value]) => {
+        if (key === 'studentPhoto' || key === 'birthCertPhoto') {
+            formData.append(key, value[0]);
+        } else {
+            formData.append(key, value as string);
+        }
     });
-    reset();
+
+    try {
+      const result = await saveAdmissionApplication(formData);
+      if (result.success) {
+        toast({
+          title: "আবেদন সফল হয়েছে",
+          description: "আপনার ভর্তির আবেদন সফলভাবে জমা দেওয়া হয়েছে।",
+        });
+        reset();
+      } else {
+        toast({
+          title: "ত্রুটি",
+          description: result.error || "একটি অপ্রত্যাশিত ত্রুটি ঘটেছে।",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+       toast({
+          title: "সার্ভার ত্রুটি",
+          description: "আবেদন জমা দেওয়ার সময় একটি সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।",
+          variant: "destructive",
+        });
+    }
   }
 
   const FormItem = ({ children }: { children: React.ReactNode }) => <div className="space-y-2">{children}</div>;
-  const FormMessage = ({ name }: { name: keyof FormValues }) => errors[name] ? <p className="text-sm font-medium text-destructive">{errors[name]?.message}</p> : null;
+  const FormMessage = ({ name }: { name: keyof FormValues }) => errors[name] ? <p className="text-sm font-medium text-destructive">{errors[name]?.message as string}</p> : null;
 
   return (
     <div className="bg-white py-16">
@@ -94,36 +136,37 @@ export default function AdmissionApplyPage() {
                 <FormItem> <Label htmlFor="dob">জন্ম তারিখ</Label> <Input id="dob" type="date" {...register("dob")} /> <FormMessage name="dob" /> </FormItem>
                 <FormItem> <Label htmlFor="birthCertNo">জন্ম নিবন্ধন নম্বর</Label> <Input id="birthCertNo" placeholder="১৭ ডিজিটের নম্বর" {...register("birthCertNo")} /> <FormMessage name="birthCertNo" /> </FormItem>
                 
-                <Controller
-                  name="gender"
-                  control={control}
-                  render={({ field }) => (
-                    <FormItem>
-                      <Label>লিঙ্গ</Label>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="নির্বাচন করুন" />
-                          </SelectTrigger>
+                <FormItem>
+                  <Label>লিঙ্গ</Label>
+                   <Controller
+                    name="gender"
+                    control={control}
+                    render={({ field }) => (
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="নির্বাচন করুন" />
+                        </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="ছেলে">ছেলে</SelectItem>
                           <SelectItem value="মেয়ে">মেয়ে</SelectItem>
                           <SelectItem value="অন্যান্য">অন্যান্য</SelectItem>
                         </SelectContent>
                       </Select>
-                      <FormMessage name="gender" />
-                    </FormItem>
-                  )}
-                />
-                 <Controller
-                  name="religion"
-                  control={control}
-                  render={({ field }) => (
-                    <FormItem>
-                      <Label>ধর্ম</Label>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="নির্বাচন করুন" />
-                          </SelectTrigger>
+                    )}
+                  />
+                  <FormMessage name="gender" />
+                </FormItem>
+
+                 <FormItem>
+                  <Label>ধর্ম</Label>
+                    <Controller
+                    name="religion"
+                    control={control}
+                    render={({ field }) => (
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="নির্বাচন করুন" />
+                        </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="ইসলাম">ইসলাম</SelectItem>
                           <SelectItem value="হিন্দু">হিন্দু</SelectItem>
@@ -132,20 +175,21 @@ export default function AdmissionApplyPage() {
                           <SelectItem value="অন্যান্য">অন্যান্য</SelectItem>
                         </SelectContent>
                       </Select>
-                      <FormMessage name="religion" />
-                    </FormItem>
-                  )}
-                />
-                 <Controller
-                  name="bloodGroup"
-                  control={control}
-                  render={({ field }) => (
-                    <FormItem>
-                      <Label>রক্তের গ্রুপ (ঐচ্ছিক)</Label>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="নির্বাচন করুন" />
-                          </SelectTrigger>
+                    )}
+                  />
+                  <FormMessage name="religion" />
+                </FormItem>
+
+                 <FormItem>
+                  <Label>রক্তের গ্রুপ (ঐচ্ছিক)</Label>
+                    <Controller
+                    name="bloodGroup"
+                    control={control}
+                    render={({ field }) => (
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="নির্বাচন করুন" />
+                        </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="A+">A+</SelectItem>
                           <SelectItem value="A-">A-</SelectItem>
@@ -157,10 +201,10 @@ export default function AdmissionApplyPage() {
                           <SelectItem value="O-">O-</SelectItem>
                         </SelectContent>
                       </Select>
-                      <FormMessage name="bloodGroup" />
-                    </FormItem>
-                  )}
-                />
+                    )}
+                  />
+                  <FormMessage name="bloodGroup" />
+                </FormItem>
               </CardContent>
             </Card>
             
@@ -170,27 +214,27 @@ export default function AdmissionApplyPage() {
                 <CardTitle className="flex items-center gap-2 text-primary"><School />একাডেমিক তথ্য</CardTitle>
               </CardHeader>
               <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                 <Controller
-                  name="applyingForClass"
-                  control={control}
-                  render={({ field }) => (
-                    <FormItem>
-                      <Label>আবেদনের শ্রেণী</Label>
-                       <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="শ্রেণী নির্বাচন করুন" />
-                          </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="৬ষ্ঠ">৬ষ্ঠ</SelectItem>
-                          <SelectItem value="৭ম">৭ম</SelectItem>
-                          <SelectItem value="৮ম">৮ম</SelectItem>
-                          <SelectItem value="৯ম">৯ম</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage name="applyingForClass" />
-                    </FormItem>
-                  )}
-                />
+                 <FormItem>
+                    <Label>আবেদনের শ্রেণী</Label>
+                    <Controller
+                        name="applyingForClass"
+                        control={control}
+                        render={({ field }) => (
+                        <Select onValueChange={field.onChange} value={field.value}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="শ্রেণী নির্বাচন করুন" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="৬ষ্ঠ">৬ষ্ঠ</SelectItem>
+                                <SelectItem value="৭ম">৭ম</SelectItem>
+                                <SelectItem value="৮ম">৮ম</SelectItem>
+                                <SelectItem value="৯ম">৯ম</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        )}
+                    />
+                    <FormMessage name="applyingForClass" />
+                 </FormItem>
                  <FormItem> <Label htmlFor="previousSchool">পূর্ববর্তী প্রতিষ্ঠানের নাম (যদি থাকে)</Label> <Input id="previousSchool" placeholder="স্কুলের নাম লিখুন" {...register("previousSchool")} /> <FormMessage name="previousSchool" /> </FormItem>
               </CardContent>
             </Card>
@@ -243,8 +287,8 @@ export default function AdmissionApplyPage() {
             </Card>
 
             <div className="flex justify-end">
-              <Button type="submit" size="lg">
-                আবেদন জমা দিন <ArrowRight className="ml-2 h-5 w-5" />
+              <Button type="submit" size="lg" disabled={isSubmitting}>
+                {isSubmitting ? 'জমা হচ্ছে...' : 'আবেদন জমা দিন'} <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </div>
           </form>

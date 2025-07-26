@@ -13,7 +13,7 @@ const Marquee = async () => {
 
   if (marqueeNotices.length === 0) {
     return null;
-  }
+  } 
   
   return (
     <div className="bg-primary text-primary-foreground py-2 my-4 overflow-hidden">
@@ -53,11 +53,11 @@ export default async function SiteLayout({
             <Marquee />
         </div>
         <div className="container mx-auto py-12 sm:py-16 lg:py-20">
-            <div className="grid grid-cols-10 gap-8">
-            <div className="col-span-10 sm:col-span-6 md:col-span-8">
+            <div className="grid grid-cols-10 gap-2"> 
+            <div className="col-span-10 sm:col-span-7 md:col-span-7 xl:col-span-8">
                 {children}
             </div>
-            <div className="col-span-10 sm:col-span-4 md:col-span-2">
+            <div className="col-span-10 sm:col-span-3 md:col-span-3 xl:col-span-2">
                 <DynamicSidebar />
             </div>
             </div>
