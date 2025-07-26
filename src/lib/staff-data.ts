@@ -82,25 +82,38 @@ export async function saveStaff(formData: FormData, id?: string): Promise<SaveRe
     try {
         const { name, role, email, phone, address, image, dataAiHint } = staffData;
         
-        let query;
-        let params;
-        
         if (id) {
             // Update
             const fieldsToUpdate: { [key: string]: any } = { name, role, email, phone, address, dataAiHint };
-            // Only add image to update if a new one was uploaded
-            if (image && !image.startsWith('https')) {
-                fieldsToUpdate.image = image;
+            const params: any[] = [];
+            
+            // Build the SET part of the query dynamically
+            const setClause = Object.keys(fieldsToUpdate)
+                .map(key => {
+                    params.push(fieldsToUpdate[key]);
+                    return `${key} = ?`;
+                })
+                .join(', ');
+
+            // If a new image is uploaded (it will be a base64 string), add it to the query
+            if (image && typeof image === 'string' && image.startsWith('data:image')) {
+                const finalSetClause = setClause + ', image = ?';
+                params.push(image);
+                params.push(id);
+                const query = `UPDATE staff SET ${finalSetClause} WHERE id = ?`;
+                await pool.query(query, params);
+            } else {
+                 // If no new image, update other fields only
+                params.push(id);
+                const query = `UPDATE staff SET ${setClause} WHERE id = ?`;
+                await pool.query(query, params);
             }
-            query = 'UPDATE staff SET ? WHERE id = ?';
-            params = [fieldsToUpdate, id];
         } else {
             // Insert
-            query = 'INSERT INTO staff (name, role, email, phone, address, image, dataAiHint) VALUES (?, ?, ?, ?, ?, ?, ?)';
-            params = [name, role, email, phone, address, image, dataAiHint];
+            const query = 'INSERT INTO staff (name, role, email, phone, address, image, dataAiHint) VALUES (?, ?, ?, ?, ?, ?, ?)';
+            const params = [name, role, email, phone, address, image, dataAiHint];
+            await pool.query(query, params);
         }
-
-        await pool.query(query, params);
 
         revalidatePath('/admin/staff');
         revalidatePath('/(site)/staff');
