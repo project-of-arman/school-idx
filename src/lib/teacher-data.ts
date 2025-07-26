@@ -2,6 +2,7 @@
 'use server';
 
 import pool from './db';
+import { revalidatePath } from 'next/cache';
 
 export interface Teacher {
   id: string;
@@ -113,5 +114,68 @@ export async function getTeacherById(id: string): Promise<Teacher | null> {
     } catch (error) {
         console.error(`Failed to fetch teacher by id ${id}, returning mock data:`, error);
         return mockTeachers.find(t => t.id === id) || null;
+    }
+}
+
+type SaveResult = { success: boolean; error?: string };
+
+export async function saveTeacher(formData: FormData, id?: string): Promise<SaveResult> {
+    if (!pool) {
+        return { success: false, error: "Database not connected." };
+    }
+
+    const teacherData: { [key: string]: any } = {};
+    formData.forEach((value, key) => {
+        teacherData[key] = value || null;
+    });
+
+    try {
+        const { name, role, email, phone, address, image, dataAiHint } = teacherData;
+        
+        let query;
+        let params;
+        
+        if (id) {
+            // Update
+            const fieldsToUpdate: { [key: string]: any } = { name, role, email, phone, address, dataAiHint };
+            if (image) {
+                fieldsToUpdate.image = image;
+            }
+            query = 'UPDATE teachers SET ? WHERE id = ?';
+            params = [fieldsToUpdate, id];
+        } else {
+            // Insert
+            query = 'INSERT INTO teachers (name, role, email, phone, address, image, dataAiHint) VALUES (?, ?, ?, ?, ?, ?, ?)';
+            params = [name, role, email, phone, address, image, dataAiHint];
+        }
+
+        await pool.query(query, params);
+
+        revalidatePath('/admin/teachers');
+        revalidatePath('/(site)/staff');
+        revalidatePath('/(site)/teachers');
+
+        return { success: true };
+    } catch (error: any) {
+        console.error("Failed to save teacher:", error);
+        return { success: false, error: "একটি সার্ভার ত্রুটি হয়েছে।" };
+    }
+}
+
+export async function deleteTeacher(id: string): Promise<SaveResult> {
+    if (!pool) {
+        return { success: false, error: "Database not connected." };
+    }
+    try {
+        await pool.query('DELETE FROM teachers WHERE id = ?', [id]);
+        
+        revalidatePath('/admin/teachers');
+        revalidatePath('/(site)/staff');
+        revalidatePath('/(site)/teachers');
+
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to delete teacher:", error);
+        return { success: false, error: "একটি সার্ভার ত্রুটি হয়েছে।" };
     }
 }

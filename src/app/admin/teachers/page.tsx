@@ -1,14 +1,27 @@
 
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getTeachers } from "@/lib/teacher-data";
+import Link from "next/link";
+import { PlusCircle } from "lucide-react";
+import TeacherTable from "@/components/admin/teachers/teacher-table";
 
-export default function AdminTeachersPage() {
+export default async function AdminTeachersPage() {
+  const teachers = await getTeachers();
+
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>শিক্ষক ব্যবস্থাপনা</CardTitle>
+        <Button asChild>
+          <Link href="/admin/teachers/new">
+            <PlusCircle className="mr-2 h-4 w-4" />
+            নতুন শিক্ষক যোগ করুন
+          </Link>
+        </Button>
       </CardHeader>
       <CardContent>
-        <p>এখানে শিক্ষকদের তথ্য যুক্ত, সম্পাদনা এবং মুছে ফেলার ফরম যুক্ত করা হবে।</p>
+        <TeacherTable teachers={teachers} />
       </CardContent>
     </Card>
   );
