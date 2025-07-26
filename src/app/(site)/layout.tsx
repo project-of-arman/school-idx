@@ -49,7 +49,7 @@ export default function SiteLayout({
         <div className="container mx-auto px-4">
             <Marquee />
         </div>
-        <div className="container mx-auto px-4 py-12 sm:py-16 lg:py-20">
+        <div className="container mx-auto py-12 sm:py-16 lg:py-20">
             <div className="grid grid-cols-10 gap-8">
             <div className="col-span-10 md:col-span-7">
                 {children}

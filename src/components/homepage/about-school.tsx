@@ -36,7 +36,7 @@ function AboutSchoolContent({ aboutInfo, features }: { aboutInfo: AboutSchoolInf
       <div className="w-full md:w-7/12">
         <h2 className="text-3xl font-bold text-primary mb-4 font-headline">{aboutInfo.title}</h2>
         <p className="text-muted-foreground mb-6 text-base leading-relaxed">
-          {aboutInfo.description}
+          {aboutInfo.description?.slice(0,200)}{aboutInfo.description?.length>=200 ? '...':''}
         </p>
         <div className="space-y-4 mb-8">
             {features.slice(0, 3).map((feature) => (

@@ -149,7 +149,7 @@ export default function SecondaryNav() {
                     <SheetTrigger asChild>
                        <Button variant="outline" className="w-auto justify-start">
                          <Menu className="mr-2 h-6 w-6" />
-                         <span>মেনু নির্বাচন করুন</span>
+                         <span>মেনু</span>
                        </Button>
                     </SheetTrigger>
                     <SheetContent side="left" className="w-full max-w-sm flex flex-col">
