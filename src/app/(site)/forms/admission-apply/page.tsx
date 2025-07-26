@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowRight, User, School, Parent, MapPin, Upload } from 'lucide-react';
+import { ArrowRight, User, School, Users2, MapPin, Upload } from 'lucide-react';
 
 const admissionFormSchema = z.object({
   // Student Info
@@ -136,7 +136,7 @@ export default function AdmissionApplyPage() {
             {/* Parent Information */}
             <Card className="shadow-lg border-primary/20">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-primary"><Parent /> অভিভাবকের তথ্য</CardTitle>
+                <CardTitle className="flex items-center gap-2 text-primary"><Users2 /> অভিভাবকের তথ্য</CardTitle>
               </CardHeader>
               <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="fatherNameBn" render={({ field }) => ( <FormItem> <FormLabel>পিতার নাম (বাংলা)</FormLabel> <FormControl> <Input placeholder="বাংলায় নাম লিখুন" {...field} /> </FormControl> <FormMessage /> </FormItem> )} />
