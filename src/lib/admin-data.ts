@@ -80,25 +80,23 @@ export async function getApplicationCounts(): Promise<ApplicationCount[]> {
         return applicationTables.map(table => ({ name: table.displayName, total: 0 }));
     }
 
-    const countPromises = applicationTables.map(async (table) => {
+    const results: ApplicationCount[] = [];
+
+    for (const table of applicationTables) {
         try {
             const count = await getTableCount(table.dbTable);
-            return {
+            results.push({
                 name: table.displayName,
                 total: count
-            };
+            });
         } catch (error) {
-            // If a table doesn't exist, return 0 for that count.
-            return {
+            // If a table doesn't exist or another error occurs, return 0 for that count.
+             results.push({
                 name: table.displayName,
                 total: 0
-            };
+            });
         }
-    });
-
-    const results = await Promise.all(countPromises);
+    }
     
-    // Filter out items with 0 count if you only want to show forms with applications
-    // For this dashboard, we will show all, even with 0.
     return results;
 }
