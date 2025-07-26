@@ -152,12 +152,12 @@ export default function StipendApplyPage() {
                     <FormMessage name="birthCertPhoto" />
                 </FormItem>
                 <FormItem>
-                    <Label htmlFor="nidPhoto">অভিভাবকের nid card photo copy.</Label>
+                    <Label htmlFor="nidPhoto">অভিভাবকের (বাবা/অন্য কেউ) এনআইডি কার্ডের ফপি.</Label>
                     <Input id="nidPhoto" type="file" accept="image/*,application/pdf" {...register("nidPhoto")} />
                     <FormMessage name="nidPhoto" />
                 </FormItem>
                 <FormItem>
-                    <Label htmlFor="optionalPhoto">ঐচ্ছিক ফাইল আপলোড</Label>
+                    <Label htmlFor="optionalPhoto">মা এর এনআইডি কার্ডের ফপি</Label>
                     <Input id="optionalPhoto" type="file" accept="image/*,application/pdf" {...register("optionalPhoto")} />
                     <FormMessage name="optionalPhoto" />
                 </FormItem>
