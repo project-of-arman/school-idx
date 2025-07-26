@@ -25,27 +25,39 @@ async function getTableCount(tableName: string): Promise<number> {
         const [rows] = await pool.query<{ 'COUNT(*)': number }[]>(`SELECT COUNT(*) FROM ${tableName}`);
         return rows[0]['COUNT(*)'] || 0;
     } catch (error) {
-        console.error(`Failed to get count for table ${tableName}:`, error);
-        // If table doesn't exist or other error, return 0
-        return 0;
+        // We will let the caller handle the error to provide more context.
+        // The error will be caught in getDashboardStats or getApplicationCounts.
+        console.error(`Error querying count for table ${tableName}:`, (error as Error).message);
+        throw error;
     }
 }
 
 export async function getDashboardStats(): Promise<DashboardStats> {
-    // Using Promise.all to fetch counts in parallel for better performance
-    const [noticeCount, studentCount, teacherCount, admissionApplicationsCount] = await Promise.all([
-        getTableCount('notices'),
-        getTableCount('students'),
-        getTableCount('teachers'),
-        getTableCount('admission_applications'),
-    ]);
+    try {
+        // Using Promise.all to fetch counts in parallel for better performance
+        const [noticeCount, studentCount, teacherCount, admissionApplicationsCount] = await Promise.all([
+            getTableCount('notices'),
+            getTableCount('students'),
+            getTableCount('teachers'),
+            getTableCount('admission_applications'),
+        ]);
 
-    return {
-        noticeCount,
-        studentCount,
-        teacherCount,
-        admissionApplicationsCount,
-    };
+        return {
+            noticeCount,
+            studentCount,
+            teacherCount,
+            admissionApplicationsCount,
+        };
+    } catch (error) {
+        console.error("Failed to fetch one or more dashboard stats, returning zero values:", error);
+        // If any of the table counts fail (e.g., table not found), return default zero values.
+        return {
+            noticeCount: 0,
+            studentCount: 0,
+            teacherCount: 0,
+            admissionApplicationsCount: 0,
+        };
+    }
 }
 
 
@@ -68,12 +80,21 @@ export async function getApplicationCounts(): Promise<ApplicationCount[]> {
         return applicationTables.map(table => ({ name: table.displayName, total: 0 }));
     }
 
-    const countPromises = applicationTables.map(table =>
-        getTableCount(table.dbTable).then(count => ({
-            name: table.displayName,
-            total: count
-        }))
-    );
+    const countPromises = applicationTables.map(async (table) => {
+        try {
+            const count = await getTableCount(table.dbTable);
+            return {
+                name: table.displayName,
+                total: count
+            };
+        } catch (error) {
+            // If a table doesn't exist, return 0 for that count.
+            return {
+                name: table.displayName,
+                total: 0
+            };
+        }
+    });
 
     const results = await Promise.all(countPromises);
     
