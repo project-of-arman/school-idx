@@ -51,7 +51,7 @@ export default function AdminSidebarNav() {
         <div className="flex items-center gap-2 p-2">
             <Link href="/" className="flex items-center gap-2" target="_blank">
                 <GraduationCap className="h-6 w-6 text-primary" />
-                <span className="text-lg font-semibold text-primary truncate">মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়</span>
+                <span className="text-lg font-semibold text-primary truncate">হোম পেজ</span>
             </Link>
             <SidebarTrigger className="ml-auto" />
         </div>

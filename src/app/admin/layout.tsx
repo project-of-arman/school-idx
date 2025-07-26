@@ -20,7 +20,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <SidebarProvider defaultOpen={false}>
+    <SidebarProvider defaultOpen={true}>
         <Sidebar collapsible="icon">
           <AdminSidebarNav />
         </Sidebar>
