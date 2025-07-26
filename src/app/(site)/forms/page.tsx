@@ -8,15 +8,14 @@ import { Download, FilePenLine } from 'lucide-react';
 import Link from "next/link";
 
 const formsData = [
-  { name: "ভর্তি ফরম (অফলাইন)", fileUrl: "#", isDownload: true },
-  { name: "অনলাইন ভর্তি আবেদন", href: "/forms/admission-apply", isDownload: false },
-  { name: "ছাড়পত্র আবেদন", href: "/forms/transfer-certificate-apply", isDownload: false },
-  { name: "প্রশংসাপত্র আবেদন ফরম", fileUrl: "#", isDownload: true },
-  { name: "অনুপস্থিতির ছুটির আবেদন ফরম", fileUrl: "#", isDownload: true },
-  { name: "লাইব্রেরী কার্ড আবেদন ফরম", fileUrl: "#", isDownload: true },
-  { name: "অভিভাবকের সম্মতিপত্র ফরম", fileUrl: "#", isDownload: true },
-  { name: "বিষয় পরিবর্তনের আবেদন ফরম", fileUrl: "#", isDownload: true },
-  { name: "উপবৃত্তি আবেদন ফরম", fileUrl: "#", isDownload: true },
+  { name: "ভর্তি আবেদন", href: "/forms/admission-apply", fileUrl: "/forms/admission-form.pdf" },
+  { name: "ছাড়পত্র আবেদন", href: "/forms/transfer-certificate-apply", fileUrl: "/forms/transfer-certificate-form.pdf" },
+  { name: "প্রশংসাপত্র আবেদন", href: "/forms/testimonial-apply", fileUrl: "/forms/testimonial-form.pdf" },
+  { name: "অনুপস্থিতির ছুটির আবেদন", href: "/forms/leave-apply", fileUrl: "/forms/leave-form.pdf" },
+  { name: "লাইব্রেরী কার্ড আবেদন", href: "/forms/library-card-apply", fileUrl: "/forms/library-card-form.pdf" },
+  { name: "অভিভাবকের সম্মতিপত্র", href: "/forms/guardian-consent-apply", fileUrl: "/forms/guardian-consent-form.pdf" },
+  { name: "বিষয় পরিবর্তনের আবেদন", href: "/forms/subject-change-apply", fileUrl: "/forms/subject-change-form.pdf" },
+  { name: "উপবৃত্তি আবেদন", href: "/forms/stipend-apply", fileUrl: "/forms/stipend-form.pdf" },
 ];
 
 export default function FormsPage() {
@@ -37,9 +36,9 @@ export default function FormsPage() {
                     <Table className="border">
                         <TableHeader className="bg-muted/50">
                             <TableRow>
-                                <TableHead className="w-[100px] font-bold">ক্রমিক নং</TableHead>
+                                <TableHead className="w-[80px] font-bold">ক্রমিক</TableHead>
                                 <TableHead className="font-bold">ফরমের নাম</TableHead>
-                                <TableHead className="text-right font-bold">অ্যাকশন</TableHead>
+                                <TableHead className="text-right font-bold w-[250px]">অ্যাকশন</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -47,22 +46,19 @@ export default function FormsPage() {
                                 <TableRow key={index}>
                                     <TableCell>{index + 1}</TableCell>
                                     <TableCell className="font-medium">{item.name}</TableCell>
-                                    <TableCell className="text-right">
-                                        {item.isDownload ? (
-                                            <Button asChild variant="outline" size="sm">
-                                                <a href={item.fileUrl} download>
-                                                    <Download className="mr-2 h-4 w-4" />
-                                                    ডাউনলোড
-                                                </a>
-                                            </Button>
-                                        ) : (
-                                            <Button asChild variant="default" size="sm">
-                                                <Link href={item.href!}>
-                                                    <FilePenLine className="mr-2 h-4 w-4" />
-                                                    আবেদন করুন
-                                                </Link>
-                                            </Button>
-                                        )}
+                                    <TableCell className="text-right space-x-2">
+                                        <Button asChild variant="default" size="sm">
+                                            <Link href={item.href}>
+                                                <FilePenLine className="mr-2 h-4 w-4" />
+                                                অনলাইন আবেদন
+                                            </Link>
+                                        </Button>
+                                        <Button asChild variant="outline" size="sm">
+                                            <a href={item.fileUrl} download>
+                                                <Download className="mr-2 h-4 w-4" />
+                                                ডাউনলোড
+                                            </a>
+                                        </Button>
                                     </TableCell>
                                 </TableRow>
                             ))}
