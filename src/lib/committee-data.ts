@@ -84,6 +84,9 @@ export async function saveCommitteeMember(formData: FormData, id?: number): Prom
             const query = 'UPDATE committee_members SET ? WHERE id = ?';
             await pool.query(query, [fieldsToUpdate, id]);
         } else {
+             if (!data.image) {
+                return { success: false, error: "নতুন সদস্যের জন্য ছবি আবশ্যক।" };
+            }
             // Insert
             const query = 'INSERT INTO committee_members (name, role, sort_order, dataAiHint, image) VALUES (?, ?, ?, ?, ?)';
             await pool.query(query, [data.name, data.role, data.sort_order, data.dataAiHint, data.image]);

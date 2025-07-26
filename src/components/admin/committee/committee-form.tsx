@@ -17,17 +17,20 @@ import { User, Upload } from "lucide-react";
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
-const fileSchema = z.any()
-    .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, `ফাইলের সর্বোচ্চ আকার 5MB।`)
-    .refine((files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type), "শুধুমাত্র .jpg, .jpeg, .png এবং .webp ফরম্যাট সাপোর্ট করবে।");
+const imageSchema = z.any()
+  .optional()
+  .refine((files) => !files || files.length === 0 || files?.[0]?.size <= MAX_FILE_SIZE, `ফাইলের সর্বোচ্চ আকার 5MB।`)
+  .refine(
+    (files) => !files || files.length === 0 || ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
+    "শুধুমাত্র .jpg, .jpeg, .png এবং .webp ফরম্যাট সাপোর্ট করবে।"
+  );
 
-const optionalFileSchema = fileSchema.optional();
 
 const formSchema = z.object({
   name: z.string().min(1, "নাম আবশ্যক"),
   role: z.string().min(1, "পদবি আবশ্যক"),
   sort_order: z.coerce.number().int().min(0, "অবস্থান আবশ্যক"),
-  image: optionalFileSchema,
+  image: imageSchema,
   dataAiHint: z.string().optional(),
 });
 
@@ -62,8 +65,6 @@ export function CommitteeForm({ member }: { member?: CommitteeMember }) {
          toast({ title: "ফাইল আপলোড ত্রুটি", description: "ছবি প্রসেস করার সময় একটি সমস্যা হয়েছে।", variant: "destructive" });
          return;
       }
-    } else if (member?.image) {
-        formData.append('image', member.image);
     }
 
     const result = await saveCommitteeMember(formData, member?.id);
@@ -101,7 +102,7 @@ export function CommitteeForm({ member }: { member?: CommitteeMember }) {
             <FormItem>
                 <Label htmlFor="image">সদস্যের ছবি</Label>
                 <Input id="image" type="file" accept="image/*" {...register("image")} />
-                <p className="text-xs text-muted-foreground">{member ? "নতুন ছবি আপলোড করলে পুরোনো ছবিটি প্রতিস্থাপিত হবে।" : ""}</p>
+                <p className="text-xs text-muted-foreground">{member ? "নতুন ছবি আপলোড করলে পুরোনো ছবিটি প্রতিস্থাপিত হবে।" : "নতুন সদস্যের জন্য ছবি আবশ্যক।"}</p>
                 <FormMessage name="image" />
             </FormItem>
             {member?.image && (
