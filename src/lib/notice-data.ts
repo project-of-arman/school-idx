@@ -2,6 +2,7 @@
 'use server';
 
 import pool from './db';
+import { revalidatePath } from 'next/cache';
 
 export interface Notice {
   id: number;
@@ -130,4 +131,50 @@ export async function getNoticeById(id: string): Promise<Notice | null> {
         console.error(`Failed to fetch notice by id ${id}, returning mock data:`, error);
         return mockNotices.find(n => n.id.toString() === id) || null;
     }
+}
+
+
+type SaveResult = { success: boolean; error?: string };
+
+export async function saveNotice(
+  data: Omit<Notice, 'id'>,
+  id?: number
+): Promise<SaveResult> {
+  if (!pool) {
+    return { success: false, error: "Database not connected." };
+  }
+  try {
+    if (id) {
+      // Update
+      const query = 'UPDATE notices SET title = ?, date = ?, description = ?, fileUrl = ?, is_marquee = ? WHERE id = ?';
+      await pool.query(query, [data.title, data.date, data.description, data.fileUrl || null, data.is_marquee, id]);
+    } else {
+      // Insert
+      const query = 'INSERT INTO notices (title, date, description, fileUrl, is_marquee) VALUES (?, ?, ?, ?, ?)';
+      await pool.query(query, [data.title, data.date, data.description, data.fileUrl || null, data.is_marquee]);
+    }
+    revalidatePath('/admin/notices');
+    revalidatePath('/(site)/notice');
+    revalidatePath('/(site)/');
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to save notice:", error);
+    return { success: false, error: "একটি সার্ভার ত্রুটি হয়েছে।" };
+  }
+}
+
+export async function deleteNotice(id: number): Promise<SaveResult> {
+   if (!pool) {
+    return { success: false, error: "Database not connected." };
+  }
+  try {
+    await pool.query('DELETE FROM notices WHERE id = ?', [id]);
+    revalidatePath('/admin/notices');
+    revalidatePath('/(site)/notice');
+    revalidatePath('/(site)/');
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to delete notice:", error);
+    return { success: false, error: "একটি সার্ভার ত্রুটি হয়েছে।" };
+  }
 }
