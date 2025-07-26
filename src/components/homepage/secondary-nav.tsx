@@ -154,12 +154,11 @@ export default function SecondaryNav({ schoolName }: { schoolName: string }) {
                     </SheetTrigger>
                     <SheetContent side="left" className="w-full max-w-sm flex flex-col">
                         <SheetHeader>
-                            <SheetTitle>
-                                <Link href="/" className="flex items-center gap-2" onClick={() => setMenuOpen(false)}>
-                                <GraduationCap className="h-7 w-7 text-primary" />
-                                <span className="text-xl font-bold text-primary">মেনু</span>
-                                </Link>
-                            </SheetTitle>
+                            <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
+                            <Link href="/" className="flex items-center gap-2" onClick={() => setMenuOpen(false)}>
+                            <GraduationCap className="h-7 w-7 text-primary" />
+                            <span className="text-xl font-bold text-primary">মেনু</span>
+                            </Link>
                         </SheetHeader>
                         <ScrollArea className="flex-grow">
                             <nav className="mt-8 flex flex-col gap-2 pr-4">
