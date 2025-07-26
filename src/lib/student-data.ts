@@ -9,24 +9,33 @@ SQL for creating the students table:
 
 CREATE TABLE `students` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `roll` varchar(50) NOT NULL UNIQUE,
-  `name` varchar(255) NOT NULL,
+  `name_bn` varchar(255) NOT NULL,
+  `name_en` varchar(255) NOT NULL,
+  `roll` varchar(50) NOT NULL,
   `class_name` varchar(100) NOT NULL,
   `year` int NOT NULL,
   `dob` date NOT NULL,
+  `birth_cert_no` varchar(100) DEFAULT NULL,
   `gender` varchar(50) NOT NULL,
   `religion` varchar(50) NOT NULL,
   `blood_group` varchar(10) DEFAULT NULL,
-  `father_name` varchar(255) NOT NULL,
+  `previous_school` varchar(255) DEFAULT NULL,
+  `father_name_bn` varchar(255) NOT NULL,
+  `father_name_en` varchar(255) NOT NULL,
+  `father_nid` varchar(100) DEFAULT NULL,
   `father_mobile` varchar(50) NOT NULL,
-  `mother_name` varchar(255) NOT NULL,
+  `mother_name_bn` varchar(255) NOT NULL,
+  `mother_name_en` varchar(255) NOT NULL,
+  `mother_nid` varchar(100) DEFAULT NULL,
+  `mother_mobile` varchar(50) NOT NULL,
   `present_address` text NOT NULL,
   `permanent_address` text NOT NULL,
   `image` longtext,
   `data_ai_hint` varchar(255) DEFAULT 'student portrait',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `roll_year_class` (`roll`,`year`,`class_name`)
 );
 
 */
@@ -34,7 +43,7 @@ CREATE TABLE `students` (
 export interface Student {
     id: number;
     roll: string;
-    name: string;
+    name: string; // This will be name_bn for display
     class_name: string;
     gender: string;
     year: number;
@@ -42,15 +51,31 @@ export interface Student {
     data_ai_hint: string | null;
 }
 
-export interface StudentForAdmin extends Student {
+export interface StudentForAdmin {
+    id: number;
+    name_bn: string;
+    name_en: string;
+    roll: string;
+    class_name: string;
+    year: number;
     dob: string;
+    birth_cert_no: string | null;
+    gender: string;
     religion: string;
     blood_group: string | null;
-    father_name: string;
+    previous_school: string | null;
+    father_name_bn: string;
+    father_name_en: string;
+    father_nid: string | null;
     father_mobile: string;
-    mother_name: string;
+    mother_name_bn: string;
+    mother_name_en: string;
+    mother_nid: string | null;
+    mother_mobile: string;
     present_address: string;
     permanent_address: string;
+    image: string | null;
+    data_ai_hint: string | null;
 }
 
 const mockStudents: Student[] = [
@@ -65,7 +90,7 @@ export async function getStudents(): Promise<Student[]> {
         return mockStudents;
     }
     try {
-        const [rows] = await pool.query('SELECT id, roll, name, class_name, gender, year, image, data_ai_hint FROM students ORDER BY year DESC, class_name, roll ASC');
+        const [rows] = await pool.query('SELECT id, roll, name_bn as name, class_name, gender, year, image, data_ai_hint FROM students ORDER BY year DESC, class_name, roll ASC');
         return rows as Student[];
     } catch (error) {
         console.error('Failed to fetch students, returning mock data:', error);
@@ -106,7 +131,7 @@ export async function getStudentByRoll(roll: string): Promise<Student | null> {
         return mockStudents.find(s => s.roll === roll) || null;
     }
     try {
-        const [rows] = await pool.query('SELECT id, roll, name, class_name, gender, year, image, data_ai_hint FROM students WHERE roll = ?', [roll]);
+        const [rows] = await pool.query('SELECT id, roll, name_bn as name, class_name, gender, year, image, data_ai_hint FROM students WHERE roll = ?', [roll]);
         const students = rows as Student[];
         return students[0] || null;
     } catch (error) {
@@ -129,24 +154,46 @@ export async function saveStudent(formData: FormData, id?: number): Promise<Save
   });
 
   try {
-    const { name, roll, class_name, year, dob, gender, religion, blood_group, father_name, father_mobile, mother_name, present_address, permanent_address, image } = studentData;
+    const { 
+        name_bn, name_en, roll, class_name, year, dob, birth_cert_no, gender, religion, 
+        blood_group, previous_school, father_name_bn, father_name_en, father_nid, father_mobile, 
+        mother_name_bn, mother_name_en, mother_nid, mother_mobile, present_address, permanent_address, image 
+    } = studentData;
 
-    const fields = [name, roll, class_name, year, dob, gender, religion, blood_group, father_name, father_mobile, mother_name, present_address, permanent_address];
+    const fields = [
+        name_bn, name_en, roll, class_name, year, dob, birth_cert_no, gender, religion, 
+        blood_group, previous_school, father_name_bn, father_name_en, father_nid, father_mobile, 
+        mother_name_bn, mother_name_en, mother_nid, mother_mobile, present_address, permanent_address
+    ];
+
     let query;
 
     if (id) {
       // Update
+      const updateFields = [
+        'name_bn = ?', 'name_en = ?', 'roll = ?', 'class_name = ?', 'year = ?', 'dob = ?', 'birth_cert_no = ?',
+        'gender = ?', 'religion = ?', 'blood_group = ?', 'previous_school = ?', 'father_name_bn = ?',
+        'father_name_en = ?', 'father_nid = ?', 'father_mobile = ?', 'mother_name_bn = ?', 'mother_name_en = ?',
+        'mother_nid = ?', 'mother_mobile = ?', 'present_address = ?', 'permanent_address = ?'
+      ];
+      
       if (image) {
+        updateFields.push('image = ?');
         fields.push(image);
-        query = 'UPDATE students SET name = ?, roll = ?, class_name = ?, year = ?, dob = ?, gender = ?, religion = ?, blood_group = ?, father_name = ?, father_mobile = ?, mother_name = ?, present_address = ?, permanent_address = ?, image = ? WHERE id = ?';
-      } else {
-        query = 'UPDATE students SET name = ?, roll = ?, class_name = ?, year = ?, dob = ?, gender = ?, religion = ?, blood_group = ?, father_name = ?, father_mobile = ?, mother_name = ?, present_address = ?, permanent_address = ? WHERE id = ?';
       }
+      
+      query = `UPDATE students SET ${updateFields.join(', ')} WHERE id = ?`;
       fields.push(id);
     } else {
       // Insert
       fields.push(image || null);
-      query = 'INSERT INTO students (name, roll, class_name, year, dob, gender, religion, blood_group, father_name, father_mobile, mother_name, present_address, permanent_address, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+      query = `
+        INSERT INTO students (
+          name_bn, name_en, roll, class_name, year, dob, birth_cert_no, gender, religion, 
+          blood_group, previous_school, father_name_bn, father_name_en, father_nid, father_mobile, 
+          mother_name_bn, mother_name_en, mother_nid, mother_mobile, present_address, permanent_address, image
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `;
     }
 
     await pool.query(query, fields);
@@ -157,7 +204,7 @@ export async function saveStudent(formData: FormData, id?: number): Promise<Save
   } catch (error: any) {
     console.error("Failed to save student:", error);
     if (error.code === 'ER_DUP_ENTRY') {
-      return { success: false, error: "এই রোল নম্বরটি ইতিমধ্যে ব্যবহার করা হয়েছে।" };
+      return { success: false, error: "এই রোল নম্বরটি এই বছর ও ক্লাসের জন্য ইতিমধ্যে ব্যবহার করা হয়েছে।" };
     }
     return { success: false, error: "একটি সার্ভার ত্রুটি হয়েছে।" };
   }

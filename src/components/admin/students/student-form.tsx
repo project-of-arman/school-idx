@@ -33,19 +33,27 @@ const optionalFileSchema = fileSchema.optional();
 
 const studentFormSchema = z.object({
   // Student Info
-  name: z.string().min(1, "শিক্ষার্থীর নাম আবশ্যক"),
+  name_bn: z.string().min(1, "শিক্ষার্থীর নাম (বাংলা) আবশ্যক"),
+  name_en: z.string().min(1, "শিক্ষার্থীর নাম (ইংরেজি) আবশ্যক").regex(/^[a-zA-Z\s.-]+$/, "শুধুমাত্র ইংরেজি অক্ষর ব্যবহার করুন"),
   roll: z.string().min(1, "রোল আবশ্যক"),
   class_name: z.string().min(1, "শ্রেণী আবশ্যক"),
   year: z.coerce.number().min(2000, "বছর আবশ্যক"),
   dob: z.string().min(1, "জন্ম তারিখ আবশ্যক"),
+  birth_cert_no: z.string().optional(),
   gender: z.string().min(1, "লিঙ্গ নির্বাচন করুন"),
   religion: z.string().min(1, "ধর্ম নির্বাচন করুন"),
   blood_group: z.string().optional(),
+  previous_school: z.string().optional(),
   
   // Parent Info
-  father_name: z.string().min(1, "পিতার নাম আবশ্যক"),
+  father_name_bn: z.string().min(1, "পিতার নাম (বাংলা) আবশ্যক"),
+  father_name_en: z.string().min(1, "পিতার নাম (ইংরেজি) আবশ্যক").regex(/^[a-zA-Z\s.-]+$/, "শুধুমাত্র ইংরেজি অক্ষর ব্যবহার করুন"),
+  father_nid: z.string().optional(),
   father_mobile: z.string().min(1, "পিতার মোবাইল নম্বর আবশ্যক"),
-  mother_name: z.string().min(1, "মাতার নাম আবশ্যক"),
+  mother_name_bn: z.string().min(1, "মাতার নাম (বাংলা) আবশ্যক"),
+  mother_name_en: z.string().min(1, "মাতার নাম (ইংরেজি) আবশ্যক").regex(/^[a-zA-Z\s.-]+$/, "শুধুমাত্র ইংরেজি অক্ষর ব্যবহার করুন"),
+  mother_nid: z.string().optional(),
+  mother_mobile: z.string().min(1, "মাতার মোবাইল নম্বর আবশ্যক"),
   
   // Address Info
   present_address: z.string().min(1, "বর্তমান ঠিকানা আবশ্যক"),
@@ -63,17 +71,25 @@ export function StudentForm({ student }: { student?: StudentForAdmin }) {
   const { register, handleSubmit, control, formState: { errors, isSubmitting } } = useForm<FormValues>({
     resolver: zodResolver(studentFormSchema),
     defaultValues: {
-      name: student?.name || "",
+      name_bn: student?.name_bn || "",
+      name_en: student?.name_en || "",
       roll: student?.roll || "",
       class_name: student?.class_name || "",
       year: student?.year || new Date().getFullYear(),
       dob: student?.dob ? new Date(student.dob).toISOString().split('T')[0] : "",
+      birth_cert_no: student?.birth_cert_no || "",
       gender: student?.gender || "",
       religion: student?.religion || "",
       blood_group: student?.blood_group || "",
-      father_name: student?.father_name || "",
+      previous_school: student?.previous_school || "",
+      father_name_bn: student?.father_name_bn || "",
+      father_name_en: student?.father_name_en || "",
+      father_nid: student?.father_nid || "",
       father_mobile: student?.father_mobile || "",
-      mother_name: student?.mother_name || "",
+      mother_name_bn: student?.mother_name_bn || "",
+      mother_name_en: student?.mother_name_en || "",
+      mother_nid: student?.mother_nid || "",
+      mother_mobile: student?.mother_mobile || "",
       present_address: student?.present_address || "",
       permanent_address: student?.permanent_address || "",
     },
@@ -132,26 +148,10 @@ export function StudentForm({ student }: { student?: StudentForAdmin }) {
             <CardTitle className="flex items-center gap-2 text-primary"><User /> শিক্ষার্থীর তথ্য</CardTitle>
           </CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <FormItem> <Label htmlFor="name">শিক্ষার্থীর নাম</Label> <Input id="name" {...register("name")} /> <FormMessage name="name" /> </FormItem>
-            <FormItem> <Label htmlFor="roll">রোল নং</Label> <Input id="roll" {...register("roll")} /> <FormMessage name="roll" /> </FormItem>
-            <FormItem>
-              <Label>শ্রেণী</Label>
-               <Controller name="class_name" control={control} render={({ field }) => (
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger><SelectValue placeholder="নির্বাচন করুন" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="৬ষ্ঠ">৬ষ্ঠ</SelectItem>
-                      <SelectItem value="৭ম">৭ম</SelectItem>
-                      <SelectItem value="৮ম">৮ম</SelectItem>
-                      <SelectItem value="৯ম">৯ম</SelectItem>
-                      <SelectItem value="১০ম">১০ম</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )} />
-              <FormMessage name="class_name" />
-            </FormItem>
-            <FormItem> <Label htmlFor="year">বছর</Label> <Input id="year" type="number" {...register("year")} /> <FormMessage name="year" /> </FormItem>
+            <FormItem> <Label htmlFor="name_bn">শিক্ষার্থীর নাম (বাংলা)</Label> <Input id="name_bn" {...register("name_bn")} /> <FormMessage name="name_bn" /> </FormItem>
+            <FormItem> <Label htmlFor="name_en">শিক্ষার্থীর নাম (ইংরেজি)</Label> <Input id="name_en" {...register("name_en")} /> <FormMessage name="name_en" /> </FormItem>
             <FormItem> <Label htmlFor="dob">জন্ম তারিখ</Label> <Input id="dob" type="date" {...register("dob")} /> <FormMessage name="dob" /> </FormItem>
+            <FormItem> <Label htmlFor="birth_cert_no">জন্ম নিবন্ধন নম্বর</Label> <Input id="birth_cert_no" {...register("birth_cert_no")} /> <FormMessage name="birth_cert_no" /> </FormItem>
             <FormItem>
               <Label>লিঙ্গ</Label>
                <Controller name="gender" control={control} render={({ field }) => (
@@ -185,7 +185,7 @@ export function StudentForm({ student }: { student?: StudentForAdmin }) {
              <FormItem>
               <Label>রক্তের গ্রুপ (ঐচ্ছিক)</Label>
                 <Controller name="blood_group" control={control} render={({ field }) => (
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value || ''}>
                     <SelectTrigger><SelectValue placeholder="নির্বাচন করুন" /></SelectTrigger>
                     <SelectContent>
                        <SelectItem value="A+">A+</SelectItem>
@@ -205,14 +205,46 @@ export function StudentForm({ student }: { student?: StudentForAdmin }) {
         </Card>
 
         <Card className="shadow-lg border-primary/20">
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-primary"><School />একাডেমিক তথ্য</CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <FormItem> <Label htmlFor="roll">রোল নং</Label> <Input id="roll" {...register("roll")} /> <FormMessage name="roll" /> </FormItem>
+                 <FormItem>
+                    <Label>শ্রেণী</Label>
+                    <Controller name="class_name" control={control} render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value}>
+                        <SelectTrigger><SelectValue placeholder="শ্রেণী নির্বাচন করুন" /></SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="৬ষ্ঠ">৬ষ্ঠ</SelectItem>
+                            <SelectItem value="৭ম">৭ম</SelectItem>
+                            <SelectItem value="৮ম">৮ম</SelectItem>
+                            <SelectItem value="৯ম">৯ম</SelectItem>
+                            <SelectItem value="১০ম">১০ম</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    )} />
+                    <FormMessage name="class_name" />
+                 </FormItem>
+                <FormItem> <Label htmlFor="year">বছর</Label> <Input id="year" type="number" {...register("year")} /> <FormMessage name="year" /> </FormItem>
+                <FormItem className="lg:col-span-3"> <Label htmlFor="previous_school">পূর্ববর্তী প্রতিষ্ঠানের নাম (যদি থাকে)</Label> <Input id="previous_school" {...register("previous_school")} /> <FormMessage name="previous_school" /> </FormItem>
+            </CardContent>
+        </Card>
+
+        <Card className="shadow-lg border-primary/20">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-primary"><Users2 /> অভিভাবকের তথ্য</CardTitle>
           </CardHeader>
-          <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <FormItem> <Label htmlFor="father_name">পিতার নাম</Label> <Input id="father_name" {...register("father_name")} /> <FormMessage name="father_name" /> </FormItem>
-            <FormItem> <Label htmlFor="father_mobile">পিতার মোবাইল নম্বর</Label> <Input id="father_mobile" {...register("father_mobile")} /> <FormMessage name="father_mobile" /> </FormItem>
-            <FormItem> <Label htmlFor="mother_name">মাতার নাম</Label> <Input id="mother_name" {...register("mother_name")} /> <FormMessage name="mother_name" /> </FormItem>
-          </CardContent>
+          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormItem> <Label htmlFor="father_name_bn">পিতার নাম (বাংলা)</Label> <Input id="father_name_bn" {...register("father_name_bn")} /> <FormMessage name="father_name_bn" /> </FormItem>
+                <FormItem> <Label htmlFor="father_name_en">পিতার নাম (ইংরেজি)</Label> <Input id="father_name_en" {...register("father_name_en")} /> <FormMessage name="father_name_en" /> </FormItem>
+                <FormItem> <Label htmlFor="father_nid">পিতার জাতীয় পরিচয়পত্র নম্বর</Label> <Input id="father_nid" {...register("father_nid")} /> <FormMessage name="father_nid" /> </FormItem>
+                <FormItem> <Label htmlFor="father_mobile">পিতার মোবাইল নম্বর</Label> <Input id="father_mobile" {...register("father_mobile")} /> <FormMessage name="father_mobile" /> </FormItem>
+                <FormItem> <Label htmlFor="mother_name_bn">মাতার নাম (বাংলা)</Label> <Input id="mother_name_bn" {...register("mother_name_bn")} /> <FormMessage name="mother_name_bn" /> </FormItem>
+                <FormItem> <Label htmlFor="mother_name_en">মাতার নাম (ইংরেজি)</Label> <Input id="mother_name_en" {...register("mother_name_en")} /> <FormMessage name="mother_name_en" /> </FormItem>
+                <FormItem> <Label htmlFor="mother_nid">মাতার জাতীয় পরিচয়পত্র নম্বর</Label> <Input id="mother_nid" {...register("mother_nid")} /> <FormMessage name="mother_nid" /> </FormItem>
+                <FormItem> <Label htmlFor="mother_mobile">মাতার মোবাইল নম্বর</Label> <Input id="mother_mobile" {...register("mother_mobile")} /> <FormMessage name="mother_mobile" /> </FormItem>
+              </CardContent>
         </Card>
         
         <Card className="shadow-lg border-primary/20">

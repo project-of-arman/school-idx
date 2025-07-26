@@ -46,7 +46,8 @@ export default function StudentTable({ students }: { students: StudentForAdmin[]
 
   const filteredStudents = useMemo(() => {
     return students.filter(student =>
-      student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      student.name_bn.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      student.name_en.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.roll.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [students, searchTerm]);
@@ -84,7 +85,7 @@ export default function StudentTable({ students }: { students: StudentForAdmin[]
       if (result.success) {
         toast({
           title: "শিক্ষার্থী মোছা হয়েছে",
-          description: `"${selectedStudent.name}" সফলভাবে মুছে ফেলা হয়েছে।`,
+          description: `"${selectedStudent.name_bn}" সফলভাবে মুছে ফেলা হয়েছে।`,
         });
       } else {
         toast({
@@ -126,13 +127,13 @@ export default function StudentTable({ students }: { students: StudentForAdmin[]
                 <TableCell>
                     <Image 
                         src={student.image || "https://placehold.co/40x40.png"}
-                        alt={student.name}
+                        alt={student.name_bn}
                         width={40}
                         height={40}
-                        className="rounded-full"
+                        className="rounded-full object-cover"
                     />
                 </TableCell>
-                <TableCell className="font-medium">{student.name}</TableCell>
+                <TableCell className="font-medium">{student.name_bn}</TableCell>
                 <TableCell>{student.roll}</TableCell>
                 <TableCell>{student.class_name}</TableCell>
                 <TableCell>{student.year}</TableCell>
