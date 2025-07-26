@@ -12,13 +12,13 @@ import { Skeleton } from "../ui/skeleton";
 
 function ProfileWidget({ widget }: { widget: SidebarWidget }) {
     return (
-        <Card className="w-full shadow-lg border-primary/20 overflow-hidden">
+        <Card className="w-54 shadow-lg border-primary/20 overflow-hidden">
             <CardHeader className="p-0">
                 <div className="bg-primary text-primary-foreground p-3">
                     <h2 className="text-lg font-bold">{widget.title}</h2>
                 </div>
             </CardHeader>
-            <CardContent className="p-4 text-center">
+            <CardContent className="text-center">
                 {widget.image_url && (
                     <div className="flex justify-center">
                         <Image
