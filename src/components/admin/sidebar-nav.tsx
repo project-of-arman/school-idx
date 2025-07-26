@@ -72,7 +72,7 @@ export default function AdminSidebarNav() {
   const pathname = usePathname();
 
   const isSubItemActive = (subItems: any[]) => {
-    return subItems.some((item) => pathname === item.href);
+    return subItems.some((item) => pathname.startsWith(item.href));
   }
 
   const getAccordionDefaultValue = () => {
@@ -108,7 +108,7 @@ export default function AdminSidebarNav() {
                              <SidebarMenuItem key={subItem.href} className="pl-2">
                                 <SidebarMenuButton
                                     asChild
-                                    isActive={pathname === subItem.href}
+                                    isActive={pathname.startsWith(subItem.href)}
                                     tooltip={subItem.label}
                                     size="sm"
                                     className="h-auto py-1.5"
