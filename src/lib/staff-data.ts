@@ -88,7 +88,8 @@ export async function saveStaff(formData: FormData, id?: string): Promise<SaveRe
         if (id) {
             // Update
             const fieldsToUpdate: { [key: string]: any } = { name, role, email, phone, address, dataAiHint };
-            if (image) {
+            // Only add image to update if a new one was uploaded
+            if (image && !image.startsWith('https')) {
                 fieldsToUpdate.image = image;
             }
             query = 'UPDATE staff SET ? WHERE id = ?';
