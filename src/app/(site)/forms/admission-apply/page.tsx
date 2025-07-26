@@ -116,6 +116,7 @@ export default function AdmissionApplyPage() {
                 <FormField control={form.control} name="studentNameEn" render={({ field }) => ( <FormItem> <FormLabel>শিক্ষার্থীর নাম (ইংরেজি)</FormLabel> <FormControl> <Input placeholder="ইংরেজিতে নাম লিখুন" {...field} /> </FormControl> <FormMessage /> </FormItem> )} />
                 <FormField control={form.control} name="dob" render={({ field }) => ( <FormItem> <FormLabel>জন্ম তারিখ</FormLabel> <FormControl> <Input type="date" {...field} /> </FormControl> <FormMessage /> </FormItem> )} />
                 <FormField control={form.control} name="birthCertNo" render={({ field }) => ( <FormItem> <FormLabel>জন্ম নিবন্ধন নম্বর</FormLabel> <FormControl> <Input placeholder="১৭ ডিজিটের নম্বর" {...field} /> </FormControl> <FormMessage /> </FormItem> )} />
+                
                 <FormField
                   control={form.control}
                   name="gender"
@@ -262,11 +263,15 @@ export default function AdmissionApplyPage() {
                 <FormField
                   control={form.control}
                   name="studentPhoto"
-                  render={({ field: { onChange, value, ...rest } }) => (
+                  render={({ field }) => (
                     <FormItem>
                       <FormLabel>শিক্ষার্থীর ছবি (পাসপোর্ট সাইজ)</FormLabel>
                       <FormControl>
-                        <Input type="file" accept="image/*" onChange={(e) => onChange(e.target.files)} {...rest} />
+                        <Input 
+                            type="file" 
+                            accept="image/*" 
+                            onChange={(e) => field.onChange(e.target.files)} 
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -275,11 +280,15 @@ export default function AdmissionApplyPage() {
                 <FormField
                   control={form.control}
                   name="birthCertPhoto"
-                  render={({ field: { onChange, value, ...rest } }) => (
+                  render={({ field }) => (
                     <FormItem>
                       <FormLabel>জন্ম নিবন্ধন সনদের কপি</FormLabel>
                       <FormControl>
-                        <Input type="file" accept="image/*,application/pdf" onChange={(e) => onChange(e.target.files)} {...rest} />
+                        <Input 
+                            type="file" 
+                            accept="image/*,application/pdf" 
+                            onChange={(e) => field.onChange(e.target.files)} 
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

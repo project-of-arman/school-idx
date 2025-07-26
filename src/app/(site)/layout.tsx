@@ -54,10 +54,10 @@ export default async function SiteLayout({
         </div>
         <div className="container mx-auto py-12 sm:py-16 lg:py-20">
             <div className="grid grid-cols-10 gap-8">
-            <div className="col-span-10 md:col-span-7">
+            <div className="col-span-10 sm:col-span-6 md:col-span-8">
                 {children}
             </div>
-            <div className="col-span-10 md:col-span-3">
+            <div className="col-span-10 sm:col-span-4 md:col-span-2">
                 <DynamicSidebar />
             </div>
             </div>
