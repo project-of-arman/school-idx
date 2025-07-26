@@ -30,6 +30,8 @@ const teacherFormSchema = z.object({
   email: z.string().email("অবৈধ ইমেইল ঠিকানা"),
   phone: z.string().min(1, "ফোন নম্বর আবশ্যক"),
   address: z.string().min(1, "ঠিকানা আবশ্যক"),
+  educational_qualification: z.string().optional(),
+  experience: z.string().optional(),
   image: optionalFileSchema,
   dataAiHint: z.string().optional(),
 });
@@ -47,6 +49,8 @@ export function TeacherForm({ teacher }: { teacher?: Teacher }) {
       email: teacher?.email || "",
       phone: teacher?.phone || "",
       address: teacher?.address || "",
+      educational_qualification: teacher?.educational_qualification || "",
+      experience: teacher?.experience || "",
       dataAiHint: teacher?.dataAiHint || "teacher portrait",
     },
   });
@@ -112,6 +116,8 @@ export function TeacherForm({ teacher }: { teacher?: Teacher }) {
             <FormItem> <Label htmlFor="email">ইমেইল</Label> <Input id="email" type="email" {...register("email")} /> <FormMessage name="email" /> </FormItem>
             <FormItem> <Label htmlFor="phone">ফোন</Label> <Input id="phone" {...register("phone")} /> <FormMessage name="phone" /> </FormItem>
             <FormItem className="md:col-span-2"> <Label htmlFor="address">ঠিকানা</Label> <Textarea id="address" {...register("address")} /> <FormMessage name="address" /> </FormItem>
+            <FormItem className="md:col-span-2"> <Label htmlFor="educational_qualification">শিক্ষাগত যোগ্যতা</Label> <Textarea id="educational_qualification" {...register("educational_qualification")} /> <FormMessage name="educational_qualification" /> </FormItem>
+            <FormItem className="md:col-span-2"> <Label htmlFor="experience">অভিজ্ঞতা</Label> <Textarea id="experience" {...register("experience")} /> <FormMessage name="experience" /> </FormItem>
           </CardContent>
         </Card>
 

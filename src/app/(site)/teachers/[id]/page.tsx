@@ -66,11 +66,11 @@ export default async function TeacherDetailsPage({ params }: { params: { id: str
                           </div>
                            <div className="pt-4">
                               <h4 className="font-semibold text-primary mb-2">শিক্ষাগত যোগ্যতা</h4>
-                              <p className="text-muted-foreground">এখানে শিক্ষকের শিক্ষাগত যোগ্যতার বিস্তারিত তথ্য যুক্ত হবে।</p>
+                              <p className="text-muted-foreground whitespace-pre-wrap">{teacher.educational_qualification || "N/A"}</p>
                           </div>
                           <div>
                               <h4 className="font-semibold text-primary mb-2">অভিজ্ঞতা</h4>
-                              <p className="text-muted-foreground">এখানে শিক্ষকের কর্মজীবনের অভিজ্ঞতার বিস্তারিত তথ্য যুক্ত হবে।</p>
+                              <p className="text-muted-foreground whitespace-pre-wrap">{teacher.experience || "N/A"}</p>
                           </div>
                       </CardContent>
                   </div>

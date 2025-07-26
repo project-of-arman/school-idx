@@ -12,6 +12,8 @@ export interface Teacher {
   address: string;
   phone: string;
   email: string;
+  educational_qualification: string | null;
+  experience: string | null;
   dataAiHint: string;
 }
 
@@ -24,6 +26,8 @@ const mockTeachers: Teacher[] = [
       address: "ঢাকা, বাংলাদেশ",
       phone: "01700000000",
       email: "abdullah@example.com",
+      educational_qualification: "এম.এ, এম.এড",
+      experience: "২০ বছরের শিক্ষকতার অভিজ্ঞতা",
       dataAiHint: "male teacher portrait"
     },
     {
@@ -34,6 +38,8 @@ const mockTeachers: Teacher[] = [
       address: "ঢাকা, বাংলাদেশ",
       phone: "01800000000",
       email: "fatema@example.com",
+      educational_qualification: "বি.এস.সি, এম.এস.সি",
+      experience: "১৫ বছরের শিক্ষকতার অভিজ্ঞতা",
       dataAiHint: "female teacher portrait"
     },
     {
@@ -44,6 +50,8 @@ const mockTeachers: Teacher[] = [
       address: "ঢাকা, বাংলাদেশ",
       phone: "01900000000",
       email: "rahim@example.com",
+      educational_qualification: "এম.এস.সি (গণিত)",
+      experience: "১২ বছরের শিক্ষকতার অভিজ্ঞতা",
       dataAiHint: "male teacher portrait"
     },
     {
@@ -54,6 +62,8 @@ const mockTeachers: Teacher[] = [
       address: "ঢাকা, বাংলাদেশ",
       phone: "01500000000",
       email: "salma@example.com",
+      educational_qualification: "এম.এস.সি (পদার্থবিজ্ঞান)",
+      experience: "১০ বছরের শিক্ষকতার অভিজ্ঞতা",
       dataAiHint: "female teacher portrait"
     },
     {
@@ -64,6 +74,8 @@ const mockTeachers: Teacher[] = [
       address: "ঢাকা, বাংলাদেশ",
       phone: "01600000000",
       email: "kamrul@example.com",
+      educational_qualification: "এম.এ (ইংরেজি)",
+      experience: "৮ বছরের শিক্ষকতার অভিজ্ঞতা",
       dataAiHint: "male teacher portrait"
     },
     {
@@ -74,6 +86,8 @@ const mockTeachers: Teacher[] = [
       address: "ঢাকা, বাংলাদেশ",
       phone: "01300000000",
       email: "ayesha@example.com",
+      educational_qualification: "এম.এ (বাংলা)",
+      experience: "৭ বছরের শিক্ষকতার অভিজ্ঞতা",
       dataAiHint: "female teacher portrait"
     },
     {
@@ -84,6 +98,8 @@ const mockTeachers: Teacher[] = [
       address: "ঢাকা, বাংলাদেশ",
       phone: "01400000000",
       email: "ariful@example.com",
+      educational_qualification: "বিপিএড",
+      experience: "৫ বছরের শিক্ষকতার অভিজ্ঞতা",
       dataAiHint: "male teacher portrait"
     }
   ];
@@ -130,14 +146,14 @@ export async function saveTeacher(formData: FormData, id?: string): Promise<Save
     });
 
     try {
-        const { name, role, email, phone, address, image, dataAiHint } = teacherData;
+        const { name, role, email, phone, address, image, dataAiHint, educational_qualification, experience } = teacherData;
         
         let query;
         let params;
         
         if (id) {
             // Update
-            const fieldsToUpdate: { [key: string]: any } = { name, role, email, phone, address, dataAiHint };
+            const fieldsToUpdate: { [key: string]: any } = { name, role, email, phone, address, dataAiHint, educational_qualification, experience };
             if (image) {
                 fieldsToUpdate.image = image;
             }
@@ -145,8 +161,8 @@ export async function saveTeacher(formData: FormData, id?: string): Promise<Save
             params = [fieldsToUpdate, id];
         } else {
             // Insert
-            query = 'INSERT INTO teachers (name, role, email, phone, address, image, dataAiHint) VALUES (?, ?, ?, ?, ?, ?, ?)';
-            params = [name, role, email, phone, address, image, dataAiHint];
+            query = 'INSERT INTO teachers (name, role, email, phone, address, image, dataAiHint, educational_qualification, experience) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+            params = [name, role, email, phone, address, image, dataAiHint, educational_qualification, experience];
         }
 
         await pool.query(query, params);
