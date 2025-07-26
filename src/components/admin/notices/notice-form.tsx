@@ -34,12 +34,12 @@ export function NoticeForm({ notice }: { notice?: Notice }) {
     control
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: notice || {
-      title: "",
-      date: "",
-      description: "",
-      fileUrl: "",
-      is_marquee: false,
+    defaultValues: {
+      title: notice?.title || "",
+      date: notice?.date || "",
+      description: notice?.description || "",
+      fileUrl: notice?.fileUrl || "",
+      is_marquee: notice?.is_marquee || false,
     },
   });
 
