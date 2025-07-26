@@ -13,7 +13,7 @@ import { Link as LinkType, saveLink } from "@/lib/important-links-data";
 
 const formSchema = z.object({
   text: z.string().min(1, "লিংকের টেক্সট আবশ্যক"),
-  href: z.string().url("অবৈধ URL"),
+  href: z.string().min(1, "লিংকের URL আবশ্যক"),
   sort_order: z.coerce.number().int().min(0, "অবস্থান আবশ্যক"),
 });
 
