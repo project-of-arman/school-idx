@@ -77,7 +77,7 @@ export default function TestimonialApplyPage() {
                 <FormItem><Label htmlFor="lastRoll">সর্বশেষ রোল</Label><Input id="lastRoll" {...register("lastRoll")} /><FormMessage name="lastRoll" /></FormItem>
                 <FormItem><Label htmlFor="passingYear">উত্তীর্ণ হওয়ার সাল</Label><Input id="passingYear" {...register("passingYear")} /><FormMessage name="passingYear" /></FormItem>
                 <FormItem><Label htmlFor="registrationNo">রেজিস্ট্রেশন নম্বর</Label><Input id="registrationNo" {...register("registrationNo")} /><FormMessage name="registrationNo" /></FormItem>
-                <FormItem className="md:col-span-2"><Label htmlFor="mobile">যোগাযোগের মোবাইল নম্বর</Label><Input id="mobile" {...register("mobile")} /><FormMessage name="mobile" /></FormItem>
+                <FormItem className="md:col-span-2"><Label htmlFor="mobile">যোগাযোগের মোবাইল নম্বর</Label><Input id="mobile" {...register("mobile")} /><p className="text-xs text-muted-foreground mt-1">আপনার সঠিক মোবাইল নম্বর টি দিন আমাদের পক্ষ থেকে আপনার সাথে যোগাযোগ করা হবে</p><FormMessage name="mobile" /></FormItem>
               </CardContent>
             </Card>
 

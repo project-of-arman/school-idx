@@ -73,7 +73,7 @@ export default function LibraryCardApplyPage() {
                 <FormItem><Label htmlFor="rollNo">রোল নম্বর</Label><Input id="rollNo" {...register("rollNo")} /><FormMessage name="rollNo" /></FormItem>
                 <FormItem><Label htmlFor="session">সেশন</Label><Input id="session" {...register("session")} /><FormMessage name="session" /></FormItem>
                 <FormItem><Label htmlFor="fatherName">পিতার নাম</Label><Input id="fatherName" {...register("fatherName")} /><FormMessage name="fatherName" /></FormItem>
-                <FormItem><Label htmlFor="mobile">যোগাযোগের মোবাইল নম্বর</Label><Input id="mobile" {...register("mobile")} /><FormMessage name="mobile" /></FormItem>
+                <FormItem><Label htmlFor="mobile">যোগাযোগের মোবাইল নম্বর</Label><Input id="mobile" {...register("mobile")} /><p className="text-xs text-muted-foreground mt-1">আপনার সঠিক মোবাইল নম্বর টি দিন আমাদের পক্ষ থেকে আপনার সাথে যোগাযোগ করা হবে</p><FormMessage name="mobile" /></FormItem>
               </CardContent>
             </Card>
 

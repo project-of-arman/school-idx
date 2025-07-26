@@ -80,7 +80,7 @@ export default function TransferCertificateApplyPage() {
                 <FormItem> <Label htmlFor="fatherName">পিতার নাম</Label> <Input id="fatherName" placeholder="সম্পূর্ণ নাম লিখুন" {...register("fatherName")} /> <FormMessage name="fatherName" /> </FormItem>
                 <FormItem> <Label htmlFor="motherName">মাতার নাম</Label> <Input id="motherName" placeholder="সম্পূর্ণ নাম লিখুন" {...register("motherName")} /> <FormMessage name="motherName" /> </FormItem>
                 <FormItem className="md:col-span-2"> <Label htmlFor="reason">ছাড়পত্র গ্রহণের কারণ</Label> <Textarea id="reason" placeholder="বিস্তারিত লিখুন..." {...register("reason")} /> <FormMessage name="reason" /> </FormItem>
-                <FormItem> <Label htmlFor="mobile">যোগাযোগের মোবাইল নম্বর</Label> <Input id="mobile" placeholder="১১ ডিজিটের নম্বর" {...register("mobile")} /> <FormMessage name="mobile" /> </FormItem>
+                <FormItem> <Label htmlFor="mobile">যোগাযোগের মোবাইল নম্বর</Label> <Input id="mobile" placeholder="১১ ডিজিটের নম্বর" {...register("mobile")} /> <p className="text-xs text-muted-foreground mt-1">আপনার সঠিক মোবাইল নম্বর টি দিন আমাদের পক্ষ থেকে আপনার সাথে যোগাযোগ করা হবে</p> <FormMessage name="mobile" /> </FormItem>
               </CardContent>
             </Card>
 

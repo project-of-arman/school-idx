@@ -61,7 +61,7 @@ export default function CertificateApplyPage() {
     <div className="bg-white py-16">
       <div className="container mx-auto px-4 max-w-2xl">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-primary font-headline">সনদপত্রের জন্য আবেদন</h1>
+          <h1 className="text-4xl font-bold text-primary font-headline">সার্টিফিকেটের জন্য আবেদন</h1>
           <p className="text-muted-foreground mt-2">সঠিক তথ্য দিয়ে নিচের ফর্মটি পূরণ করুন</p>
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
@@ -77,7 +77,7 @@ export default function CertificateApplyPage() {
                 <FormItem><Label htmlFor="lastRoll">সর্বশেষ রোল</Label><Input id="lastRoll" {...register("lastRoll")} /><FormMessage name="lastRoll" /></FormItem>
                 <FormItem><Label htmlFor="passingYear">উত্তীর্ণ হওয়ার সাল</Label><Input id="passingYear" {...register("passingYear")} /><FormMessage name="passingYear" /></FormItem>
                 <FormItem><Label htmlFor="registrationNo">রেজিস্ট্রেশন নম্বর</Label><Input id="registrationNo" {...register("registrationNo")} /><FormMessage name="registrationNo" /></FormItem>
-                <FormItem className="md:col-span-2"><Label htmlFor="mobile">যোগাযোগের মোবাইল নম্বর</Label><Input id="mobile" {...register("mobile")} /><FormMessage name="mobile" /></FormItem>
+                <FormItem className="md:col-span-2"><Label htmlFor="mobile">যোগাযোগের মোবাইল নম্বর</Label><Input id="mobile" {...register("mobile")} /><p className="text-xs text-muted-foreground mt-1">আপনার সঠিক মোবাইল নম্বর টি দিন আমাদের পক্ষ থেকে আপনার সাথে যোগাযোগ করা হবে</p><FormMessage name="mobile" /></FormItem>
               </CardContent>
             </Card>
 

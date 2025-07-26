@@ -80,7 +80,7 @@ export default function StipendApplyPage() {
                 <FormItem><Label htmlFor="motherName">মাতার নাম</Label><Input id="motherName" {...register("motherName")} /><FormMessage name="motherName" /></FormItem>
                 <FormItem className="md:col-span-2"><Label htmlFor="guardianYearlyIncome">অভিভাবকের বাৎসরিক আয়</Label><Input id="guardianYearlyIncome" {...register("guardianYearlyIncome")} /><FormMessage name="guardianYearlyIncome" /></FormItem>
                 <FormItem className="md:col-span-2"><Label htmlFor="reason">উপবৃত্তির কারণ</Label><Textarea id="reason" {...register("reason")} /><FormMessage name="reason" /></FormItem>
-                <FormItem className="md:col-span-2"><Label htmlFor="mobile">যোগাযোগের মোবাইল নম্বর</Label><Input id="mobile" {...register("mobile")} /><FormMessage name="mobile" /></FormItem>
+                <FormItem className="md:col-span-2"><Label htmlFor="mobile">যোগাযোগের মোবাইল নম্বর</Label><Input id="mobile" {...register("mobile")} /><p className="text-xs text-muted-foreground mt-1">আপনার সঠিক মোবাইল নম্বর টি দিন আমাদের পক্ষ থেকে আপনার সাথে যোগাযোগ করা হবে</p><FormMessage name="mobile" /></FormItem>
               </CardContent>
             </Card>
 

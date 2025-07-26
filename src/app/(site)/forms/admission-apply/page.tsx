@@ -271,11 +271,11 @@ export default function AdmissionApplyPage() {
                 <FormItem> <Label htmlFor="fatherNameBn">পিতার নাম (বাংলা)</Label> <Input id="fatherNameBn" placeholder="বাংলায় নাম লিখুন" {...register("fatherNameBn")} /> <FormMessage name="fatherNameBn" /> </FormItem>
                 <FormItem> <Label htmlFor="fatherNameEn">পিতার নাম (ইংরেজি)</Label> <Input id="fatherNameEn" placeholder="ইংরেজিতে নাম লিখুন" {...register("fatherNameEn")} /> <FormMessage name="fatherNameEn" /> </FormItem>
                 <FormItem> <Label htmlFor="fatherNid">পিতার জাতীয় পরিচয়পত্র নম্বর</Label> <Input id="fatherNid" placeholder="NID নম্বর" {...register("fatherNid")} /> <FormMessage name="fatherNid" /> </FormItem>
-                <FormItem> <Label htmlFor="fatherMobile">পিতার মোবাইল নম্বর</Label> <Input id="fatherMobile" placeholder="মোবাইল নম্বর" {...register("fatherMobile")} /> <FormMessage name="fatherMobile" /> </FormItem>
+                <FormItem> <Label htmlFor="fatherMobile">পিতার মোবাইল নম্বর</Label> <Input id="fatherMobile" placeholder="মোবাইল নম্বর" {...register("fatherMobile")} /> <p className="text-xs text-muted-foreground mt-1">আপনার সঠিক মোবাইল নম্বর টি দিন আমাদের পক্ষ থেকে আপনার সাথে যোগাযোগ করা হবে</p><FormMessage name="fatherMobile" /> </FormItem>
                 <FormItem> <Label htmlFor="motherNameBn">মাতার নাম (বাংলা)</Label> <Input id="motherNameBn" placeholder="বাংলায় নাম লিখুন" {...register("motherNameBn")} /> <FormMessage name="motherNameBn" /> </FormItem>
                 <FormItem> <Label htmlFor="motherNameEn">মাতার নাম (ইংরেজি)</Label> <Input id="motherNameEn" placeholder="ইংরেজিতে নাম লিখুন" {...register("motherNameEn")} /> <FormMessage name="motherNameEn" /> </FormItem>
                 <FormItem> <Label htmlFor="motherNid">মাতার জাতীয় পরিচয়পত্র নম্বর</Label> <Input id="motherNid" placeholder="NID নম্বর" {...register("motherNid")} /> <FormMessage name="motherNid" /> </FormItem>
-                <FormItem> <Label htmlFor="motherMobile">মাতার মোবাইল নম্বর</Label> <Input id="motherMobile" placeholder="মোবাইল নম্বর" {...register("motherMobile")} /> <FormMessage name="motherMobile" /> </FormItem>
+                <FormItem> <Label htmlFor="motherMobile">মাতার মোবাইল নম্বর</Label> <Input id="motherMobile" placeholder="মোবাইল নম্বর" {...register("motherMobile")} /> <p className="text-xs text-muted-foreground mt-1">আপনার সঠিক মোবাইল নম্বর টি দিন আমাদের পক্ষ থেকে আপনার সাথে যোগাযোগ করা হবে</p><FormMessage name="motherMobile" /> </FormItem>
               </CardContent>
             </Card>
 

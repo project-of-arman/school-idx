@@ -75,7 +75,7 @@ export default function MarksheetApplyPage() {
                 <FormItem><Label htmlFor="session">সেশন</Label><Input id="session" {...register("session")} /><FormMessage name="session" /></FormItem>
                 <FormItem><Label htmlFor="examName">পরীক্ষার নাম</Label><Input id="examName" placeholder="যেমন: বার্ষিক পরীক্ষা" {...register("examName")} /><FormMessage name="examName" /></FormItem>
                 <FormItem><Label htmlFor="passingYear">উত্তীর্ণ হওয়ার সাল</Label><Input id="passingYear" {...register("passingYear")} /><FormMessage name="passingYear" /></FormItem>
-                <FormItem className="md:col-span-2"><Label htmlFor="mobile">যোগাযোগের মোবাইল নম্বর</Label><Input id="mobile" {...register("mobile")} /><FormMessage name="mobile" /></FormItem>
+                <FormItem className="md:col-span-2"><Label htmlFor="mobile">যোগাযোগের মোবাইল নম্বর</Label><Input id="mobile" {...register("mobile")} /><p className="text-xs text-muted-foreground mt-1">আপনার সঠিক মোবাইল নম্বর টি দিন আমাদের পক্ষ থেকে আপনার সাথে যোগাযোগ করা হবে</p><FormMessage name="mobile" /></FormItem>
               </CardContent>
             </Card>
 

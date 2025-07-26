@@ -76,7 +76,7 @@ export default function GuardianConsentApplyPage() {
                 <FormItem><Label htmlFor="rollNo">রোল নম্বর</Label><Input id="rollNo" {...register("rollNo")} /><FormMessage name="rollNo" /></FormItem>
                 <FormItem><Label htmlFor="guardianName">অভিভাবকের নাম</Label><Input id="guardianName" {...register("guardianName")} /><FormMessage name="guardianName" /></FormItem>
                 <FormItem><Label htmlFor="relation">শিক্ষার্থীর সাথে সম্পর্ক</Label><Input id="relation" {...register("relation")} /><FormMessage name="relation" /></FormItem>
-                <FormItem><Label htmlFor="mobile">যোগাযোগের মোবাইল নম্বর</Label><Input id="mobile" {...register("mobile")} /><FormMessage name="mobile" /></FormItem>
+                <FormItem><Label htmlFor="mobile">যোগাযোগের মোবাইল নম্বর</Label><Input id="mobile" {...register("mobile")} /><p className="text-xs text-muted-foreground mt-1">আপনার সঠিক মোবাইল নম্বর টি দিন আমাদের পক্ষ থেকে আপনার সাথে যোগাযোগ করা হবে</p><FormMessage name="mobile" /></FormItem>
                 <FormItem className="md:col-span-2"><Label htmlFor="eventName">যে কার্যক্রমের জন্য সম্মতি</Label><Input id="eventName" {...register("eventName")} /><FormMessage name="eventName" /></FormItem>
                 <FormItem className="md:col-span-2"><Label htmlFor="eventDate">কার্যক্রমের তারিখ</Label><Input id="eventDate" type="date" {...register("eventDate")} /><FormMessage name="eventDate" /></FormItem>
               </CardContent>
