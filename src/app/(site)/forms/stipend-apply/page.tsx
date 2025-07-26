@@ -10,8 +10,19 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowRight, FileText } from 'lucide-react';
+import { ArrowRight, FileText, Upload } from 'lucide-react';
 import { saveStipendApplication } from "./actions";
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ACCEPTED_DOCUMENT_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp", "application/pdf"];
+
+const fileSchema = z.any()
+    .refine((files) => files?.length == 1, "ফাইল আবশ্যক।")
+    .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, `ফাইলের সর্বোচ্চ আকার 5MB।`)
+    .refine(
+      (files) => ACCEPTED_DOCUMENT_TYPES.includes(files?.[0]?.type),
+      "শুধুমাত্র .jpg, .jpeg, .png, .webp এবং .pdf ফরম্যাট সাপোর্ট করবে।"
+    );
 
 const formSchema = z.object({
   studentName: z.string().min(1, "শিক্ষার্থীর নাম আবশ্যক"),
@@ -23,9 +34,21 @@ const formSchema = z.object({
   guardianYearlyIncome: z.string().min(1, "অভিভাবকের বাৎসরিক আয় আবশ্যক"),
   reason: z.string().min(1, "উপবৃত্তির কারণ আবশ্যক"),
   mobile: z.string().min(1, "যোগাযোগের মোবাইল নম্বর আবশ্যক"),
+  nagadMobile: z.string().min(1, "নগদ একাউন্ট নম্বর আবশ্যক"),
+  simOwnerName: z.string().min(1, "সিম মালিকের নাম আবশ্যক"),
+  birthCertPhoto: fileSchema,
+  nidPhoto: fileSchema,
 });
 
 type FormValues = z.infer<typeof formSchema>;
+
+const toBase64 = (file: File): Promise<string> => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+});
+
 
 export default function StipendApplyPage() {
   const { toast } = useToast();
@@ -34,25 +57,42 @@ export default function StipendApplyPage() {
   });
 
   async function onSubmit(values: FormValues) {
-    const formData = new FormData();
-    Object.entries(values).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
+    try {
+        const birthCertPhotoBase64 = await toBase64(values.birthCertPhoto[0]);
+        const nidPhotoBase64 = await toBase64(values.nidPhoto[0]);
 
-    const result = await saveStipendApplication(formData);
+        const formData = new FormData();
+        
+        Object.entries(values).forEach(([key, value]) => {
+            if (key !== 'birthCertPhoto' && key !== 'nidPhoto') {
+                 formData.append(key, value as string);
+            }
+        });
+        
+        formData.append('birthCertPhoto', birthCertPhotoBase64);
+        formData.append('nidPhoto', nidPhotoBase64);
 
-    if (result.success) {
-      toast({
-        title: "আবেদন সফল হয়েছে",
-        description: "আপনার উপবৃত্তির আবেদন সফলভাবে জমা দেওয়া হয়েছে।",
-      });
-      reset();
-    } else {
-      toast({
-        title: "ত্রুটি",
-        description: result.error || "একটি অপ্রত্যাশিত ত্রুটি ঘটেছে।",
-        variant: "destructive",
-      });
+        const result = await saveStipendApplication(formData);
+
+        if (result.success) {
+            toast({
+                title: "আবেদন সফল হয়েছে",
+                description: "আপনার উপবৃত্তির আবেদন সফলভাবে জমা দেওয়া হয়েছে।",
+            });
+            reset();
+        } else {
+            toast({
+                title: "ত্রুটি",
+                description: result.error || "একটি অপ্রত্যাশিত ত্রুটি ঘটেছে।",
+                variant: "destructive",
+            });
+        }
+    } catch (error) {
+       toast({
+          title: "ফাইল আপলোড ত্রুটি",
+          description: "ফাইল প্রসেস করার সময় একটি সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।",
+          variant: "destructive",
+        });
     }
   }
 
@@ -80,7 +120,27 @@ export default function StipendApplyPage() {
                 <FormItem><Label htmlFor="motherName">মাতার নাম</Label><Input id="motherName" {...register("motherName")} /><FormMessage name="motherName" /></FormItem>
                 <FormItem className="md:col-span-2"><Label htmlFor="guardianYearlyIncome">অভিভাবকের বাৎসরিক আয়</Label><Input id="guardianYearlyIncome" {...register("guardianYearlyIncome")} /><FormMessage name="guardianYearlyIncome" /></FormItem>
                 <FormItem className="md:col-span-2"><Label htmlFor="reason">উপবৃত্তির কারণ</Label><Textarea id="reason" {...register("reason")} /><FormMessage name="reason" /></FormItem>
-                <FormItem className="md:col-span-2"><Label htmlFor="mobile">যোগাযোগের মোবাইল নম্বর</Label><Input id="mobile" {...register("mobile")} /><p className="text-xs text-muted-foreground mt-1">আপনার সঠিক মোবাইল নম্বর টি দিন আমাদের পক্ষ থেকে আপনার সাথে যোগাযোগ করা হবে</p><FormMessage name="mobile" /></FormItem>
+                <FormItem><Label htmlFor="mobile">যোগাযোগের মোবাইল নম্বর</Label><Input id="mobile" {...register("mobile")} /><p className="text-xs text-muted-foreground mt-1">আপনার সঠিক মোবাইল নম্বর টি দিন আমাদের পক্ষ থেকে আপনার সাথে যোগাযোগ করা হবে</p><FormMessage name="mobile" /></FormItem>
+                <FormItem><Label htmlFor="nagadMobile">নতুন নগদ একাউন্ট খোলা মোবাইল নম্বর</Label><Input id="nagadMobile" {...register("nagadMobile")} /><FormMessage name="nagadMobile" /></FormItem>
+                <FormItem className="md:col-span-2"><Label htmlFor="simOwnerName">সিমের মালিকের নাম (বাবা/মা/অভিভাবক)</Label><Input id="simOwnerName" {...register("simOwnerName")} /><FormMessage name="simOwnerName" /></FormItem>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-lg border-primary/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-primary"><Upload /> ফাইল আপলোড</CardTitle>
+              </CardHeader>
+              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <FormItem>
+                    <Label htmlFor="birthCertPhoto">শিক্ষার্থীর জন্ম নিবন্ধন সনদের কপি</Label>
+                    <Input id="birthCertPhoto" type="file" accept="image/*,application/pdf" {...register("birthCertPhoto")} />
+                    <FormMessage name="birthCertPhoto" />
+                </FormItem>
+                <FormItem>
+                    <Label htmlFor="nidPhoto">বাবা/মা/অভিভাবকের NID ফটোকপি</Label>
+                    <Input id="nidPhoto" type="file" accept="image/*,application/pdf" {...register("nidPhoto")} />
+                    <FormMessage name="nidPhoto" />
+                </FormItem>
               </CardContent>
             </Card>
 
