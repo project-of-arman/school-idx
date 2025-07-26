@@ -86,7 +86,7 @@ export default function AdminSidebarNav() {
         <div className="flex items-center gap-2 p-2">
             <Link href="/" className="flex items-center gap-2" target="_blank">
                 <GraduationCap className="h-6 w-6 text-primary" />
-                <span className="text-lg font-semibold text-primary truncate">হোম পেজ</span>
+                <span className="text-lg font-semibold text-primary truncate group-data-[collapsible=icon]:hidden">হোম পেজ</span>
             </Link>
         </div>
       </SidebarHeader>
@@ -96,13 +96,13 @@ export default function AdminSidebarNav() {
             item.subItems ? (
               <Accordion key={item.label} type="single" collapsible defaultValue={getAccordionDefaultValue()} className="w-full">
                 <AccordionItem value={item.label} className="border-b-0">
-                  <AccordionTrigger className={cn("hover:no-underline hover:bg-sidebar-accent p-2 rounded-md", isSubItemActive(item.subItems) && "bg-sidebar-accent text-sidebar-accent-foreground")}>
+                  <AccordionTrigger className={cn("hover:no-underline hover:bg-sidebar-accent p-2 rounded-md group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:size-8", isSubItemActive(item.subItems) && "bg-sidebar-accent text-sidebar-accent-foreground")}>
                     <div className="flex items-center gap-2">
                       <item.icon className="h-4 w-4" />
-                      <span>{item.label}</span>
+                      <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
                     </div>
                   </AccordionTrigger>
-                  <AccordionContent className="pb-0 pl-7">
+                  <AccordionContent className="pb-0 pl-7 group-data-[collapsible=icon]:hidden">
                     <div className="flex flex-col gap-1 mt-1 border-l border-sidebar-border">
                         {item.subItems.map((subItem) => (
                              <SidebarMenuItem key={subItem.href} className="pl-2">
