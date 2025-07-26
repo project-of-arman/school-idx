@@ -112,7 +112,7 @@ export async function getNavLinks(): Promise<NavLink[]> {
         }
         
         for (const link of Object.values(linkMap)) {
-            if(link.subLinks) {
+            if(link.subLinks && link.subLinks.length > 0) {
                 link.subLinks.sort((a, b) => a.sort_order - b.sort_order);
             }
         }
