@@ -2,8 +2,9 @@
 'use server';
 
 import pool from './db';
+import { revalidatePath } from 'next/cache';
 
-interface Link {
+export interface Link {
     id: number;
     group_id: number;
     text: string;
@@ -66,5 +67,112 @@ export async function getImportantLinkGroups(): Promise<ImportantLinkGroup[]> {
     } catch (error) {
         console.error('Failed to fetch important link groups, returning mock data:', error);
         return mockLinkCards;
+    }
+}
+
+type SaveResult = { success: boolean; error?: string };
+
+export async function getLinkGroupById(id: number | string): Promise<ImportantLinkGroup | null> {
+    if (!pool) return null;
+    try {
+        const [rows] = await pool.query<ImportantLinkGroup[]>('SELECT * FROM important_link_groups WHERE id = ?', [id]);
+        return rows[0] || null;
+    } catch (error) {
+        console.error('Failed to fetch link group:', error);
+        return null;
+    }
+}
+
+export async function saveLinkGroup(formData: FormData, id?: number): Promise<SaveResult> {
+    if (!pool) return { success: false, error: "Database not connected" };
+    
+    try {
+        const data = {
+            title: formData.get('title') as string,
+            sort_order: parseInt(formData.get('sort_order') as string, 10),
+            data_ai_hint: formData.get('data_ai_hint') as string,
+            image: formData.get('image') as string | null
+        };
+        
+        if (id) {
+            const fieldsToUpdate: any = { title: data.title, sort_order: data.sort_order, data_ai_hint: data.data_ai_hint };
+            if (data.image) {
+                fieldsToUpdate.image = data.image;
+            }
+            await pool.query('UPDATE important_link_groups SET ? WHERE id = ?', [fieldsToUpdate, id]);
+        } else {
+            if (!data.image) return { success: false, error: 'Image is required for new groups' };
+            await pool.query('INSERT INTO important_link_groups (title, sort_order, data_ai_hint, image) VALUES (?, ?, ?, ?)', [data.title, data.sort_order, data.data_ai_hint, data.image]);
+        }
+        
+        revalidatePath('/admin/important-links');
+        revalidatePath('/(site)/');
+        return { success: true };
+    } catch (e: any) {
+        return { success: false, error: e.message };
+    }
+}
+
+export async function deleteLinkGroup(id: number): Promise<SaveResult> {
+    if (!pool) return { success: false, error: "Database not connected" };
+    
+    try {
+        await pool.query('DELETE FROM important_links WHERE group_id = ?', [id]);
+        await pool.query('DELETE FROM important_link_groups WHERE id = ?', [id]);
+        revalidatePath('/admin/important-links');
+        revalidatePath('/(site)/');
+        return { success: true };
+    } catch (e: any) {
+        return { success: false, error: e.message };
+    }
+}
+
+export async function getLinkById(id: number | string): Promise<Link | null> {
+    if (!pool) return null;
+    try {
+        const [rows] = await pool.query<Link[]>('SELECT * FROM important_links WHERE id = ?', [id]);
+        return rows[0] || null;
+    } catch (error) {
+        console.error('Failed to fetch link:', error);
+        return null;
+    }
+}
+
+
+export async function saveLink(formData: FormData, id?: number): Promise<SaveResult> {
+    if (!pool) return { success: false, error: "Database not connected" };
+    
+    try {
+        const data = {
+            text: formData.get('text') as string,
+            href: formData.get('href') as string,
+            sort_order: parseInt(formData.get('sort_order') as string, 10),
+            group_id: parseInt(formData.get('group_id') as string, 10),
+        };
+
+        if (id) {
+            await pool.query('UPDATE important_links SET ? WHERE id = ?', [data, id]);
+        } else {
+            await pool.query('INSERT INTO important_links (text, href, sort_order, group_id) VALUES (?, ?, ?, ?)', [data.text, data.href, data.sort_order, data.group_id]);
+        }
+        
+        revalidatePath('/admin/important-links');
+        revalidatePath('/(site)/');
+        return { success: true };
+    } catch (e: any) {
+        return { success: false, error: e.message };
+    }
+}
+
+export async function deleteLink(id: number): Promise<SaveResult> {
+    if (!pool) return { success: false, error: "Database not connected" };
+    
+    try {
+        await pool.query('DELETE FROM important_links WHERE id = ?', [id]);
+        revalidatePath('/admin/important-links');
+        revalidatePath('/(site)/');
+        return { success: true };
+    } catch (e: any) {
+        return { success: false, error: e.message };
     }
 }
