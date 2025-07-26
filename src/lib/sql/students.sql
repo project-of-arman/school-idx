@@ -1,0 +1,21 @@
+CREATE TABLE `students` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `roll` varchar(50) NOT NULL UNIQUE,
+  `name` varchar(255) NOT NULL,
+  `class_name` varchar(100) NOT NULL,
+  `year` int NOT NULL,
+  `dob` date NOT NULL,
+  `gender` varchar(50) NOT NULL,
+  `religion` varchar(50) NOT NULL,
+  `blood_group` varchar(10) DEFAULT NULL,
+  `father_name` varchar(255) NOT NULL,
+  `father_mobile` varchar(50) NOT NULL,
+  `mother_name` varchar(255) NOT NULL,
+  `present_address` text NOT NULL,
+  `permanent_address` text NOT NULL,
+  `image` longtext,
+  `data_ai_hint` varchar(255) DEFAULT 'student portrait',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+);
