@@ -7,7 +7,6 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import {
   BookOpen,
@@ -53,7 +52,6 @@ export default function AdminSidebarNav() {
                 <GraduationCap className="h-6 w-6 text-primary" />
                 <span className="text-lg font-semibold text-primary truncate">হোম পেজ</span>
             </Link>
-            <SidebarTrigger className="ml-auto" />
         </div>
       </SidebarHeader>
       <SidebarContent>

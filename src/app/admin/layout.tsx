@@ -3,9 +3,8 @@
 
 import { useState, ReactNode } from 'react';
 import LoginPage from './login/page';
-import { SidebarProvider, Sidebar, SidebarHeader } from '@/components/ui/sidebar';
+import { SidebarProvider, Sidebar } from '@/components/ui/sidebar';
 import AdminSidebarNav from '@/components/admin/sidebar-nav';
-import { Toaster } from '@/components/ui/toaster';
 import AdminHeader from '@/components/admin/header';
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -20,7 +19,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <SidebarProvider defaultOpen={true}>
+    <SidebarProvider defaultOpen={false}>
         <Sidebar collapsible="icon">
           <AdminSidebarNav />
         </Sidebar>
