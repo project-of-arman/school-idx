@@ -1,13 +1,14 @@
+
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 export default function AdminGalleryPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>গ্যালারি ব্যবস্থাপনা</CardTitle>
+        <CardTitle>গ্যালারি</CardTitle>
       </CardHeader>
       <CardContent>
-        <p>এখানে ছবি এবং ভিডিও যুক্ত, সম্পাদনা এবং মুছে ফেলার ফরম যুক্ত করা হবে।</p>
+        <p>বাম পাশের মেনু থেকে ছবি অথবা ভিডিও গ্যালারি নির্বাচন করুন।</p>
       </CardContent>
     </Card>
   );
