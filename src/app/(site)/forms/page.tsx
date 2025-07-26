@@ -30,49 +30,77 @@ export default function FormsPage() {
           <p className="text-muted-foreground mt-2">প্রয়োজনীয় ফরমসমূহ এখান থেকে ডাউনলোড করুন অথবা অনলাইনে আবেদন করুন</p>
         </div>
 
-        <Card className="shadow-lg border-primary/20">
-            <CardHeader>
-                <CardTitle className="text-2xl text-primary font-headline text-center">ফরম তালিকা</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <div className="overflow-x-auto">
-                    <Table className="border">
-                        <TableHeader className="bg-muted/50">
-                            <TableRow>
-                                <TableHead className="w-[80px] font-bold">ক্রমিক</TableHead>
-                                <TableHead className="font-bold">ফরমের নাম</TableHead>
-                                <TableHead className="text-center font-bold">অনলাইন আবেদন</TableHead>
-                                <TableHead className="text-center font-bold">অফলাইন ডাউনলোড</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {formsData.map((item, index) => (
-                                <TableRow key={index}>
-                                    <TableCell>{index + 1}</TableCell>
-                                    <TableCell className="font-medium">{item.name}</TableCell>
-                                    <TableCell className="text-center">
-                                        <Button asChild variant="default" size="sm">
-                                            <Link href={item.href}>
-                                                <FilePenLine className="mr-2 h-4 w-4" />
-                                                আবেদন করুন
-                                            </Link>
-                                        </Button>
-                                    </TableCell>
-                                    <TableCell className="text-center">
-                                        <Button asChild variant="outline" size="sm">
-                                            <a href={item.fileUrl} download>
-                                                <Download className="mr-2 h-4 w-4" />
-                                                ডাউনলোড
-                                            </a>
-                                        </Button>
-                                    </TableCell>
+        {/* Desktop View: Table */}
+        <div className="hidden md:block">
+            <Card className="shadow-lg border-primary/20">
+                <CardHeader>
+                    <CardTitle className="text-2xl text-primary font-headline text-center">ফরম তালিকা</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="overflow-x-auto">
+                        <Table className="border">
+                            <TableHeader className="bg-muted/50">
+                                <TableRow>
+                                    <TableHead className="w-[80px] font-bold">ক্রমিক</TableHead>
+                                    <TableHead className="font-bold">ফরমের নাম</TableHead>
+                                    <TableHead className="text-center font-bold">অনলাইন আবেদন</TableHead>
+                                    <TableHead className="text-center font-bold">অফলাইন ডাউনলোড</TableHead>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </div>
-            </CardContent>
-        </Card>
+                            </TableHeader>
+                            <TableBody>
+                                {formsData.map((item, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell>{index + 1}</TableCell>
+                                        <TableCell className="font-medium">{item.name}</TableCell>
+                                        <TableCell className="text-center">
+                                            <Button asChild variant="default" size="sm">
+                                                <Link href={item.href}>
+                                                    <FilePenLine className="mr-2 h-4 w-4" />
+                                                    আবেদন করুন
+                                                </Link>
+                                            </Button>
+                                        </TableCell>
+                                        <TableCell className="text-center">
+                                            <Button asChild variant="outline" size="sm">
+                                                <a href={item.fileUrl} download>
+                                                    <Download className="mr-2 h-4 w-4" />
+                                                    ডাউনলোড
+                                                </a>
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+
+        {/* Mobile View: Cards */}
+        <div className="md:hidden space-y-4">
+            {formsData.map((item, index) => (
+                <Card key={index} className="shadow-lg border-primary/20">
+                    <CardHeader>
+                        <CardTitle className="text-lg text-primary">{index + 1}. {item.name}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex justify-end gap-4">
+                         <Button asChild variant="default" size="sm" className="flex-1">
+                            <Link href={item.href}>
+                                <FilePenLine className="mr-2 h-4 w-4" />
+                                আবেদন করুন
+                            </Link>
+                        </Button>
+                        <Button asChild variant="outline" size="sm" className="flex-1">
+                            <a href={item.fileUrl} download>
+                                <Download className="mr-2 h-4 w-4" />
+                                ডাউনলোড
+                            </a>
+                        </Button>
+                    </CardContent>
+                </Card>
+            ))}
+        </div>
       </div>
     </div>
   );
