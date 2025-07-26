@@ -3,9 +3,11 @@
 
 import {
   SidebarContent,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import {
   BookOpen,
@@ -19,7 +21,8 @@ import {
   File,
   MessageSquare,
   Image as ImageIcon,
-  Home
+  Home,
+  GraduationCap
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -43,23 +46,34 @@ export default function AdminSidebarNav() {
   const pathname = usePathname();
 
   return (
-    <SidebarContent>
-      <SidebarMenu>
-        {navItems.map((item) => (
-          <SidebarMenuItem key={item.href}>
-            <SidebarMenuButton
-              asChild
-              isActive={pathname === item.href}
-              tooltip={item.label}
-            >
-              <Link href={item.href}>
-                <item.icon />
-                <span>{item.label}</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        ))}
-      </SidebarMenu>
-    </SidebarContent>
+    <>
+      <SidebarHeader>
+        <div className="flex items-center gap-2 p-2">
+            <Link href="/" className="flex items-center gap-2" target="_blank">
+                <GraduationCap className="h-6 w-6 text-primary" />
+                <span className="text-lg font-semibold text-primary truncate">মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়</span>
+            </Link>
+            <SidebarTrigger className="ml-auto" />
+        </div>
+      </SidebarHeader>
+      <SidebarContent>
+        <SidebarMenu>
+          {navItems.map((item) => (
+            <SidebarMenuItem key={item.href}>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname === item.href}
+                tooltip={item.label}
+              >
+                <Link href={item.href}>
+                  <item.icon />
+                  <span>{item.label}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+        </SidebarMenu>
+      </SidebarContent>
+    </>
   );
 }

@@ -3,10 +3,8 @@
 
 import { useState, ReactNode } from 'react';
 import LoginPage from './login/page';
-import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader } from '@/components/ui/sidebar';
+import { SidebarProvider, Sidebar, SidebarHeader } from '@/components/ui/sidebar';
 import AdminSidebarNav from '@/components/admin/sidebar-nav';
-import { GraduationCap } from 'lucide-react';
-import Link from 'next/link';
 import { Toaster } from '@/components/ui/toaster';
 import AdminHeader from '@/components/admin/header';
 
@@ -22,16 +20,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <SidebarProvider>
-        <Sidebar collapsible="offcanvas">
-          <SidebarHeader>
-              <div className="flex items-center gap-2 p-2">
-                <Link href="/" className="flex items-center gap-2" target="_blank">
-                    <GraduationCap className="h-6 w-6 text-primary" />
-                    <span className="text-lg font-semibold text-primary">মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়</span>
-                </Link>
-              </div>
-          </SidebarHeader>
+    <SidebarProvider defaultOpen={false}>
+        <Sidebar collapsible="icon">
           <AdminSidebarNav />
         </Sidebar>
         <div className="flex flex-col flex-1">
