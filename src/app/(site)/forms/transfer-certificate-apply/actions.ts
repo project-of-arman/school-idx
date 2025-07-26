@@ -5,6 +5,26 @@ import { z } from "zod";
 import pool from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
+/*
+SQL for creating the transfer_certificate_applications table:
+
+CREATE TABLE `transfer_certificate_applications` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `student_name` varchar(255) NOT NULL,
+  `class_name` varchar(255) NOT NULL,
+  `roll_no` varchar(50) NOT NULL,
+  `session` varchar(100) NOT NULL,
+  `father_name` varchar(255) NOT NULL,
+  `mother_name` varchar(255) NOT NULL,
+  `reason` text NOT NULL,
+  `contact_mobile` varchar(50) NOT NULL,
+  `status` varchar(50) NOT NULL DEFAULT 'pending',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+);
+
+*/
+
 const formSchema = z.object({
   studentName: z.string().min(1),
   className: z.string().min(1),
