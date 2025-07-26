@@ -45,7 +45,7 @@ export async function getCommitteeMemberById(id: string | number): Promise<Commi
     }
     try {
         const [rows] = await pool.query<CommitteeMember[]>('SELECT * FROM committee_members WHERE id = ?', [id]);
-        return rows[0] || null;
+        return (rows as CommitteeMember[])[0] || null;
     } catch (error) {
         console.error(`Failed to fetch committee member by id ${id}:`, error);
         return null;
@@ -70,8 +70,19 @@ export async function saveCommitteeMember(formData: FormData, id?: number): Prom
 
         if (id) {
             // Update
-            const query = 'UPDATE committee_members SET name = ?, role = ?, sort_order = ?, dataAiHint = ?, image = ? WHERE id = ?';
-            await pool.query(query, [data.name, data.role, data.sort_order, data.dataAiHint, data.image, id]);
+            const fieldsToUpdate: { [key: string]: any } = {
+                name: data.name,
+                role: data.role,
+                sort_order: data.sort_order,
+                dataAiHint: data.dataAiHint,
+            };
+            
+            if (data.image) {
+                fieldsToUpdate.image = data.image;
+            }
+
+            const query = 'UPDATE committee_members SET ? WHERE id = ?';
+            await pool.query(query, [fieldsToUpdate, id]);
         } else {
             // Insert
             const query = 'INSERT INTO committee_members (name, role, sort_order, dataAiHint, image) VALUES (?, ?, ?, ?, ?)';
