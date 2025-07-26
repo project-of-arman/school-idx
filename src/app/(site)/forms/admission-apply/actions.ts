@@ -5,17 +5,19 @@ import { z } from "zod";
 import pool from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
-// NOTE: In a real application, you would handle file uploads to a service like Firebase Storage or S3.
-// For this example, we will just save a placeholder path.
-const handleFileUpload = async (file: File): Promise<string> => {
-  // const bytes = await file.arrayBuffer();
-  // const buffer = Buffer.from(bytes);
-  // Example:
-  // const path = `uploads/${Date.now()}_${file.name}`;
+// NOTE: In a real application, you would handle this base64 data URI by decoding it
+// and uploading the buffer to a service like Firebase Storage or S3, then storing the URL.
+// For this example, we will store the (long) data URI directly in the database.
+const handleFileUpload = async (base64Data: string): Promise<string> => {
+  // Example for saving to a cloud service:
+  // const buffer = Buffer.from(base64Data.split(',')[1], 'base64');
+  // const mimeType = base64Data.match(/data:(.*);base64/)?.[1];
+  // const fileExtension = mimeType?.split('/')[1] || 'bin';
+  // const path = `uploads/${Date.now()}.${fileExtension}`;
   // await storage.bucket().file(path).save(buffer);
-  // return path;
-  console.log(`Uploading ${file.name}... (placeholder)`);
-  return `/uploads/placeholder_${file.name}`;
+  // return `https://storage.googleapis.com/your-bucket/${path}`;
+  console.log(`Saving base64 data URI to DB... (length: ${base64Data.length})`);
+  return base64Data; // Storing the data URI directly for this example.
 };
 
 const admissionFormSchema = z.object({
@@ -38,8 +40,8 @@ const admissionFormSchema = z.object({
   motherMobile: z.string().min(1),
   presentAddress: z.string().min(1),
   permanentAddress: z.string().min(1),
-  studentPhoto: z.instanceof(File),
-  birthCertPhoto: z.instanceof(File),
+  studentPhoto: z.string().min(1, "Student photo is required"),
+  birthCertPhoto: z.string().min(1, "Birth certificate is required"),
 });
 
 export async function saveAdmissionApplication(formData: FormData) {
@@ -61,10 +63,12 @@ export async function saveAdmissionApplication(formData: FormData) {
     
     const { data } = validatedFields;
 
-    // Handle file uploads (placeholder)
+    // The data is already a base64 string, so we can pass it directly.
+    // In a real app, you might upload it here and get back a URL.
     const studentPhotoPath = await handleFileUpload(data.studentPhoto);
     const birthCertPhotoPath = await handleFileUpload(data.birthCertPhoto);
 
+    // The table needs to accept long text for the photo columns
     const query = `
       INSERT INTO admission_applications (
         student_name_bn, student_name_en, dob, birth_cert_no, gender, religion, blood_group,

@@ -24,6 +24,22 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 const ACCEPTED_DOCUMENT_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp", "application/pdf"];
 
+
+const fileSchema = z.any()
+    .refine((files) => files?.length == 1, "ফাইল আবশ্যক।")
+    .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, `ফাইলের সর্বোচ্চ আকার 5MB।`);
+
+const imageFileSchema = fileSchema.refine(
+      (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
+      "শুধুমাত্র .jpg, .jpeg, .png এবং .webp ফরম্যাট সাপোর্ট করবে।"
+    );
+
+const documentFileSchema = fileSchema.refine(
+      (files) => ACCEPTED_DOCUMENT_TYPES.includes(files?.[0]?.type),
+      "শুধুমাত্র .jpg, .jpeg, .png, .webp এবং .pdf ফরম্যাট সাপোর্ট করবে।"
+    );
+
+
 const admissionFormSchema = z.object({
   // Student Info
   studentNameBn: z.string().min(1, "শিক্ষার্থীর নাম (বাংলা) আবশ্যক"),
@@ -52,24 +68,20 @@ const admissionFormSchema = z.object({
   presentAddress: z.string().min(1, "বর্তমান ঠিকানা আবশ্যক"),
   permanentAddress: z.string().min(1, "স্থায়ী ঠিকানা আবশ্যক"),
 
-  // File Uploads
-  studentPhoto: z.any()
-    .refine((files) => files?.length == 1, "শিক্ষার্থীর ছবি আবশ্যক।")
-    .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, `ফাইলের সর্বোচ্চ আকার 5MB।`)
-    .refine(
-      (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
-      "শুধুমাত্র .jpg, .jpeg, .png এবং .webp ফরম্যাট সাপোর্ট করবে।"
-    ),
-  birthCertPhoto: z.any()
-    .refine((files) => files?.length == 1, "জন্ম নিবন্ধন সনদের কপি আবশ্যক।")
-    .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, `ফাইলের সর্বোচ্চ আকার 5MB।`)
-    .refine(
-      (files) => ACCEPTED_DOCUMENT_TYPES.includes(files?.[0]?.type),
-      "শুধুমাত্র .jpg, .jpeg, .png, .webp এবং .pdf ফরম্যাট সাপোর্ট করবে।"
-    ),
+  // File Uploads - these are for initial validation only
+  studentPhoto: imageFileSchema,
+  birthCertPhoto: documentFileSchema,
 });
 
 type FormValues = z.infer<typeof admissionFormSchema>;
+
+const toBase64 = (file: File): Promise<string> => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+});
+
 
 export default function AdmissionApplyPage() {
   const { toast } = useToast();
@@ -78,34 +90,45 @@ export default function AdmissionApplyPage() {
   });
 
   async function onSubmit(values: FormValues) {
-    const formData = new FormData();
-    Object.entries(values).forEach(([key, value]) => {
-        if (key === 'studentPhoto' || key === 'birthCertPhoto') {
-            formData.append(key, value[0]);
-        } else {
-            formData.append(key, value as string);
-        }
-    });
+    const studentPhotoFile = values.studentPhoto[0];
+    const birthCertFile = values.birthCertPhoto[0];
 
     try {
-      const result = await saveAdmissionApplication(formData);
-      if (result.success) {
-        toast({
-          title: "আবেদন সফল হয়েছে",
-          description: "আপনার ভর্তির আবেদন সফলভাবে জমা দেওয়া হয়েছে।",
+        const studentPhotoBase64 = await toBase64(studentPhotoFile);
+        const birthCertPhotoBase64 = await toBase64(birthCertFile);
+    
+        const formData = new FormData();
+        
+        // Append all string/number values
+        Object.entries(values).forEach(([key, value]) => {
+            if (key !== 'studentPhoto' && key !== 'birthCertPhoto') {
+                 formData.append(key, value as string);
+            }
         });
-        reset();
-      } else {
-        toast({
-          title: "ত্রুটি",
-          description: result.error || "একটি অপ্রত্যাশিত ত্রুটি ঘটেছে।",
-          variant: "destructive",
-        });
-      }
+        
+        // Append base64 file data
+        formData.append('studentPhoto', studentPhotoBase64);
+        formData.append('birthCertPhoto', birthCertPhotoBase64);
+
+        const result = await saveAdmissionApplication(formData);
+
+        if (result.success) {
+            toast({
+            title: "আবেদন সফল হয়েছে",
+            description: "আপনার ভর্তির আবেদন সফলভাবে জমা দেওয়া হয়েছে।",
+            });
+            reset();
+        } else {
+            toast({
+            title: "ত্রুটি",
+            description: result.error || "একটি অপ্রত্যাশিত ত্রুটি ঘটেছে।",
+            variant: "destructive",
+            });
+        }
     } catch (error) {
        toast({
-          title: "সার্ভার ত্রুটি",
-          description: "আবেদন জমা দেওয়ার সময় একটি সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।",
+          title: "ফাইল আপলোড ত্রুটি",
+          description: "ফাইল প্রসেস করার সময় একটি সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।",
           variant: "destructive",
         });
     }
