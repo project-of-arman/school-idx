@@ -1,19 +1,15 @@
+-- This is the SQL to create the `staff` table.
+-- It is provided for reference and for setting up the database.
+-- You can run this in your database management tool (e.g., phpMyAdmin, DBeaver) to create the table.
 
 CREATE TABLE `staff` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NOT NULL,
-  `role` VARCHAR(255) NOT NULL,
-  `image` LONGTEXT NULL,
-  `address` VARCHAR(255) NULL,
-  `phone` VARCHAR(20) NULL,
-  `email` VARCHAR(255) NULL,
-  `data_ai_hint` VARCHAR(255) NULL DEFAULT 'staff portrait',
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `role` varchar(255) NOT NULL,
+  `image` longtext,
+  `address` varchar(255) DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `data_ai_hint` varchar(255) DEFAULT 'staff portrait',
   PRIMARY KEY (`id`)
-);
-
--- Mock Data
-INSERT INTO `staff` (`name`, `role`, `image`, `address`, `phone`, `email`, `data_ai_hint`) VALUES
-('মোঃ রফিকুল ইসলাম', 'হিসাবরক্ষক', 'https://placehold.co/300x400.png', 'ঢাকা, বাংলাদেশ', '01712345678', 'rafiqul@example.com', 'male staff portrait'),
-('আকলিমা খাতুন', 'অফিস সহকারী', 'https://placehold.co/300x400.png', 'ঢাকা, বাংলাদেশ', '01812345678', 'aklima@example.com', 'female staff portrait'),
-('हरिदास সাহা', 'লাইব্রেরিয়ান', 'https://placehold.co/300x400.png', 'ঢাকা, বাংলাদেশ', '01912345678', 'haridas@example.com', 'male staff portrait'),
-('বিপ্লব বড়ুয়া', 'ল্যাব সহকারী', 'https://placehold.co/300x400.png', 'ঢাকা, বাংলাদেশ', '01512345678', 'biplob@example.com', 'male staff portrait');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
