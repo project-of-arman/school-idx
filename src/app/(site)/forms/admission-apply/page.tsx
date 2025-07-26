@@ -262,11 +262,11 @@ export default function AdmissionApplyPage() {
                 <FormField
                   control={form.control}
                   name="studentPhoto"
-                  render={({ field }) => (
+                  render={({ field: { onChange, value, ...rest } }) => (
                     <FormItem>
                       <FormLabel>শিক্ষার্থীর ছবি (পাসপোর্ট সাইজ)</FormLabel>
                       <FormControl>
-                        <Input type="file" accept="image/*" onChange={(e) => field.onChange(e.target.files)} />
+                        <Input type="file" accept="image/*" onChange={(e) => onChange(e.target.files)} {...rest} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -275,11 +275,11 @@ export default function AdmissionApplyPage() {
                 <FormField
                   control={form.control}
                   name="birthCertPhoto"
-                  render={({ field }) => (
+                  render={({ field: { onChange, value, ...rest } }) => (
                     <FormItem>
                       <FormLabel>জন্ম নিবন্ধন সনদের কপি</FormLabel>
                       <FormControl>
-                        <Input type="file" accept="image/*,application/pdf" onChange={(e) => field.onChange(e.target.files)} />
+                        <Input type="file" accept="image/*,application/pdf" onChange={(e) => onChange(e.target.files)} {...rest} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -299,3 +299,5 @@ export default function AdmissionApplyPage() {
     </div>
   );
 }
+
+    
