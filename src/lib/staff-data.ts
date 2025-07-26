@@ -84,30 +84,24 @@ export async function saveStaff(formData: FormData, id?: string): Promise<SaveRe
         
         if (id) {
             // Update
-            const fieldsToUpdate: { [key: string]: any } = { name, role, email, phone, address, dataAiHint };
-            const params: any[] = [];
-            
-            // Build the SET part of the query dynamically
-            const setClause = Object.keys(fieldsToUpdate)
-                .map(key => {
-                    params.push(fieldsToUpdate[key]);
-                    return `${key} = ?`;
-                })
-                .join(', ');
+            const fieldsToUpdate: { [key: string]: any } = { 
+                name, 
+                role, 
+                email, 
+                phone, 
+                address, 
+                dataAiHint 
+            };
 
-            // If a new image is uploaded (it will be a base64 string), add it to the query
+            // Only add image to update if a new one was provided
             if (image && typeof image === 'string' && image.startsWith('data:image')) {
-                const finalSetClause = setClause + ', image = ?';
-                params.push(image);
-                params.push(id);
-                const query = `UPDATE staff SET ${finalSetClause} WHERE id = ?`;
-                await pool.query(query, params);
-            } else {
-                 // If no new image, update other fields only
-                params.push(id);
-                const query = `UPDATE staff SET ${setClause} WHERE id = ?`;
-                await pool.query(query, params);
+                fieldsToUpdate.image = image;
             }
+
+            const query = 'UPDATE staff SET ? WHERE id = ?';
+            const params = [fieldsToUpdate, id];
+            await pool.query(query, params);
+
         } else {
             // Insert
             const query = 'INSERT INTO staff (name, role, email, phone, address, image, dataAiHint) VALUES (?, ?, ?, ?, ?, ?, ?)';
