@@ -31,11 +31,30 @@ import { MoreHorizontal, Trash, Edit, Eye } from "lucide-react";
 import { Notice, deleteNotice } from "@/lib/notice-data";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
+import { CardFooter } from "@/components/ui/card";
+
+const NOTICES_PER_PAGE = 10;
 
 export default function NoticeTable({ notices }: { notices: Notice[] }) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedNotice, setSelectedNotice] = useState<Notice | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const { toast } = useToast();
+
+  const totalPages = Math.ceil(notices.length / NOTICES_PER_PAGE);
+
+  const paginatedNotices = notices.slice(
+    (currentPage - 1) * NOTICES_PER_PAGE,
+    currentPage * NOTICES_PER_PAGE
+  );
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  };
 
   const handleDeleteClick = (notice: Notice) => {
     setSelectedNotice(notice);
@@ -74,7 +93,7 @@ export default function NoticeTable({ notices }: { notices: Notice[] }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {notices.map((notice) => (
+            {paginatedNotices.length > 0 ? paginatedNotices.map((notice) => (
               <TableRow key={notice.id}>
                 <TableCell className="font-medium">{notice.title}</TableCell>
                 <TableCell>{notice.date}</TableCell>
@@ -110,10 +129,41 @@ export default function NoticeTable({ notices }: { notices: Notice[] }) {
                   </DropdownMenu>
                 </TableCell>
               </TableRow>
-            ))}
+            )) : (
+              <TableRow>
+                <TableCell colSpan={3} className="text-center h-24">
+                  কোনো নোটিশ পাওয়া যায়নি।
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </div>
+      
+      {totalPages > 1 && (
+        <CardFooter className="flex items-center justify-between pt-4">
+          <span className="text-sm text-muted-foreground">
+            পৃষ্ঠা {currentPage} এর {totalPages}
+          </span>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+            >
+              পূর্ববর্তী
+            </Button>
+            <Button
+              variant="outline"
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+            >
+              পরবর্তী
+            </Button>
+          </div>
+        </CardFooter>
+      )}
+
       <AlertDialog
         open={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
