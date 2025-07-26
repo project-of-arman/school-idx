@@ -10,7 +10,7 @@ import Link from "next/link";
 const formsData = [
   { name: "ভর্তি ফরম (অফলাইন)", fileUrl: "#", isDownload: true },
   { name: "অনলাইন ভর্তি আবেদন", href: "/forms/admission-apply", isDownload: false },
-  { name: "ছাড়পত্র আবেদন ফরম", fileUrl: "#", isDownload: true },
+  { name: "ছাড়পত্র আবেদন", href: "/forms/transfer-certificate-apply", isDownload: false },
   { name: "প্রশংসাপত্র আবেদন ফরম", fileUrl: "#", isDownload: true },
   { name: "অনুপস্থিতির ছুটির আবেদন ফরম", fileUrl: "#", isDownload: true },
   { name: "লাইব্রেরী কার্ড আবেদন ফরম", fileUrl: "#", isDownload: true },
