@@ -77,6 +77,10 @@ export default function AdminSidebarNav() {
 
   const getAccordionDefaultValue = () => {
     const activeItem = navItems.find(item => item.subItems && isSubItemActive(item.subItems));
+    if (activeItem) {
+        // A bit of a special case for committee since it's inside an accordion
+        if (pathname.startsWith('/admin/committee')) return activeItem.label;
+    }
     return activeItem ? activeItem.label : undefined;
   }
 
