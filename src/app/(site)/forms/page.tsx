@@ -41,7 +41,8 @@ export default function FormsPage() {
                             <TableRow>
                                 <TableHead className="w-[80px] font-bold">ক্রমিক</TableHead>
                                 <TableHead className="font-bold">ফরমের নাম</TableHead>
-                                <TableHead className="text-right font-bold w-[250px]">অ্যাকশন</TableHead>
+                                <TableHead className="text-center font-bold">অনলাইন আবেদন</TableHead>
+                                <TableHead className="text-center font-bold">অফলাইন ডাউনলোড</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -49,13 +50,15 @@ export default function FormsPage() {
                                 <TableRow key={index}>
                                     <TableCell>{index + 1}</TableCell>
                                     <TableCell className="font-medium">{item.name}</TableCell>
-                                    <TableCell className="text-right space-x-2">
+                                    <TableCell className="text-center">
                                         <Button asChild variant="default" size="sm">
                                             <Link href={item.href}>
                                                 <FilePenLine className="mr-2 h-4 w-4" />
-                                                অনলাইন আবেদন
+                                                আবেদন করুন
                                             </Link>
                                         </Button>
+                                    </TableCell>
+                                    <TableCell className="text-center">
                                         <Button asChild variant="outline" size="sm">
                                             <a href={item.fileUrl} download>
                                                 <Download className="mr-2 h-4 w-4" />
