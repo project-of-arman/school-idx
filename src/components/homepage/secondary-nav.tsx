@@ -125,23 +125,6 @@ export default function SecondaryNav({ schoolName }: { schoolName: string }) {
     isMounted && isSticky && "sticky top-0 z-40"
   );
 
-  if (!isMounted) {
-    return (
-      <nav className={cn(navClasses, "sticky top-0 z-40")}>
-        <div className="container mx-auto flex items-center justify-between gap-6 px-4">
-            <div className="lg:hidden flex items-center gap-2">
-                 <Button variant="outline" className="w-auto justify-start">
-                     <Menu className="mr-2 h-6 w-6" />
-                     <span>মেনু</span> 
-                 </Button> 
-                 <p className="text-sm font-medium text-primary">{schoolName}</p>
-            </div>
-          
-        </div>
-      </nav>
-    );
-  }
-
   return (
     <nav className={navClasses}>
         <div className="container mx-auto flex items-center justify-between gap-6 px-4">
@@ -207,7 +190,7 @@ export default function SecondaryNav({ schoolName }: { schoolName: string }) {
                         </ScrollArea>
                     </SheetContent>
                 </Sheet>
-                 <p className="text-sm font-medium text-primary hidden sm:block">{schoolName}</p>
+                <p className="text-sm font-medium text-primary">{schoolName}</p>
             </div>
              <div className="hidden lg:flex items-center text-sm font-medium text-primary">
                 {schoolName}
