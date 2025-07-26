@@ -74,38 +74,44 @@ export async function saveStaff(formData: FormData, id?: string): Promise<SaveRe
         return { success: false, error: "Database not connected." };
     }
 
-    const staffData: { [key: string]: any } = {};
-    formData.forEach((value, key) => {
-        staffData[key] = value || null;
-    });
-
     try {
-        const { name, role, email, phone, address, image, dataAiHint } = staffData;
-        
-        if (id) {
-            // Update
-            const updateFields: { [key: string]: any } = {};
-            if (name) updateFields.name = name;
-            if (role) updateFields.role = role;
-            if (email) updateFields.email = email;
-            if (phone) updateFields.phone = phone;
-            if (address) updateFields.address = address;
-            if (dataAiHint) updateFields.dataAiHint = dataAiHint;
-            if (image) updateFields.image = image;
+        const data = {
+            name: formData.get('name') as string,
+            role: formData.get('role') as string,
+            email: formData.get('email') as string || null,
+            phone: formData.get('phone') as string || null,
+            address: formData.get('address') as string || null,
+            dataAiHint: formData.get('dataAiHint') as string || 'staff portrait',
+            image: formData.get('image') as string | null,
+        };
 
-            if (Object.keys(updateFields).length > 0) {
-                const query = 'UPDATE staff SET ? WHERE id = ?';
-                const params = [updateFields, id];
-                await pool.query(query, params);
+        if (id) {
+            // Update operation
+            const fieldsToUpdate: { [key: string]: any } = {
+                name: data.name,
+                role: data.role,
+                email: data.email,
+                phone: data.phone,
+                address: data.address,
+                dataAiHint: data.dataAiHint,
+            };
+
+            // Only include the image field if a new one was uploaded
+            if (data.image) {
+                fieldsToUpdate.image = data.image;
             }
 
-        } else {
-            // Insert
-            const columns = ['name', 'role', 'email', 'phone', 'address', 'image', 'dataAiHint'];
-            const insertParams = columns.map(col => staffData[col] || null);
+            const query = 'UPDATE staff SET ? WHERE id = ?';
+            await pool.query(query, [fieldsToUpdate, id]);
 
-            const query = `INSERT INTO staff (${columns.join(', ')}) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-            await pool.query(query, insertParams);
+        } else {
+            // Insert operation
+            const query = `
+                INSERT INTO staff (name, role, email, phone, address, image, dataAiHint)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            `;
+            const params = [data.name, data.role, data.email, data.phone, data.address, data.image, data.dataAiHint];
+            await pool.query(query, params);
         }
 
         revalidatePath('/admin/staff');
