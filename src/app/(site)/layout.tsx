@@ -36,6 +36,18 @@ const Marquee = async () => {
   );
 };
 
+// This new component will contain the client components
+function SiteLayoutClient({ schoolName }: { schoolName: string }) {
+    return (
+        <>
+            <HeroCarousel />
+            <SecondaryNav schoolName={schoolName} />
+            <div className="container mx-auto px-4">
+                <Marquee />
+            </div>
+        </>
+    )
+}
 
 export default async function SiteLayout({
   children,
@@ -46,24 +58,20 @@ export default async function SiteLayout({
   
   return (
     <div className="relative flex min-h-screen flex-col">
-      <HeroCarousel />
-      <SecondaryNav schoolName={schoolInfo.name} />
-       <main className="flex-1">
-        <div className="container mx-auto px-4">
-            <Marquee />
-        </div>
-        <div className="container mx-auto py-12 sm:py-16 lg:py-20 ">
-            <div className="grid grid-cols-10 !gap-2"> 
-            <div className="col-span-10 sm:col-span-7 md:col-span-7 xl:col-span-8">
-                {children}
+        <SiteLayoutClient schoolName={schoolInfo.name} />
+        <main className="flex-1">
+            <div className="container mx-auto py-12 sm:py-16 lg:py-20 ">
+                <div className="grid grid-cols-10 !gap-2"> 
+                <div className="col-span-10 sm:col-span-7 md:col-span-7 xl:col-span-8">
+                    {children}
+                </div>
+                <div className="col-span-10 sm:col-span-3 md:col-span-3 xl:col-span-2">
+                    <DynamicSidebar />
+                </div>
+                </div>
             </div>
-            <div className="col-span-10 sm:col-span-3 md:col-span-3 xl:col-span-2">
-                <DynamicSidebar />
-            </div>
-            </div>
-        </div>
         </main>
-      <Footer schoolInfo={schoolInfo} />
+      <Footer />
     </div>
   );
 }

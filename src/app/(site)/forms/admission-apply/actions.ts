@@ -5,6 +5,39 @@ import { z } from "zod";
 import pool from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
+/*
+SQL for creating the admission_applications table:
+
+CREATE TABLE `admission_applications` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `student_name_bn` varchar(255) NOT NULL,
+  `student_name_en` varchar(255) NOT NULL,
+  `dob` date NOT NULL,
+  `birth_cert_no` varchar(100) NOT NULL,
+  `gender` varchar(50) NOT NULL,
+  `religion` varchar(50) NOT NULL,
+  `blood_group` varchar(10) DEFAULT NULL,
+  `applying_for_class` varchar(50) NOT NULL,
+  `previous_school` varchar(255) DEFAULT NULL,
+  `father_name_bn` varchar(255) NOT NULL,
+  `father_name_en` varchar(255) NOT NULL,
+  `father_nid` varchar(100) NOT NULL,
+  `father_mobile` varchar(50) NOT NULL,
+  `mother_name_bn` varchar(255) NOT NULL,
+  `mother_name_en` varchar(255) NOT NULL,
+  `mother_nid` varchar(100) NOT NULL,
+  `mother_mobile` varchar(50) NOT NULL,
+  `present_address` text NOT NULL,
+  `permanent_address` text NOT NULL,
+  `student_photo_path` longtext,
+  `birth_cert_photo_path` longtext,
+  `status` varchar(50) NOT NULL DEFAULT 'pending',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+);
+
+*/
+
 // NOTE: In a real application, you would handle this base64 data URI by decoding it
 // and uploading the buffer to a service like Firebase Storage or S3, then storing the URL.
 // For this example, we will store the (long) data URI directly in the database.
