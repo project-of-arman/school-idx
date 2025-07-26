@@ -25,7 +25,11 @@ export async function getSyllabuses(): Promise<Syllabus[]> {
   try {
     const [rows] = await pool.query('SELECT * FROM syllabuses ORDER BY class_name, subject');
     return rows as Syllabus[];
-  } catch (error) {
+  } catch (error: any) {
+    if (error.code === 'ER_NO_SUCH_TABLE') {
+        console.warn("`syllabuses` table not found. Returning mock data.");
+        return mockSyllabuses as Syllabus[];
+    }
     console.error('Failed to fetch syllabuses, returning mock data:', error);
     return mockSyllabuses as Syllabus[];
   }
