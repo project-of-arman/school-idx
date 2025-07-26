@@ -41,7 +41,6 @@ export default function FormsPage() {
                         <Table className="border">
                             <TableHeader className="bg-muted/50">
                                 <TableRow>
-                                    <TableHead className="w-[80px] font-bold">ক্রমিক</TableHead>
                                     <TableHead className="font-bold">ফরমের নাম</TableHead>
                                     <TableHead className="text-center font-bold">অনলাইন আবেদন</TableHead>
                                     <TableHead className="text-center font-bold">অফলাইন ডাউনলোড</TableHead>
@@ -50,7 +49,6 @@ export default function FormsPage() {
                             <TableBody>
                                 {formsData.map((item, index) => (
                                     <TableRow key={index}>
-                                        <TableCell>{index + 1}</TableCell>
                                         <TableCell className="font-medium">{item.name}</TableCell>
                                         <TableCell className="text-center">
                                             <Button asChild variant="default" size="sm">
@@ -82,7 +80,7 @@ export default function FormsPage() {
             {formsData.map((item, index) => (
                 <Card key={index} className="shadow-lg border-primary/20">
                     <CardHeader>
-                        <CardTitle className="text-lg text-primary">{index + 1}. {item.name}</CardTitle>
+                        <CardTitle className="text-lg text-primary">{item.name}</CardTitle>
                     </CardHeader>
                     <CardContent className="flex justify-end gap-4">
                          <Button asChild variant="default" size="sm" className="flex-1">
