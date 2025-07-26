@@ -84,29 +84,28 @@ export async function saveStaff(formData: FormData, id?: string): Promise<SaveRe
         
         if (id) {
             // Update
-            const fieldsToUpdate: { [key: string]: any } = { 
-                name, 
-                role, 
-                email, 
-                phone, 
-                address, 
-                dataAiHint 
-            };
+            const updateFields: { [key: string]: any } = {};
+            if (name) updateFields.name = name;
+            if (role) updateFields.role = role;
+            if (email) updateFields.email = email;
+            if (phone) updateFields.phone = phone;
+            if (address) updateFields.address = address;
+            if (dataAiHint) updateFields.dataAiHint = dataAiHint;
+            if (image) updateFields.image = image;
 
-            // Only add image to update if a new one was provided
-            if (image && typeof image === 'string' && image.startsWith('data:image')) {
-                fieldsToUpdate.image = image;
+            if (Object.keys(updateFields).length > 0) {
+                const query = 'UPDATE staff SET ? WHERE id = ?';
+                const params = [updateFields, id];
+                await pool.query(query, params);
             }
-
-            const query = 'UPDATE staff SET ? WHERE id = ?';
-            const params = [fieldsToUpdate, id];
-            await pool.query(query, params);
 
         } else {
             // Insert
-            const query = 'INSERT INTO staff (name, role, email, phone, address, image, dataAiHint) VALUES (?, ?, ?, ?, ?, ?, ?)';
-            const params = [name, role, email, phone, address, image, dataAiHint];
-            await pool.query(query, params);
+            const columns = ['name', 'role', 'email', 'phone', 'address', 'image', 'dataAiHint'];
+            const insertParams = columns.map(col => staffData[col] || null);
+
+            const query = `INSERT INTO staff (${columns.join(', ')}) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+            await pool.query(query, insertParams);
         }
 
         revalidatePath('/admin/staff');
