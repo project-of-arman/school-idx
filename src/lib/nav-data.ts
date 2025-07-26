@@ -97,10 +97,11 @@ export async function getNavLinks(): Promise<NavLink[]> {
         const topLevelLinks: NavLink[] = [];
 
         for (const link of links) {
-            linkMap[link.id] = { ...link, subLinks: [] };
+            link.subLinks = [];
+            linkMap[link.id] = link;
         }
 
-        for (const link of Object.values(linkMap)) {
+        for (const link of links) {
             if (link.parent_id) {
                 if (linkMap[link.parent_id]) {
                     linkMap[link.parent_id].subLinks!.push(link);
@@ -109,8 +110,14 @@ export async function getNavLinks(): Promise<NavLink[]> {
                 topLevelLinks.push(link);
             }
         }
+        
+        for (const link of Object.values(linkMap)) {
+            if(link.subLinks) {
+                link.subLinks.sort((a, b) => a.sort_order - b.sort_order);
+            }
+        }
 
-        return topLevelLinks;
+        return topLevelLinks.sort((a,b) => a.sort_order - b.sort_order);
 
     } catch (error) {
         console.error('Failed to fetch nav links, returning mock data:', error);

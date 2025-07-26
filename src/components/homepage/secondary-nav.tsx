@@ -190,11 +190,8 @@ export default function SecondaryNav({ schoolName }: { schoolName: string }) {
                         </ScrollArea>
                     </SheetContent>
                 </Sheet>
-                <p className="text-sm font-medium text-primary">{schoolName}</p>
+                <p className="text-sm sm:hiddin font-medium text-primary">{schoolName}</p>
             </div>
-             <div className="hidden lg:flex items-center text-sm font-medium text-primary">
-                {schoolName}
-             </div>
           
         </div>
     </nav>
