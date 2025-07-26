@@ -1,19 +1,9 @@
 
 "use client";
 
-import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
-import { forwardRef } from 'react';
-
-// Dynamically import ReactQuill to avoid SSR issues
-const ReactQuill = dynamic(
-    async () => {
-        const { default: RQ } = await import('react-quill');
-        // The forwardRef is needed to avoid the findDOMNode error.
-        return forwardRef((props, ref) => <RQ ref={ref as any} {...props} />);
-    },
-    { ssr: false }
-);
+import { useCallback, useRef } from 'react';
+import type Quill from 'quill';
 
 interface RichTextEditorProps {
     value: string;
@@ -31,19 +21,45 @@ const modules = {
     ['clean']
   ],
   clipboard: {
-    // toggle to add extra line breaks when pasting HTML:
     matchVisual: false,
   }
 }
 
+// This is a workaround for the findDOMNode error in React 18 Strict Mode.
+// We are dynamically importing Quill and creating the editor manually.
 export default function RichTextEditor({ value, onChange }: RichTextEditorProps) {
+  const quillRef = useRef<Quill | null>(null);
+
+  const wrapperCallback = useCallback((wrapper: HTMLDivElement | null) => {
+    if (typeof window === 'undefined') {
+        return;
+    }
+    
+    if (wrapper === null) return;
+    if (quillRef.current) return;
+
+    // Dynamically import Quill only on the client-side
+    import('quill').then((Quill) => {
+        const editor = new Quill.default(wrapper, {
+            theme: 'snow',
+            modules: modules,
+        });
+
+        quillRef.current = editor;
+
+        // Set initial value
+        if (value) {
+            editor.clipboard.dangerouslyPasteHTML(value);
+        }
+        
+        // Listen for changes
+        editor.on('text-change', () => {
+            onChange(editor.root.innerHTML);
+        });
+    });
+  }, [onChange, value]);
+
   return (
-    <ReactQuill
-      theme="snow"
-      value={value}
-      onChange={onChange}
-      modules={modules}
-      className="bg-white"
-    />
+    <div ref={wrapperCallback} className="bg-white"></div>
   );
 }
