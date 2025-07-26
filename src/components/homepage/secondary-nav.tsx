@@ -48,7 +48,7 @@ const NavLink = ({ href, children, className, icon, isActive }: { href: string; 
     <Link 
       href={href}
       className={cn(
-          'flex items-center gap-1.5 text-sm font-medium transition-colors hover:text-primary border px-3 py-1.5 rounded-md border-border',
+          'flex items-center gap-1.5 text-sm font-medium transition-colors hover:text-primary border px-3 py-1.5 rounded-md border-transparent',
           isActive ? 'text-primary border-primary bg-primary/10' : 'text-foreground/80',
           className
         )}
@@ -66,7 +66,7 @@ const NavDropdown = ({ title, subLinks, className, isActive }: { title: string; 
         <Button
           variant="ghost"
           className={cn(
-            'flex items-center gap-1.5 text-sm font-medium transition-colors hover:text-primary hover:bg-transparent border px-3 py-1.5 rounded-md border-border',
+            'flex items-center gap-1.5 text-sm font-medium transition-colors hover:text-primary hover:bg-transparent border px-3 py-1.5 rounded-md border-transparent',
             isActive ? 'text-primary border-primary bg-primary/10' : 'text-foreground/80',
             className
           )}
@@ -86,7 +86,7 @@ const NavDropdown = ({ title, subLinks, className, isActive }: { title: string; 
   );
 };
 
-export default function SecondaryNav() {
+export default function SecondaryNav({ schoolName }: { schoolName: string }) {
   const [isMounted, setIsMounted] = React.useState(false);
   const [isSticky, setIsSticky] = React.useState(false);
   const [isMenuOpen, setMenuOpen] = React.useState(false);
@@ -190,6 +190,9 @@ export default function SecondaryNav() {
                         </ScrollArea>
                     </SheetContent>
                 </Sheet>
+            </div>
+            <div className="hidden lg:flex items-center">
+              <p className="text-sm font-medium text-primary">{schoolName}</p>
             </div>
         </div>
     </nav>

@@ -6,6 +6,7 @@ import DynamicSidebar from '@/components/homepage/dynamic-sidebar';
 import { Megaphone } from 'lucide-react';
 import { getNotices } from '@/lib/notice-data';
 import Link from 'next/link';
+import { getSchoolInfo } from '@/lib/school-data';
 
 const Marquee = async () => {
   const marqueeNotices = await getNotices({ is_marquee: true });
@@ -36,15 +37,17 @@ const Marquee = async () => {
 };
 
 
-export default function SiteLayout({
+export default async function SiteLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const schoolInfo = await getSchoolInfo();
+  
   return (
     <div className="relative flex min-h-screen flex-col">
       <HeroCarousel />
-      <SecondaryNav />
+      <SecondaryNav schoolName={schoolInfo.name} />
        <main className="flex-1">
         <div className="container mx-auto px-4">
             <Marquee />
@@ -60,7 +63,7 @@ export default function SiteLayout({
             </div>
         </div>
         </main>
-      <Footer />
+      <Footer schoolInfo={schoolInfo} />
     </div>
   );
 }
