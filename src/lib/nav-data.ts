@@ -87,40 +87,52 @@ const mockNavLinks: NavLink[] = [
 export async function getNavLinks(): Promise<NavLink[]> {
     if (!pool) {
         console.warn("Database not connected. Returning mock data for nav links.");
-        return mockNavLinks;
+        for (const link of mockNavLinks) {
+            if (link.subLinks) {
+                link.subLinks.sort((a, b) => a.sort_order - b.sort_order);
+            }
+        }
+        return mockNavLinks.sort((a, b) => a.sort_order - b.sort_order);
     }
     try {
+        // Fetch all links, sorted by parent and then by order
         const [rows] = await pool.query('SELECT * FROM nav_links ORDER BY parent_id ASC, sort_order ASC');
         const links = rows as NavLink[];
         
         const linkMap: { [key: number]: NavLink } = {};
         const topLevelLinks: NavLink[] = [];
 
+        // First pass: create a map of all links by their ID
         for (const link of links) {
             link.subLinks = [];
             linkMap[link.id] = link;
         }
 
+        // Second pass: build the hierarchy
         for (const link of links) {
             if (link.parent_id) {
+                // This is a sub-link
                 if (linkMap[link.parent_id]) {
                     linkMap[link.parent_id].subLinks!.push(link);
                 }
             } else {
+                // This is a top-level link
                 topLevelLinks.push(link);
             }
         }
         
-        for (const link of Object.values(linkMap)) {
-            if(link.subLinks && link.subLinks.length > 0) {
-                link.subLinks.sort((a, b) => a.sort_order - b.sort_order);
-            }
-        }
-
+        // The SQL query already sorts the links, including sub-links.
+        // And since we process them in order, the sub-links should be pushed in the correct order.
+        // We just need to sort the top-level links.
         return topLevelLinks.sort((a,b) => a.sort_order - b.sort_order);
 
     } catch (error) {
         console.error('Failed to fetch nav links, returning mock data:', error);
-        return mockNavLinks;
+        for (const link of mockNavLinks) {
+            if (link.subLinks) {
+                link.subLinks.sort((a, b) => a.sort_order - b.sort_order);
+            }
+        }
+        return mockNavLinks.sort((a, b) => a.sort_order - b.sort_order);
     }
 }
