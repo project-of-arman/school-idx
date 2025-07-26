@@ -24,6 +24,13 @@ const fileSchema = z.any()
       "শুধুমাত্র .jpg, .jpeg, .png, .webp এবং .pdf ফরম্যাট সাপোর্ট করবে।"
     );
 
+const optionalFileSchema = z.any()
+  .refine((files) => !files || files.length === 0 || (files?.[0]?.size <= MAX_FILE_SIZE), `ফাইলের সর্বোচ্চ আকার 5MB।`)
+  .refine(
+    (files) => !files || files.length === 0 || ACCEPTED_DOCUMENT_TYPES.includes(files?.[0]?.type),
+    "শুধুমাত্র .jpg, .jpeg, .png, .webp এবং .pdf ফরম্যাট সাপোর্ট করবে।"
+  ).optional();
+
 const formSchema = z.object({
   studentName: z.string().min(1, "শিক্ষার্থীর নাম আবশ্যক"),
   className: z.string().min(1, "শ্রেণী আবশ্যক"),
@@ -38,6 +45,7 @@ const formSchema = z.object({
   simOwnerName: z.string().min(1, "সিম মালিকের নাম আবশ্যক"),
   birthCertPhoto: fileSchema,
   nidPhoto: fileSchema,
+  optionalPhoto: optionalFileSchema,
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -60,17 +68,24 @@ export default function StipendApplyPage() {
     try {
         const birthCertPhotoBase64 = await toBase64(values.birthCertPhoto[0]);
         const nidPhotoBase64 = await toBase64(values.nidPhoto[0]);
+        let optionalPhotoBase64 = '';
+        if (values.optionalPhoto && values.optionalPhoto.length > 0) {
+            optionalPhotoBase64 = await toBase64(values.optionalPhoto[0]);
+        }
 
         const formData = new FormData();
         
         Object.entries(values).forEach(([key, value]) => {
-            if (key !== 'birthCertPhoto' && key !== 'nidPhoto') {
+            if (key !== 'birthCertPhoto' && key !== 'nidPhoto' && key !== 'optionalPhoto') {
                  formData.append(key, value as string);
             }
         });
         
         formData.append('birthCertPhoto', birthCertPhotoBase64);
         formData.append('nidPhoto', nidPhotoBase64);
+        if (optionalPhotoBase64) {
+            formData.append('optionalPhoto', optionalPhotoBase64);
+        }
 
         const result = await saveStipendApplication(formData);
 
@@ -140,6 +155,11 @@ export default function StipendApplyPage() {
                     <Label htmlFor="nidPhoto">মা, বাবা, দুই জনের ই এন আই ডি লাগবে। যদি না থাকে তাহলে একজন অভিভাবকের হলেই হবে ।</Label>
                     <Input id="nidPhoto" type="file" accept="image/*,application/pdf" {...register("nidPhoto")} />
                     <FormMessage name="nidPhoto" />
+                </FormItem>
+                <FormItem>
+                    <Label htmlFor="optionalPhoto">ঐচ্ছিক ফাইল আপলোড</Label>
+                    <Input id="optionalPhoto" type="file" accept="image/*,application/pdf" {...register("optionalPhoto")} />
+                    <FormMessage name="optionalPhoto" />
                 </FormItem>
               </CardContent>
             </Card>

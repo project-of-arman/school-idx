@@ -23,6 +23,7 @@ CREATE TABLE `stipend_applications` (
   `sim_owner_name` varchar(255) NOT NULL,
   `birth_cert_photo_path` longtext,
   `nid_photo_path` longtext,
+  `optional_photo_path` longtext,
   `status` varchar(50) NOT NULL DEFAULT 'pending',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -44,6 +45,7 @@ const formSchema = z.object({
   simOwnerName: z.string().min(1),
   birthCertPhoto: z.string().min(1),
   nidPhoto: z.string().min(1),
+  optionalPhoto: z.string().optional(),
 });
 
 export async function saveStipendApplication(formData: FormData) {
@@ -66,14 +68,15 @@ export async function saveStipendApplication(formData: FormData) {
       INSERT INTO stipend_applications (
         student_name, class_name, roll_no, session, father_name, mother_name, guardian_yearly_income, 
         reason, contact_mobile, nagad_mobile, sim_owner_name, birth_cert_photo_path, nid_photo_path,
-        status, created_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', NOW())
+        optional_photo_path, status, created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', NOW())
     `;
 
     const values = [
       data.studentName, data.className, data.rollNo, data.session,
       data.fatherName, data.motherName, data.guardianYearlyIncome, data.reason, data.mobile,
-      data.nagadMobile, data.simOwnerName, data.birthCertPhoto, data.nidPhoto
+      data.nagadMobile, data.simOwnerName, data.birthCertPhoto, data.nidPhoto,
+      data.optionalPhoto || null
     ];
 
     await pool.query(query, values);
