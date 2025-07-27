@@ -81,25 +81,34 @@ function getYouTubeVideoId(url: string): string | null {
 
 type SaveResult = { success: boolean; error?: string };
 
-export async function saveVideo(data: { title: string; youtube_url: string; description?: string; dataAiHint?: string }, id?: string): Promise<SaveResult> {
+export async function saveVideo(formData: FormData, id?: string): Promise<SaveResult> {
     if (!pool) return { success: false, error: "Database not connected" };
 
-    const videoId = getYouTubeVideoId(data.youtube_url);
+    const youtube_url = formData.get('youtube_url') as string;
+    const videoId = getYouTubeVideoId(youtube_url);
     if (!videoId) {
         return { success: false, error: "অবৈধ ইউটিউব URL। সঠিক লিঙ্ক দিন।" };
     }
+    
+    const uploadedThumbnail = formData.get('thumbnail') as string | null;
 
     const videoToSave = {
-        title: data.title,
-        description: data.description || '',
+        title: formData.get('title') as string,
+        description: (formData.get('description') as string) || '',
         videoUrl: `https://www.youtube.com/embed/${videoId}`,
-        thumbnail: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
-        dataAiHint: data.dataAiHint || 'youtube video',
+        thumbnail: uploadedThumbnail || `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+        dataAiHint: (formData.get('dataAiHint') as string) || 'youtube video',
     };
 
     try {
         if (id) {
-            await pool.query('UPDATE videos SET ? WHERE id = ?', [videoToSave, id]);
+            const fieldsToUpdate: { [key: string]: any } = { ...videoToSave };
+            // If no new thumbnail is uploaded, we don't want to overwrite the existing one with the YT default.
+            // So we remove it from the update object. The user must re-upload if they want to change it.
+            if (!uploadedThumbnail) {
+                delete fieldsToUpdate.thumbnail;
+            }
+            await pool.query('UPDATE videos SET ? WHERE id = ?', [fieldsToUpdate, id]);
         } else {
             await pool.query('INSERT INTO videos SET ?', [videoToSave]);
         }

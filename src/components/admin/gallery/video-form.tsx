@@ -11,12 +11,24 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { Video, saveVideo } from "@/lib/video-data";
+import { toBase64 } from "@/lib/utils";
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+
+const imageSchema = z.any()
+  .refine((files) => !files || files.length === 0 || files?.[0]?.size <= MAX_FILE_SIZE, `ফাইলের সর্বোচ্চ আকার 5MB।`)
+  .refine(
+    (files) => !files || files.length === 0 || ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
+    "শুধুমাত্র .jpg, .jpeg, .png এবং .webp ফরম্যাট সাপোর্ট করবে।"
+  ).optional();
 
 const formSchema = z.object({
   title: z.string().min(1, "শিরোনাম আবশ্যক"),
   youtube_url: z.string().url("অবৈধ ইউটিউব URL"),
   description: z.string().optional(),
   dataAiHint: z.string().optional(),
+  thumbnail: imageSchema,
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -35,7 +47,23 @@ export function VideoForm({ video }: { video?: Video }) {
   });
 
   async function onSubmit(values: FormValues) {
-    const result = await saveVideo(values, video?.id);
+    const formData = new FormData();
+    formData.append('title', values.title);
+    formData.append('youtube_url', values.youtube_url);
+    formData.append('description', values.description || '');
+    formData.append('dataAiHint', values.dataAiHint || 'youtube video');
+
+    if (values.thumbnail && values.thumbnail.length > 0) {
+        try {
+            const imageBase64 = await toBase64(values.thumbnail[0]);
+            formData.append('thumbnail', imageBase64);
+        } catch (error) {
+            toast({ title: "ফাইল আপলোড ত্রুটি", description: "ছবি প্রসেস করার সময় একটি সমস্যা হয়েছে।", variant: "destructive" });
+            return;
+        }
+    }
+
+    const result = await saveVideo(formData, video?.id);
 
     if (result.success) {
         toast({ title: "সফল হয়েছে", description: `ভিডিও সফলভাবে ${video ? 'আপডেট' : 'যোগ'} করা হয়েছে।` });
@@ -67,6 +95,18 @@ export function VideoForm({ video }: { video?: Video }) {
           <Textarea id="description" {...register("description")} />
           <FormMessage name="description" /> 
         </FormItem>
+        <FormItem>
+          <Label htmlFor="thumbnail">থাম্বনেইল ছবি (ঐচ্ছিক)</Label>
+          <Input id="thumbnail" type="file" accept="image/*" {...register("thumbnail")} />
+          <p className="text-xs text-muted-foreground">নতুন ছবি আপলোড করলে এটি ইউটিউবের থাম্বনেইলকে পরিবর্তন করবে।</p>
+          <FormMessage name="thumbnail" />
+        </FormItem>
+        {video?.thumbnail && (
+          <div className="mt-2">
+            <Label>বর্তমান থাম্বনেইল</Label>
+            <img src={video.thumbnail} alt="Current thumbnail" className="mt-1 h-24 w-auto rounded-md object-cover" />
+          </div>
+        )}
         <FormItem> 
           <Label htmlFor="dataAiHint">AI Hint (Optional)</Label> 
           <Input id="dataAiHint" {...register("dataAiHint")} /> 
