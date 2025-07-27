@@ -19,6 +19,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { ResultWithSubjects, StudentForResultForm, saveResult } from "@/lib/actions/results-actions";
 import { PlusCircle, Trash } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const subjectSchema = z.object({
   id: z.number().optional(),
