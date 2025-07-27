@@ -76,7 +76,7 @@ export async function saveStaff(formData: FormData, id?: string): Promise<SaveRe
 
     const staffData: { [key: string]: any } = {};
     formData.forEach((value, key) => {
-        staffData[key] = value || null;
+        staffData[key] = value;
     });
 
     try {
@@ -86,7 +86,7 @@ export async function saveStaff(formData: FormData, id?: string): Promise<SaveRe
         let params;
         
         if (id) {
-            // Update
+            // Update logic
             const fieldsToUpdate: { [key: string]: any } = { name, role, email, phone, address, dataAiHint };
             if (image) {
                 fieldsToUpdate.image = image;
@@ -94,9 +94,9 @@ export async function saveStaff(formData: FormData, id?: string): Promise<SaveRe
             query = 'UPDATE staff SET ? WHERE id = ?';
             params = [fieldsToUpdate, id];
         } else {
-            // Insert
+            // Insert logic
             query = 'INSERT INTO staff (name, role, email, phone, address, image, dataAiHint) VALUES (?, ?, ?, ?, ?, ?, ?)';
-            params = [name, role, email, phone, address, image, dataAiHint];
+            params = [name, role, email || null, phone || null, address || null, image || null, dataAiHint || null];
         }
 
         await pool.query(query, params);
