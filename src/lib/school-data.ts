@@ -2,6 +2,7 @@
 'use server';
 
 import pool from './db';
+import { revalidatePath } from 'next/cache';
 
 export interface CarouselItem {
   id: number;
@@ -131,6 +132,72 @@ export async function getCarouselItems(): Promise<CarouselItem[]> {
         return mockCarouselItems;
     }
 }
+
+export async function getCarouselItemById(id: string | number): Promise<CarouselItem | null> {
+    if (!pool) return null;
+    try {
+        const [rows] = await pool.query<CarouselItem[]>('SELECT * FROM carousel_items WHERE id = ?', [id]);
+        return rows[0] || null;
+    } catch (error) {
+        console.error('Failed to fetch carousel item:', error);
+        return null;
+    }
+}
+
+type SaveResult = { success: boolean; error?: string };
+
+export async function saveCarouselItem(formData: FormData, id?: number): Promise<SaveResult> {
+    if (!pool) return { success: false, error: "Database not connected" };
+    
+    try {
+        const data = {
+            title: formData.get('title') as string,
+            description: formData.get('description') as string,
+            alt: formData.get('alt') as string,
+            dataAiHint: formData.get('dataAiHint') as string,
+            sort_order: parseInt(formData.get('sort_order') as string, 10),
+            src: formData.get('src') as string | null
+        };
+        
+        if (id) {
+            const fieldsToUpdate: any = { 
+                title: data.title, 
+                description: data.description,
+                alt: data.alt,
+                dataAiHint: data.dataAiHint,
+                sort_order: data.sort_order 
+            };
+            if (data.src) {
+                fieldsToUpdate.src = data.src;
+            }
+            await pool.query('UPDATE carousel_items SET ? WHERE id = ?', [fieldsToUpdate, id]);
+        } else {
+            if (!data.src) return { success: false, error: 'Image is required for new carousel items' };
+            await pool.query('INSERT INTO carousel_items (title, description, alt, dataAiHint, sort_order, src) VALUES (?, ?, ?, ?, ?, ?)', 
+                [data.title, data.description, data.alt, data.dataAiHint, data.sort_order, data.src]);
+        }
+        
+        revalidatePath('/admin/gallery/carousel');
+        revalidatePath('/(site)/');
+        return { success: true };
+    } catch (e: any) {
+        return { success: false, error: e.message };
+    }
+}
+
+export async function deleteCarouselItem(id: number): Promise<SaveResult> {
+    if (!pool) return { success: false, error: "Database not connected" };
+    
+    try {
+        await pool.query('DELETE FROM carousel_items WHERE id = ?', [id]);
+        revalidatePath('/admin/gallery/carousel');
+        revalidatePath('/(site)/');
+        return { success: true };
+    } catch (e: any) {
+        return { success: false, error: e.message };
+    }
+}
+
 
 export async function getSchoolFeatures(): Promise<SchoolFeature[]> {
     if (!pool) {

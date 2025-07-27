@@ -31,6 +31,7 @@ import {
   Link2,
   Trophy,
   Settings,
+  Slideshow,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -66,6 +67,7 @@ const navItems = [
     label: "গ্যালারি",
     icon: ImageIcon,
     subItems: [
+        { href: "/admin/gallery/carousel", icon: Slideshow, label: "ক্যারোসেল" },
         { href: "/admin/gallery/photos", icon: ImageIcon, label: "ছবি গ্যালারি" },
         { href: "/admin/gallery/videos", icon: Video, label: "ভিডিও গ্যালারি" }
     ]
@@ -84,7 +86,7 @@ export default function AdminSidebarNav() {
   const getAccordionDefaultValue = () => {
     const activeItem = navItems.find(item => item.subItems && isSubItemActive(item.subItems));
     if (activeItem) {
-        if (pathname.startsWith('/admin/committee') || pathname.startsWith('/admin/staff')) return activeItem.label;
+        if (pathname.startsWith('/admin/committee') || pathname.startsWith('/admin/staff') || pathname.startsWith('/admin/gallery')) return activeItem.label;
     }
     return activeItem ? activeItem.label : undefined;
   }
