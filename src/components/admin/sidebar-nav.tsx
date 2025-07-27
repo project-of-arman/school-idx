@@ -52,7 +52,6 @@ const navItems = [
       { href: "/admin/syllabus", icon: Book, label: "সিলেবাস" },
       { href: "/admin/students", icon: User, label: "শিক্ষার্থী" },
       { href: "/admin/teachers", icon: Users, label: "শিক্ষক" },
-      { href: "/admin/staff", icon: Building2, label: "কর্মচারী"},
       { href: "/admin/committee", icon: Users, label: "কমিটি" },
     ],
   },
