@@ -68,7 +68,7 @@ export default function GalleryPage() {
                     </DialogTrigger>
                     <DialogContent className="w-screen h-screen max-w-full max-h-screen p-0 m-0 bg-black/80 flex items-center justify-center border-none">
                         <DialogTitle className="sr-only">{image.title}</DialogTitle>
-                        <div className="relative w-[95vw] h-[95vh]">
+                        <div className="relative w-full h-full">
                             <Image
                                 src={image.image_url}
                                 alt={image.title}
