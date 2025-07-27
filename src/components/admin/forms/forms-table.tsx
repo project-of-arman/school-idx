@@ -160,6 +160,13 @@ export default function FormsTable({ formType, submissions, config }: { formType
     }
   };
 
+  const renderCellContent = (value: any) => {
+    if (value instanceof Date) {
+      return value.toLocaleDateString('bn-BD');
+    }
+    return value;
+  }
+
   return (
     <>
       <div className="mb-4">
@@ -191,7 +198,7 @@ export default function FormsTable({ formType, submissions, config }: { formType
                       {col.key === 'status' ? (
                           <Badge variant={getStatusVariant(submission[col.key])}>{submission[col.key]}</Badge>
                       ) : (
-                        submission[col.key]
+                        renderCellContent(submission[col.key])
                       )}
                     </TableCell>
                 ))}
