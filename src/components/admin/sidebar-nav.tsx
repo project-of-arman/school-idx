@@ -60,6 +60,7 @@ const navItems = [
       { href: "/admin/committee", icon: Users, label: "কমিটি" },
     ],
   },
+  { href: "/admin/notifications", icon: Bell, label: "ঘোষণা" },
   { href: "/admin/results", icon: Trophy, label: "ফলাফল" },
   { href: "/admin/admission-guidelines", icon: FileText, label: "ভর্তি নির্দেশিকা" },
   { href: "/admin/pages", icon: StickyNote, label: "পেজ" },

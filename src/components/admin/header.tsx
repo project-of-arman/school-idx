@@ -8,6 +8,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuFooter,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -65,10 +66,10 @@ function Notifications() {
                 {loading ? (
                     <DropdownMenuItem>লোড হচ্ছে...</DropdownMenuItem>
                 ) : notices.length > 0 ? (
-                    notices.map(notice => (
+                    notices.slice(0, 4).map(notice => (
                         <DropdownMenuItem key={notice.id} asChild>
-                            <Link href={`/notice/${notice.id}`} target="_blank" className="flex flex-col items-start">
-                                <p className="font-medium whitespace-normal">{notice.title}</p>
+                            <Link href={`/notice/${notice.id}`} target="_blank" className="flex flex-col items-start whitespace-normal">
+                                <p className="font-medium">{notice.title}</p>
                                 <p className="text-xs text-muted-foreground">{notice.date}</p>
                             </Link>
                         </DropdownMenuItem>
@@ -76,6 +77,14 @@ function Notifications() {
                 ) : (
                     <DropdownMenuItem>কোনো নতুন ঘোষণা নেই।</DropdownMenuItem>
                 )}
+                <DropdownMenuSeparator />
+                <DropdownMenuFooter>
+                    <DropdownMenuItem asChild>
+                        <Link href="/admin/notifications" className="w-full justify-center">
+                            সকল ঘোষণা দেখুন
+                        </Link>
+                    </DropdownMenuItem>
+                </DropdownMenuFooter>
             </DropdownMenuContent>
         </DropdownMenu>
     );
