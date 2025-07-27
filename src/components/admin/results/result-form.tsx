@@ -159,5 +159,3 @@ export function ResultForm({ result, students }: { result?: ResultWithSubjects, 
     </form>
   )
 }
-
-    

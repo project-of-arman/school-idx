@@ -56,7 +56,7 @@ export interface StudentForResultForm extends RowDataPacket {
     roll: string;
 }
 
-export interface SubjectGrade extends RowDataPacket {
+export interface SubjectGrade {
     id?: number;
     subject_name: string;
     marks: string | null;
