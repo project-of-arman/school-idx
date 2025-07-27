@@ -1,7 +1,23 @@
---
--- Table structure for table `admission_applications`
---
+-- Adminer 4.8.1 MySQL 8.0.32 dump
 
+SET NAMES utf8;
+SET time_zone = '+00:00';
+SET foreign_key_checks = 0;
+SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
+
+SET NAMES utf8mb4;
+
+DROP TABLE IF EXISTS `about_school`;
+CREATE TABLE `about_school` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `description` text,
+  `image_url` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `admission_applications`;
 CREATE TABLE `admission_applications` (
   `id` int NOT NULL AUTO_INCREMENT,
   `student_name_bn` varchar(255) NOT NULL,
@@ -28,12 +44,44 @@ CREATE TABLE `admission_applications` (
   `status` varchar(50) NOT NULL DEFAULT 'pending',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Table structure for table `admit_card_applications`
---
 
+DROP TABLE IF EXISTS `admission_guidelines`;
+CREATE TABLE `admission_guidelines` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `icon` varchar(50) DEFAULT NULL,
+  `content` text,
+  `sort_order` int DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `admission_important_dates`;
+CREATE TABLE `admission_important_dates` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `label` varchar(255) NOT NULL,
+  `date_value` varchar(255) NOT NULL,
+  `sort_order` int DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `admission_page_content`;
+CREATE TABLE `admission_page_content` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) DEFAULT NULL,
+  `subtitle` varchar(255) DEFAULT NULL,
+  `form_download_url` varchar(255) DEFAULT NULL,
+  `contact_title` varchar(255) DEFAULT NULL,
+  `contact_description` varchar(500) DEFAULT NULL,
+  `contact_phone` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `admit_card_applications`;
 CREATE TABLE `admit_card_applications` (
   `id` int NOT NULL AUTO_INCREMENT,
   `student_name` varchar(255) NOT NULL,
@@ -45,12 +93,23 @@ CREATE TABLE `admit_card_applications` (
   `status` varchar(50) NOT NULL DEFAULT 'pending',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Table structure for table `certificate_applications`
---
 
+DROP TABLE IF EXISTS `carousel_items`;
+CREATE TABLE `carousel_items` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `src` varchar(255) NOT NULL,
+  `alt` varchar(255) NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `description` text,
+  `dataAiHint` varchar(255) DEFAULT NULL,
+  `sort_order` int DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `certificate_applications`;
 CREATE TABLE `certificate_applications` (
   `id` int NOT NULL AUTO_INCREMENT,
   `student_name` varchar(255) NOT NULL,
@@ -64,12 +123,57 @@ CREATE TABLE `certificate_applications` (
   `status` varchar(50) NOT NULL DEFAULT 'pending',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Table structure for table `guardian_consent_applications`
---
 
+DROP TABLE IF EXISTS `committee_members`;
+CREATE TABLE `committee_members` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `role` varchar(255) NOT NULL,
+  `image` longtext,
+  `dataAiHint` varchar(255) DEFAULT 'committee member portrait',
+  `sort_order` int DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `contact_info`;
+CREATE TABLE `contact_info` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `school_name` varchar(255) DEFAULT NULL,
+  `address` varchar(500) DEFAULT NULL,
+  `phone` varchar(100) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `map_embed_url` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `contact_submissions`;
+CREATE TABLE `contact_submissions` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `gallery_images`;
+CREATE TABLE `gallery_images` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `image_url` longtext,
+  `data_ai_hint` varchar(255) DEFAULT 'school event',
+  `sort_order` int DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `guardian_consent_applications`;
 CREATE TABLE `guardian_consent_applications` (
   `id` int NOT NULL AUTO_INCREMENT,
   `student_name` varchar(255) NOT NULL,
@@ -83,12 +187,34 @@ CREATE TABLE `guardian_consent_applications` (
   `status` varchar(50) NOT NULL DEFAULT 'pending',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Table structure for table `leave_applications`
---
 
+DROP TABLE IF EXISTS `important_link_groups`;
+CREATE TABLE `important_link_groups` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `image` longtext,
+  `data_ai_hint` varchar(255) DEFAULT 'icon',
+  `sort_order` int DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `important_links`;
+CREATE TABLE `important_links` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `group_id` int NOT NULL,
+  `text` varchar(255) NOT NULL,
+  `href` varchar(500) DEFAULT NULL,
+  `sort_order` int DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `group_id` (`group_id`),
+  CONSTRAINT `important_links_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `important_link_groups` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `leave_applications`;
 CREATE TABLE `leave_applications` (
   `id` int NOT NULL AUTO_INCREMENT,
   `student_name` varchar(255) NOT NULL,
@@ -102,12 +228,10 @@ CREATE TABLE `leave_applications` (
   `status` varchar(50) NOT NULL DEFAULT 'pending',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Table structure for table `library_card_applications`
---
 
+DROP TABLE IF EXISTS `library_card_applications`;
 CREATE TABLE `library_card_applications` (
   `id` int NOT NULL AUTO_INCREMENT,
   `student_name` varchar(255) NOT NULL,
@@ -119,12 +243,10 @@ CREATE TABLE `library_card_applications` (
   `status` varchar(50) NOT NULL DEFAULT 'pending',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Table structure for table `marksheet_applications`
---
 
+DROP TABLE IF EXISTS `marksheet_applications`;
 CREATE TABLE `marksheet_applications` (
   `id` int NOT NULL AUTO_INCREMENT,
   `student_name` varchar(255) NOT NULL,
@@ -137,12 +259,116 @@ CREATE TABLE `marksheet_applications` (
   `status` varchar(50) NOT NULL DEFAULT 'pending',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Table structure for table `stipend_applications`
---
 
+DROP TABLE IF EXISTS `nav_links`;
+CREATE TABLE `nav_links` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `href` varchar(255) DEFAULT NULL,
+  `parent_id` int DEFAULT NULL,
+  `sort_order` int DEFAULT '0',
+  `icon` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `parent_id` (`parent_id`),
+  CONSTRAINT `nav_links_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `nav_links` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `notices`;
+CREATE TABLE `notices` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `date` varchar(255) NOT NULL,
+  `fileUrl` varchar(255) DEFAULT NULL,
+  `description` text,
+  `is_marquee` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `pages`;
+CREATE TABLE `pages` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
+  `description` longtext,
+  `thumbnail` longtext,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `slug` (`slug`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `results`;
+CREATE TABLE `results` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `student_id` int NOT NULL,
+  `exam_name` varchar(255) NOT NULL,
+  `year` int NOT NULL,
+  `final_gpa` varchar(5) NOT NULL,
+  `status` enum('Promoted','Failed') NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `student_id` (`student_id`),
+  CONSTRAINT `results_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `routines`;
+CREATE TABLE `routines` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `class_name` varchar(100) NOT NULL,
+  `day_of_week` varchar(50) NOT NULL,
+  `period` int NOT NULL,
+  `start_time` time NOT NULL,
+  `end_time` time NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `teacher_name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `class_day_period` (`class_name`,`day_of_week`,`period`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `school_features`;
+CREATE TABLE `school_features` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `icon` varchar(255) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `school_info`;
+CREATE TABLE `school_info` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `address` varchar(500) NOT NULL,
+  `logo_url` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `sidebar_widgets`;
+CREATE TABLE `sidebar_widgets` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `widget_type` enum('profile','links','image_link') NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `subtitle` varchar(255) DEFAULT NULL,
+  `image_url` varchar(500) DEFAULT NULL,
+  `link_url` varchar(500) DEFAULT NULL,
+  `link_text` varchar(100) DEFAULT NULL,
+  `content` text,
+  `sort_order` int DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `stipend_applications`;
 CREATE TABLE `stipend_applications` (
   `id` int NOT NULL AUTO_INCREMENT,
   `student_name` varchar(255) NOT NULL,
@@ -162,69 +388,10 @@ CREATE TABLE `stipend_applications` (
   `status` varchar(50) NOT NULL DEFAULT 'pending',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Table structure for table `subject_change_applications`
---
 
-CREATE TABLE `subject_change_applications` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `student_name` varchar(255) NOT NULL,
-  `class_name` varchar(100) NOT NULL,
-  `roll_no` varchar(50) NOT NULL,
-  `session` varchar(100) NOT NULL,
-  `current_subjects` text NOT NULL,
-  `requested_subjects` text NOT NULL,
-  `reason` text NOT NULL,
-  `contact_mobile` varchar(50) NOT NULL,
-  `status` varchar(50) NOT NULL DEFAULT 'pending',
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-);
-
---
--- Table structure for table `testimonial_applications`
---
-
-CREATE TABLE `testimonial_applications` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `student_name` varchar(255) NOT NULL,
-  `father_name` varchar(255) NOT NULL,
-  `mother_name` varchar(255) NOT NULL,
-  `last_class` varchar(100) NOT NULL,
-  `last_roll` varchar(50) NOT NULL,
-  `passing_year` varchar(10) NOT NULL,
-  `registration_no` varchar(100) NOT NULL,
-  `contact_mobile` varchar(50) NOT NULL,
-  `status` varchar(50) NOT NULL DEFAULT 'pending',
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-);
-
---
--- Table structure for table `transfer_certificate_applications`
---
-
-CREATE TABLE `transfer_certificate_applications` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `student_name` varchar(255) NOT NULL,
-  `class_name` varchar(255) NOT NULL,
-  `roll_no` varchar(50) NOT NULL,
-  `session` varchar(100) NOT NULL,
-  `father_name` varchar(255) NOT NULL,
-  `mother_name` varchar(255) NOT NULL,
-  `reason` text NOT NULL,
-  `contact_mobile` varchar(50) NOT NULL,
-  `status` varchar(50) NOT NULL DEFAULT 'pending',
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-);
-
---
--- Table structure for table `students`
---
-
+DROP TABLE IF EXISTS `students`;
 CREATE TABLE `students` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name_bn` varchar(255) NOT NULL,
@@ -254,28 +421,27 @@ CREATE TABLE `students` (
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `roll_year_class` (`roll`,`year`,`class_name`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Table structure for table `results`
---
 
-CREATE TABLE `results` (
+DROP TABLE IF EXISTS `subject_change_applications`;
+CREATE TABLE `subject_change_applications` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `student_id` int NOT NULL,
-  `exam_name` varchar(255) NOT NULL,
-  `year` int NOT NULL,
-  `final_gpa` varchar(5) NOT NULL,
-  `status` enum('Promoted','Failed') NOT NULL,
+  `student_name` varchar(255) NOT NULL,
+  `class_name` varchar(100) NOT NULL,
+  `roll_no` varchar(50) NOT NULL,
+  `session` varchar(100) NOT NULL,
+  `current_subjects` text NOT NULL,
+  `requested_subjects` text NOT NULL,
+  `reason` text NOT NULL,
+  `contact_mobile` varchar(50) NOT NULL,
+  `status` varchar(50) NOT NULL DEFAULT 'pending',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-   PRIMARY KEY (`id`)
-);
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Table structure for table `subject_grades`
---
 
+DROP TABLE IF EXISTS `subject_grades`;
 CREATE TABLE `subject_grades` (
   `id` int NOT NULL AUTO_INCREMENT,
   `result_id` int NOT NULL,
@@ -283,54 +449,84 @@ CREATE TABLE `subject_grades` (
   `marks` varchar(5) DEFAULT NULL,
   `grade` varchar(10) NOT NULL,
   `gpa` varchar(5) NOT NULL,
-   PRIMARY KEY (`id`)
-);
-
---
--- Table structure for table `contact_submissions`
---
-
-CREATE TABLE `contact_submissions` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NOT NULL,
-  `email` VARCHAR(255) NOT NULL,
-  `subject` VARCHAR(255) NOT NULL,
-  `message` TEXT NOT NULL,
-  `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`));
-
---
--- Table structure for table `contact_info`
---
-CREATE TABLE `contact_info` (
-  `id` int NOT NULL DEFAULT '1',
-  `school_name` varchar(255) DEFAULT NULL,
-  `address` text,
-  `phone` varchar(50) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `map_embed_url` text
-);
-
---
--- Dumping data for table `contact_info`
---
-
-INSERT INTO `contact_info` (`id`, `school_name`, `address`, `phone`, `email`, `map_embed_url`) VALUES
-(1, 'মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়', '১ নং রোড, ব্লক এ, মিরপুর, ঢাকা-১২১৬', '+৮৮০ ১২৩৪ ৫৬৭৮৯০', 'info@shikkhaangan.edu', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3650.0950338381005!2d90.36399991544456!3d23.81513519228574!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c1e6c38a79ef%3A0x28637993b8f683f2!2sMirpur%2C%20Dhaka!5e0!3m2!1sen!2sbd!4v1675868516053!5m2!1sen!2sbd');
+  PRIMARY KEY (`id`),
+  KEY `result_id` (`result_id`),
+  CONSTRAINT `subject_grades_ibfk_1` FOREIGN KEY (`result_id`) REFERENCES `results` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
---
--- Table structure for table `staff`
---
-CREATE TABLE `staff` (
+DROP TABLE IF EXISTS `syllabuses`;
+CREATE TABLE `syllabuses` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `class_name` varchar(100) NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `file_url` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `class_subject` (`class_name`,`subject`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `teachers`;
+CREATE TABLE `teachers` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `role` varchar(555) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `role` varchar(255) NOT NULL,
   `image` longtext,
   `address` varchar(255) DEFAULT NULL,
   `phone` varchar(20) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
-  `data_ai_hint` varchar(255) DEFAULT 'staff portrait',
-   PRIMARY KEY (`id`)
-);
+  `educational_qualification` text,
+  `experience` text,
+  `dataAiHint` varchar(255) DEFAULT 'teacher portrait',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `testimonial_applications`;
+CREATE TABLE `testimonial_applications` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `student_name` varchar(255) NOT NULL,
+  `father_name` varchar(255) NOT NULL,
+  `mother_name` varchar(255) NOT NULL,
+  `last_class` varchar(100) NOT NULL,
+  `last_roll` varchar(50) NOT NULL,
+  `passing_year` varchar(10) NOT NULL,
+  `registration_no` varchar(100) NOT NULL,
+  `contact_mobile` varchar(50) NOT NULL,
+  `status` varchar(50) NOT NULL DEFAULT 'pending',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `transfer_certificate_applications`;
+CREATE TABLE `transfer_certificate_applications` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `student_name` varchar(255) NOT NULL,
+  `class_name` varchar(255) NOT NULL,
+  `roll_no` varchar(50) NOT NULL,
+  `session` varchar(100) NOT NULL,
+  `father_name` varchar(255) NOT NULL,
+  `mother_name` varchar(255) NOT NULL,
+  `reason` text NOT NULL,
+  `contact_mobile` varchar(50) NOT NULL,
+  `status` varchar(50) NOT NULL DEFAULT 'pending',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DROP TABLE IF EXISTS `videos`;
+CREATE TABLE `videos` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `thumbnail` varchar(500) DEFAULT NULL,
+  `videoUrl` varchar(500) NOT NULL,
+  `description` text,
+  `dataAiHint` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- 2024-07-26 09:24:26
 
