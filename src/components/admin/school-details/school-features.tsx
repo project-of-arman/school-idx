@@ -26,8 +26,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import * as LucideIcons from 'lucide-react';
 
-const iconKeys = Object.keys(LucideIcons).filter(k => typeof LucideIcons[k as keyof typeof LucideIcons] === 'object' && k[0] === k[0].toUpperCase());
-
 const formSchema = z.object({
   title: z.string().min(1, "শিরোনাম আবশ্যক"),
   icon: z.string().min(1, "আইকন আবশ্যক"),
@@ -46,6 +44,8 @@ function FeatureForm({ feature, onFinished }: { feature?: SchoolFeature, onFinis
       description: feature?.description || "",
     },
   });
+
+  const iconKeys = Object.keys(LucideIcons).filter(k => typeof LucideIcons[k as keyof typeof LucideIcons] === 'object' && k[0] === k[0].toUpperCase());
 
   async function onSubmit(values: FormValues) {
     const result = await saveSchoolFeature(values, feature?.id);
