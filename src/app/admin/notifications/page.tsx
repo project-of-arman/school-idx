@@ -27,10 +27,8 @@ const NoticeItem = ({ notice, isRead, onRead }: { notice: Notice, isRead: boolea
         </div>
         <div className="flex-grow">
             <Link 
-                href={`/notice/${notice.id}`} 
+                href={`/admin/notifications/${notice.id}`} 
                 className="font-semibold text-foreground hover:text-primary transition-colors block" 
-                target="_blank" 
-                rel="noopener noreferrer"
                 onClick={() => onRead(notice.id)}
             >
                 {notice.title}
