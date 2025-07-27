@@ -8,7 +8,7 @@ export interface Link {
     id: number;
     group_id: number;
     text: string;
-    href: string;
+    href: string | null;
     sort_order: number;
 }
 
@@ -145,7 +145,7 @@ export async function saveLink(formData: FormData, id?: number): Promise<SaveRes
     try {
         const data = {
             text: formData.get('text') as string,
-            href: formData.get('href') as string,
+            href: (formData.get('href') as string) || null,
             sort_order: parseInt(formData.get('sort_order') as string, 10),
             group_id: parseInt(formData.get('group_id') as string, 10),
         };

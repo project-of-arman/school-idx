@@ -22,7 +22,7 @@ import { Page } from "@/lib/page-data";
 
 const formSchema = z.object({
   text: z.string().min(1, "লিংকের টেক্সট আবশ্যক"),
-  href: z.string().min(1, "লিংকের URL আবশ্যক"),
+  href: z.string().optional(),
   sort_order: z.coerce.number().int().min(0, "অবস্থান আবশ্যক"),
 });
 
@@ -51,7 +51,7 @@ export function LinkForm({ link, groupId, pages }: { link?: LinkType, groupId: n
     const formData = new FormData();
     
     formData.append('text', values.text);
-    formData.append('href', values.href);
+    formData.append('href', values.href || '');
     formData.append('sort_order', values.sort_order.toString());
     formData.append('group_id', groupId.toString());
 
