@@ -91,14 +91,17 @@ function GuidelineForm({ guideline, onFinished }: { guideline?: AdmissionGuideli
                         <SelectValue placeholder="আইকন নির্বাচন করুন" />
                     </SelectTrigger>
                     <SelectContent>
-                        {educationIcons.map(icon => (
-                            <SelectItem key={icon.value} value={icon.value}>
-                               <div className="flex items-center gap-2">
-                                    <LucideIcons.Icon name={icon.value} className="h-4 w-4" />
-                                    <span>{icon.label} ({icon.value})</span>
-                               </div>
-                            </SelectItem>
-                        ))}
+                        {educationIcons.map(icon => {
+                            const IconComponent = LucideIcons[icon.value as keyof typeof LucideIcons] as React.ElementType;
+                            return (
+                                <SelectItem key={icon.value} value={icon.value}>
+                                   <div className="flex items-center gap-2">
+                                        {IconComponent && <IconComponent className="h-4 w-4" />}
+                                        <span>{icon.label} ({icon.value})</span>
+                                   </div>
+                                </SelectItem>
+                            )
+                        })}
                     </SelectContent>
                 </Select>
             )}
