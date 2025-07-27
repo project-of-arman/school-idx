@@ -7,6 +7,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import {
   BookOpen,
@@ -79,6 +80,8 @@ const navItems = [
 
 export default function AdminSidebarNav() {
   const pathname = usePathname();
+  const { state, setOpen } = useSidebar();
+
 
   const isSubItemActive = (subItems: any[]) => {
     return subItems.some((item) => pathname.startsWith(item.href));
@@ -108,7 +111,13 @@ export default function AdminSidebarNav() {
             item.subItems ? (
               <Accordion key={item.label} type="single" collapsible defaultValue={getAccordionDefaultValue()} className="w-full">
                 <AccordionItem value={item.label} className="border-b-0">
-                  <AccordionTrigger className={cn("hover:no-underline hover:bg-sidebar-accent p-2 rounded-md group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:size-8", isSubItemActive(item.subItems) && "bg-sidebar-accent text-sidebar-accent-foreground")}>
+                  <AccordionTrigger 
+                    onClick={() => {
+                        if (state === 'collapsed') {
+                            setOpen(true);
+                        }
+                    }}
+                    className={cn("hover:no-underline hover:bg-sidebar-accent p-2 rounded-md group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:size-8", isSubItemActive(item.subItems) && "bg-sidebar-accent text-sidebar-accent-foreground")}>
                     <div className="flex items-center gap-2">
                       <item.icon className="h-4 w-4" />
                       <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
