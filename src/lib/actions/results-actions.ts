@@ -3,10 +3,44 @@
 
 import pool from '../db';
 import { revalidatePath } from 'next/cache';
+import { RowDataPacket } from 'mysql2';
+
+/*
+SQL for creating the results and subject_grades tables:
+
+CREATE TABLE `results` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `student_id` int NOT NULL,
+  `exam_name` varchar(255) NOT NULL,
+  `year` int NOT NULL,
+  `final_gpa` decimal(4,2) NOT NULL,
+  `status` enum('Promoted','Failed') NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `student_exam_year` (`student_id`,`exam_name`,`year`),
+  KEY `student_id` (`student_id`),
+  CONSTRAINT `results_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE
+);
+
+CREATE TABLE `subject_grades` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `result_id` int NOT NULL,
+  `subject_name` varchar(255) NOT NULL,
+  `marks` int DEFAULT NULL,
+  `grade` varchar(10) NOT NULL,
+  `gpa` decimal(3,2) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `result_id` (`result_id`),
+  CONSTRAINT `subject_grades_ibfk_1` FOREIGN KEY (`result_id`) REFERENCES `results` (`id`) ON DELETE CASCADE
+);
+
+*/
+
 
 // ========= TYPES =========
 
-export interface ResultForAdmin {
+export interface ResultForAdmin extends RowDataPacket {
     id: number;
     student_name: string;
     roll: string;
@@ -16,13 +50,13 @@ export interface ResultForAdmin {
     final_gpa: number;
 }
 
-export interface StudentForResultForm {
+export interface StudentForResultForm extends RowDataPacket {
     id: number;
     name_bn: string;
     roll: string;
 }
 
-export interface SubjectGrade {
+export interface SubjectGrade extends RowDataPacket {
     id?: number;
     subject_name: string;
     marks: number | null;
@@ -36,7 +70,7 @@ export interface ResultWithSubjects {
     exam_name: string;
     year: number;
     final_gpa: number;
-    status: 'Promoted' | 'Failed';
+    status: string;
     subjects: SubjectGrade[];
 }
 
@@ -124,34 +158,21 @@ export async function saveResult(data: Omit<ResultWithSubjects, 'id'>, id?: numb
             throw new Error("Failed to get result ID.");
         }
 
-        // Handle subjects
-        const existingSubjectIds = (await connection.query<any[]>('SELECT id FROM subject_grades WHERE result_id = ?', [resultId]))[0].map(s => s.id);
-        const newSubjectIds = data.subjects.map(s => s.id).filter(id => id !== undefined);
-
-        // Delete subjects that were removed
-        const subjectsToDelete = existingSubjectIds.filter(id => !newSubjectIds.includes(id));
-        if(subjectsToDelete.length > 0) {
-            await connection.query('DELETE FROM subject_grades WHERE id IN (?)', [subjectsToDelete]);
+        // Delete old subjects before inserting/updating new ones to simplify logic
+        await connection.query('DELETE FROM subject_grades WHERE result_id = ?', [resultId]);
+        
+        // Insert new subjects
+        if (data.subjects && data.subjects.length > 0) {
+            const subjectValues = data.subjects.map(subject => [
+                resultId,
+                subject.subject_name,
+                subject.marks,
+                subject.grade,
+                subject.gpa
+            ]);
+            await connection.query('INSERT INTO subject_grades (result_id, subject_name, marks, grade, gpa) VALUES ?', [subjectValues]);
         }
         
-        // Update or Insert subjects
-        for (const subject of data.subjects) {
-            const subjectData = {
-                result_id: resultId,
-                subject_name: subject.subject_name,
-                marks: subject.marks,
-                grade: subject.grade,
-                gpa: subject.gpa
-            };
-            if (subject.id) {
-                // Update
-                await connection.query('UPDATE subject_grades SET ? WHERE id = ?', [subjectData, subject.id]);
-            } else {
-                // Insert
-                await connection.query('INSERT INTO subject_grades SET ?', [subjectData]);
-            }
-        }
-
         await connection.commit();
         
         revalidatePath('/admin/results');
@@ -161,6 +182,9 @@ export async function saveResult(data: Omit<ResultWithSubjects, 'id'>, id?: numb
     } catch (e: any) {
         await connection.rollback();
         console.error("Failed to save result:", e.message);
+        if (e.code === 'ER_DUP_ENTRY') {
+            return { success: false, error: "এই শিক্ষার্থীর জন্য এই পরীক্ষা এবং বছরের ফলাফল ইতিমধ্যে তৈরি করা আছে।" };
+        }
         return { success: false, error: "একটি সার্ভার ত্রুটি হয়েছে।" };
     } finally {
         connection.release();
