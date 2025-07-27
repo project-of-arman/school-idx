@@ -8,6 +8,7 @@ import { getGalleryImages, GalleryImage } from "@/lib/gallery-data";
 import {
   Dialog,
   DialogContent,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Skeleton } from '@/components/ui/skeleton';
@@ -66,6 +67,7 @@ export default function GalleryPage() {
                         </Card>
                     </DialogTrigger>
                     <DialogContent className="w-screen h-screen max-w-full max-h-screen p-0 m-0 bg-black/80 flex items-center justify-center border-none">
+                        <DialogTitle className="sr-only">{image.title}</DialogTitle>
                         <div className="relative w-[95vw] h-[95vh]">
                             <Image
                                 src={image.image_url}
