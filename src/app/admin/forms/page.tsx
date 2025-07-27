@@ -1,7 +1,9 @@
 
+
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { formConfigs, getFormSubmissions } from "@/lib/actions/forms-actions";
+import { getFormSubmissions } from "@/lib/actions/forms-actions";
+import { formConfigs } from "@/lib/config/forms-config";
 import FormsTable from "@/components/admin/forms/forms-table";
 
 export default async function AdminFormsPage() {

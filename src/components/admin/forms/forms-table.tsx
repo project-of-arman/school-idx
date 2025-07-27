@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useMemo } from "react";
@@ -37,7 +38,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MoreHorizontal, Trash, Eye, CheckCircle, XCircle } from "lucide-react";
-import { FormSubmission, FormConfig, getSubmissionDetails, updateSubmissionStatus, deleteSubmission } from "@/lib/actions/forms-actions";
+import { getSubmissionDetails, updateSubmissionStatus, deleteSubmission } from "@/lib/actions/forms-actions";
+import type { FormSubmission, FormConfig } from "@/lib/config/forms-config";
 import { useToast } from "@/hooks/use-toast";
 import { CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -262,4 +264,3 @@ export default function FormsTable({ formType, submissions, config }: { formType
     </>
   );
 }
-
