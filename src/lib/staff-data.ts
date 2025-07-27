@@ -12,7 +12,7 @@ export interface Staff {
   address: string;
   phone: string;
   email: string;
-  dataAiHint: string;
+  data_ai_hint: string;
 }
 
 const mockStaff: Staff[] = [
@@ -24,7 +24,7 @@ const mockStaff: Staff[] = [
       address: "ঢাকা, বাংলাদেশ",
       phone: "01712345678",
       email: "rafiqul@example.com",
-      dataAiHint: "male staff portrait"
+      data_ai_hint: "male staff portrait"
     },
     {
       id: 2,
@@ -34,7 +34,7 @@ const mockStaff: Staff[] = [
       address: "ঢাকা, বাংলাদেশ",
       phone: "01812345678",
       email: "aklima@example.com",
-      dataAiHint: "female staff portrait"
+      data_ai_hint: "female staff portrait"
     }
   ];
 
@@ -52,10 +52,10 @@ export async function getStaff(): Promise<Staff[]> {
     }
 }
 
-export async function getStaffById(id: string | number): Promise<Staff | null> {
+export async function getStaffById(id: number): Promise<Staff | null> {
     if (!pool) {
         console.warn("Database not connected. Returning mock data.");
-        return mockStaff.find(t => t.id.toString() === id.toString()) || null;
+        return mockStaff.find(t => t.id === id) || null;
     }
     try {
         const [rows] = await pool.query('SELECT * FROM staff WHERE id = ?', [id]);
@@ -63,7 +63,7 @@ export async function getStaffById(id: string | number): Promise<Staff | null> {
         return staff[0] || null;
     } catch (error) {
         console.error(`Failed to fetch staff by id ${id}:`, error);
-        return mockStaff.find(t => t.id.toString() === id.toString()) || null;
+        return mockStaff.find(t => t.id === id) || null;
     }
 }
 
@@ -82,20 +82,29 @@ export async function saveStaff(formData: FormData, id?: number): Promise<SaveRe
             phone: (formData.get('phone') as string) || null,
             address: (formData.get('address') as string) || null,
             image: formData.get('image') as string | null,
-            dataAiHint: (formData.get('dataAiHint') as string) || 'staff portrait',
-        }
+            data_ai_hint: (formData.get('dataAiHint') as string) || 'staff portrait',
+        };
         
+        const dbData = {
+            name: data.name,
+            role: data.role,
+            email: data.email,
+            phone: data.phone,
+            address: data.address,
+            image: data.image,
+            data_ai_hint: data.data_ai_hint,
+        };
+
         if (id) {
             // Update
-            const fieldsToUpdate: { [key: string]: any } = { ...data };
+            const fieldsToUpdate: { [key: string]: any } = { ...dbData };
             if (!data.image) {
                 delete fieldsToUpdate.image; // Don't update image if not provided
             }
-
             await pool.query('UPDATE staff SET ? WHERE id = ?', [fieldsToUpdate, id]);
         } else {
             // Insert
-             await pool.query('INSERT INTO staff SET ?', [data]);
+             await pool.query('INSERT INTO staff SET ?', [dbData]);
         }
 
         revalidatePath('/admin/staff');
