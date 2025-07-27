@@ -45,7 +45,9 @@ function FeatureForm({ feature, onFinished }: { feature?: SchoolFeature, onFinis
     },
   });
 
-  const iconKeys = Object.keys(LucideIcons).filter(k => typeof LucideIcons[k as keyof typeof LucideIcons] === 'object' && k[0] === k[0].toUpperCase());
+  const predefinedIcons = [
+    'History', 'Target', 'BookOpen', 'Award', 'Users', 'Building', 'GraduationCap', 'ShieldCheck', 'Library', 'FlaskConical', 'Computer', 'Music', 'Paintbrush', 'Map', 'Bus', 'Lightbulb'
+  ];
 
   async function onSubmit(values: FormValues) {
     const result = await saveSchoolFeature(values, feature?.id);
@@ -60,8 +62,7 @@ function FeatureForm({ feature, onFinished }: { feature?: SchoolFeature, onFinis
   const IconComponent = ({ name }: { name: string }) => {
     const Icon = LucideIcons[name as keyof typeof LucideIcons] as React.ElementType;
     return Icon ? <Icon className="h-4 w-4" /> : <BookOpen className="h-4 w-4" />;
-};
-
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -80,7 +81,7 @@ function FeatureForm({ feature, onFinished }: { feature?: SchoolFeature, onFinis
                          </div>
                     </SelectTrigger>
                     <SelectContent className="max-h-60">
-                        {iconKeys.map(iconKey => (
+                        {predefinedIcons.map(iconKey => (
                             <SelectItem key={iconKey} value={iconKey}>
                                <div className="flex items-center gap-2">
                                     <IconComponent name={iconKey} />
