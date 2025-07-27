@@ -17,7 +17,7 @@ const formSchema = z.object({
   site_title: z.string().min(1, "সাইটের শিরোনাম আবশ্যক"),
   meta_description: z.string().min(1, "মেটা বিবরণ আবশ্যক"),
   meta_keywords: z.string().optional(),
-  favicon_url: z.string().url("অবৈধ URL").optional().or(z.literal("")),
+  favicon_url: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
