@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   Table,
   TableBody,
@@ -32,6 +32,7 @@ import { Notice, deleteNotice } from "@/lib/notice-data";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { CardFooter } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
 const NOTICES_PER_PAGE = 10;
 
@@ -39,11 +40,19 @@ export default function NoticeTable({ notices }: { notices: Notice[] }) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedNotice, setSelectedNotice] = useState<Notice | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
 
-  const totalPages = Math.ceil(notices.length / NOTICES_PER_PAGE);
+  const filteredNotices = useMemo(() => {
+    return notices.filter(notice =>
+      notice.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [notices, searchTerm]);
 
-  const paginatedNotices = notices.slice(
+
+  const totalPages = Math.ceil(filteredNotices.length / NOTICES_PER_PAGE);
+
+  const paginatedNotices = filteredNotices.slice(
     (currentPage - 1) * NOTICES_PER_PAGE,
     currentPage * NOTICES_PER_PAGE
   );
@@ -83,6 +92,14 @@ export default function NoticeTable({ notices }: { notices: Notice[] }) {
 
   return (
     <>
+       <div className="mb-4">
+        <Input 
+            placeholder="শিরোনাম দিয়ে খুঁজুন..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="max-w-sm"
+        />
+      </div>
       <div className="border rounded-md">
         <Table>
           <TableHeader>

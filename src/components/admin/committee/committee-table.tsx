@@ -35,7 +35,7 @@ import { useToast } from "@/hooks/use-toast";
 import { CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
-const MEMBERS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 10;
 
 export default function CommitteeTable({ members }: { members: CommitteeMember[] }) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -51,12 +51,12 @@ export default function CommitteeTable({ members }: { members: CommitteeMember[]
     );
   }, [members, searchTerm]);
 
-  const totalPages = Math.ceil(filteredMembers.length / MEMBERS_PER_PAGE);
+  const totalPages = Math.ceil(filteredMembers.length / ITEMS_PER_PAGE);
 
   const paginatedMembers = useMemo(() => {
     return filteredMembers.slice(
-        (currentPage - 1) * MEMBERS_PER_PAGE,
-        currentPage * MEMBERS_PER_PAGE
+        (currentPage - 1) * ITEMS_PER_PAGE,
+        currentPage * ITEMS_PER_PAGE
     );
   }, [filteredMembers, currentPage]);
 

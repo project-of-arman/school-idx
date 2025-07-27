@@ -35,7 +35,7 @@ import { useToast } from "@/hooks/use-toast";
 import { CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
-const TEACHERS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 10;
 
 export default function TeacherTable({ teachers }: { teachers: Teacher[] }) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -56,12 +56,12 @@ export default function TeacherTable({ teachers }: { teachers: Teacher[] }) {
     setCurrentPage(1);
   }, [searchTerm]);
 
-  const totalPages = Math.ceil(filteredTeachers.length / TEACHERS_PER_PAGE);
+  const totalPages = Math.ceil(filteredTeachers.length / ITEMS_PER_PAGE);
 
   const paginatedTeachers = useMemo(() => {
     return filteredTeachers.slice(
-        (currentPage - 1) * TEACHERS_PER_PAGE,
-        currentPage * TEACHERS_PER_PAGE
+        (currentPage - 1) * ITEMS_PER_PAGE,
+        currentPage * ITEMS_PER_PAGE
     );
   }, [filteredTeachers, currentPage]);
 

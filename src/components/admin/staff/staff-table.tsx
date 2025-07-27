@@ -35,7 +35,7 @@ import { useToast } from "@/hooks/use-toast";
 import { CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
-const STAFF_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 10;
 
 export default function StaffTable({ staff }: { staff: Staff[] }) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -55,12 +55,12 @@ export default function StaffTable({ staff }: { staff: Staff[] }) {
     setCurrentPage(1);
   }, [searchTerm]);
 
-  const totalPages = Math.ceil(filteredStaff.length / STAFF_PER_PAGE);
+  const totalPages = Math.ceil(filteredStaff.length / ITEMS_PER_PAGE);
 
   const paginatedStaff = useMemo(() => {
     return filteredStaff.slice(
-        (currentPage - 1) * STAFF_PER_PAGE,
-        currentPage * STAFF_PER_PAGE
+        (currentPage - 1) * ITEMS_PER_PAGE,
+        currentPage * ITEMS_PER_PAGE
     );
   }, [filteredStaff, currentPage]);
 

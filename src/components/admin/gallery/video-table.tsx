@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Image from "next/image";
 import {
   Table,
@@ -33,12 +33,36 @@ import { Video, deleteVideo } from "@/lib/video-data";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { CardFooter } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+
+const ITEMS_PER_PAGE = 10;
 
 export default function VideoTable({ videos }: { videos: Video[] }) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
   const router = useRouter();
+
+  const filteredVideos = useMemo(() => {
+    return videos.filter(video =>
+      video.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [videos, searchTerm]);
+
+  const totalPages = Math.ceil(filteredVideos.length / ITEMS_PER_PAGE);
+
+  const paginatedVideos = useMemo(() => {
+    return filteredVideos.slice(
+      (currentPage - 1) * ITEMS_PER_PAGE,
+      currentPage * ITEMS_PER_PAGE
+    );
+  }, [filteredVideos, currentPage]);
+
+  const handlePreviousPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));
+  const handleNextPage = () => setCurrentPage(prev => Math.min(prev + 1, totalPages));
 
   const handleDeleteClick = (video: Video) => {
     setSelectedVideo(video);
@@ -61,6 +85,14 @@ export default function VideoTable({ videos }: { videos: Video[] }) {
 
   return (
     <>
+      <div className="mb-4">
+        <Input 
+            placeholder="শিরোনাম দিয়ে খুঁজুন..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="max-w-sm"
+        />
+      </div>
       <div className="border rounded-md">
         <Table>
           <TableHeader>
@@ -71,7 +103,7 @@ export default function VideoTable({ videos }: { videos: Video[] }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {videos.length > 0 ? videos.map((video) => (
+            {paginatedVideos.length > 0 ? paginatedVideos.map((video) => (
               <TableRow key={video.id}>
                 <TableCell>
                   <Image
@@ -125,6 +157,19 @@ export default function VideoTable({ videos }: { videos: Video[] }) {
           </TableBody>
         </Table>
       </div>
+
+       {totalPages > 1 && (
+        <CardFooter className="flex items-center justify-between pt-4 px-0">
+          <span className="text-sm text-muted-foreground">
+            পৃষ্ঠা {currentPage} এর {totalPages}
+          </span>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={handlePreviousPage} disabled={currentPage === 1}>পূর্ববর্তী</Button>
+            <Button variant="outline" onClick={handleNextPage} disabled={currentPage === totalPages}>পরবর্তী</Button>
+          </div>
+        </CardFooter>
+      )}
+
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
