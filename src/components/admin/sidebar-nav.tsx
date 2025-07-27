@@ -29,6 +29,7 @@ import {
   List,
   StickyNote,
   Link2,
+  Trophy,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -55,6 +56,7 @@ const navItems = [
       { href: "/admin/committee", icon: Users, label: "কমিটি" },
     ],
   },
+  { href: "/admin/results", icon: Trophy, label: "ফলাফল" },
   { href: "/admin/admission-guidelines", icon: FileText, label: "ভর্তি নির্দেশিকা" },
   { href: "/admin/pages", icon: StickyNote, label: "পেজ" },
    { href: "/admin/important-links", icon: Link2, label: "গুরুত্বপূর্ণ লিংক" },
