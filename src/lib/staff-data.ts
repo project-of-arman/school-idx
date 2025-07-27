@@ -5,7 +5,7 @@ import pool from './db';
 import { revalidatePath } from 'next/cache';
 
 export interface Staff {
-  id: string;
+  id: number;
   name: string;
   role: string;
   image: string;
@@ -17,7 +17,7 @@ export interface Staff {
 
 const mockStaff: Staff[] = [
     {
-      id: "1",
+      id: 1,
       name: "মোঃ রফিকুল ইসলাম",
       role: "হিসাবরক্ষক",
       image: "https://placehold.co/300x400.png",
@@ -27,7 +27,7 @@ const mockStaff: Staff[] = [
       dataAiHint: "male staff portrait"
     },
     {
-      id: "2",
+      id: 2,
       name: "আকলিমা খাতুন",
       role: "অফিস সহকারী",
       image: "https://placehold.co/300x400.png",
@@ -52,10 +52,10 @@ export async function getStaff(): Promise<Staff[]> {
     }
 }
 
-export async function getStaffById(id: string): Promise<Staff | null> {
+export async function getStaffById(id: string | number): Promise<Staff | null> {
     if (!pool) {
         console.warn("Database not connected. Returning mock data.");
-        return mockStaff.find(t => t.id === id) || null;
+        return mockStaff.find(t => t.id.toString() === id.toString()) || null;
     }
     try {
         const [rows] = await pool.query('SELECT * FROM staff WHERE id = ?', [id]);
@@ -63,47 +63,46 @@ export async function getStaffById(id: string): Promise<Staff | null> {
         return staff[0] || null;
     } catch (error) {
         console.error(`Failed to fetch staff by id ${id}:`, error);
-        return mockStaff.find(t => t.id === id) || null;
+        return mockStaff.find(t => t.id.toString() === id.toString()) || null;
     }
 }
 
 type SaveResult = { success: boolean; error?: string };
 
-export async function saveStaff(formData: FormData, id?: string): Promise<SaveResult> {
+export async function saveStaff(formData: FormData, id?: number): Promise<SaveResult> {
     if (!pool) {
         return { success: false, error: "Database not connected." };
     }
 
     try {
-        const name = formData.get('name') as string;
-        const role = formData.get('role') as string;
-        const email = formData.get('email') as string | null;
-        const phone = formData.get('phone') as string | null;
-        const address = formData.get('address') as string | null;
-        const image = formData.get('image') as string | null;
-        const dataAiHint = formData.get('dataAiHint') as string | null;
-        
-        let query;
-        let params;
+        const data = {
+            name: formData.get('name') as string,
+            role: formData.get('role') as string,
+            email: (formData.get('email') as string) || null,
+            phone: (formData.get('phone') as string) || null,
+            address: (formData.get('address') as string) || null,
+            image: formData.get('image') as string | null,
+            dataAiHint: (formData.get('dataAiHint') as string) || 'staff portrait',
+        }
         
         if (id) {
-            // Update logic
-            const fieldsToUpdate: { [key: string]: any } = { name, role, email, phone, address, dataAiHint };
-            if (image) {
-                fieldsToUpdate.image = image;
+            // Update
+            const fieldsToUpdate: { [key: string]: any } = { ...data };
+            if (!data.image) {
+                delete fieldsToUpdate.image; // Don't update image if not provided
             }
-            query = 'UPDATE staff SET ? WHERE id = ?';
-            params = [fieldsToUpdate, id];
-        } else {
-            // Insert logic
-            query = 'INSERT INTO staff (name, role, email, phone, address, image, dataAiHint) VALUES (?, ?, ?, ?, ?, ?, ?)';
-            params = [name, role, email, phone, address, image, dataAiHint];
-        }
 
-        await pool.query(query, params);
+            await pool.query('UPDATE staff SET ? WHERE id = ?', [fieldsToUpdate, id]);
+        } else {
+            // Insert
+             await pool.query('INSERT INTO staff SET ?', [data]);
+        }
 
         revalidatePath('/admin/staff');
         revalidatePath('/(site)/staff');
+        if (id) {
+            revalidatePath(`/(site)/staff/${id}`);
+        }
 
         return { success: true };
     } catch (error: any) {
@@ -113,7 +112,7 @@ export async function saveStaff(formData: FormData, id?: string): Promise<SaveRe
 }
 
 
-export async function deleteStaff(id: string): Promise<SaveResult> {
+export async function deleteStaff(id: number): Promise<SaveResult> {
     if (!pool) {
         return { success: false, error: "Database not connected." };
     }

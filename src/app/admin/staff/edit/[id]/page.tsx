@@ -5,7 +5,11 @@ import { getStaffById } from "@/lib/staff-data";
 import { notFound } from "next/navigation";
 
 export default async function EditStaffPage({ params }: { params: { id: string } }) {
-  const staffMember = await getStaffById(params.id);
+  const id = parseInt(params.id, 10);
+  if (isNaN(id)) {
+    notFound();
+  }
+  const staffMember = await getStaffById(id);
 
   if (!staffMember) {
     notFound();

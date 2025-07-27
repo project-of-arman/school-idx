@@ -8,7 +8,7 @@ import Link from "next/link";
 import type { Teacher } from "@/lib/teacher-data";
 import type { Staff } from "@/lib/staff-data";
 
-type Member = (Teacher | Staff) & { id: string };
+type Member = (Teacher | Staff) & { id: number | string };
 
 export default function StaffList({ members, memberType }: { members: Member[]; memberType: 'teachers' | 'staff' }) {
   

@@ -55,14 +55,13 @@ export function StaffForm({ staff }: { staff?: Staff }) {
   async function onSubmit(values: FormValues) {
     const formData = new FormData();
     
-    // Append all string values
-    for (const [key, value] of Object.entries(values)) {
-      if (key !== 'image') {
-         formData.append(key, value as any);
-      }
-    }
-    
-    // Handle file upload
+    formData.append('name', values.name);
+    formData.append('role', values.role);
+    formData.append('email', values.email || '');
+    formData.append('phone', values.phone || '');
+    formData.append('address', values.address || '');
+    formData.append('dataAiHint', values.dataAiHint || '');
+
     if (values.image && values.image.length > 0) {
       try {
         const imageBase64 = await toBase64(values.image[0]);
@@ -75,8 +74,6 @@ export function StaffForm({ staff }: { staff?: Staff }) {
           });
           return;
       }
-    } else if (staff?.image) {
-        formData.append('image', staff.image);
     }
 
     const result = await saveStaff(formData, staff?.id);
