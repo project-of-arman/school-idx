@@ -19,18 +19,17 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { ResultWithSubjects, StudentForResultForm, saveResult } from "@/lib/actions/results-actions";
 import { PlusCircle, Trash } from "lucide-react";
-import { useEffect } from "react";
 
 const subjectSchema = z.object({
   id: z.number().optional(),
   subject_name: z.string().min(1, "বিষয় আবশ্যক"),
   marks: z.coerce.number().nullable().optional(),
   grade: z.string().min(1, "গ্রেড আবশ্যক"),
-  gpa: z.coerce.number().min(0).max(5, "GPA 0 থেকে 5 এর মধ্যে হতে হবে"),
+  gpa: z.coerce.number().min(0, "GPA 0 বা তার বেশি হতে হবে").max(5, "GPA 5 বা তার কম হতে হবে"),
 });
 
 const formSchema = z.object({
-  student_id: z.coerce.number({required_error: "শিক্ষার্থী নির্বাচন আবশ্যক"}).int().positive("শিক্ষার্থী নির্বাচন আবশ্যক"),
+  student_id: z.coerce.number({invalid_type_error: "শিক্ষার্থী নির্বাচন আবশ্যক"}).positive("শিক্ষার্থী নির্বাচন আবশ্যক"),
   exam_name: z.string().min(1, "পরীক্ষার নাম আবশ্যক"),
   year: z.coerce.number().min(2000, "বছর আবশ্যক"),
   final_gpa: z.coerce.number().min(0).max(5, "চূড়ান্ত GPA আবশ্যক"),
@@ -43,10 +42,11 @@ type FormValues = z.infer<typeof formSchema>;
 export function ResultForm({ result, students }: { result?: ResultWithSubjects, students: StudentForResultForm[] }) {
   const { toast } = useToast();
   const router = useRouter();
-  const { register, handleSubmit, control, formState: { errors, isSubmitting } } = useForm<FormValues>({
+  const { register, handleSubmit, control, formState: { errors, isSubmitting, isValid } } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
+    mode: "onChange",
     defaultValues: {
-      student_id: result?.student_id || undefined,
+      student_id: result?.student_id,
       exam_name: result?.exam_name || "",
       year: result?.year || new Date().getFullYear(),
       final_gpa: result?.final_gpa,
@@ -84,7 +84,7 @@ export function ResultForm({ result, students }: { result?: ResultWithSubjects, 
               render={({ field }) => (
                 <Select 
                   onValueChange={(value) => field.onChange(parseInt(value, 10))} 
-                  value={field.value?.toString()} 
+                  value={field.value?.toString()}
                   disabled={!!result}
                 >
                   <SelectTrigger><SelectValue placeholder="শিক্ষার্থী নির্বাচন করুন" /></SelectTrigger>
@@ -138,13 +138,13 @@ export function ResultForm({ result, students }: { result?: ResultWithSubjects, 
               </div>
                {errors.subjects?.root && <p className="text-sm font-medium text-destructive mt-2">{errors.subjects.root.message}</p>}
                {errors.subjects && !errors.subjects.root && <p className="text-sm font-medium text-destructive mt-2">{errors.subjects.message}</p>}
-              <Button type="button" variant="outline" size="sm" onClick={() => append({ subject_name: '', marks: undefined, grade: '', gpa: 0 })} className="mt-4"><PlusCircle className="mr-2 h-4 w-4" /> বিষয় যোগ করুন</Button>
+              <Button type="button" variant="outline" size="sm" onClick={() => append({ subject_name: '', marks: null, grade: '', gpa: 0 })} className="mt-4"><PlusCircle className="mr-2 h-4 w-4" /> বিষয় যোগ করুন</Button>
           </CardContent>
       </Card>
       
       <div className="flex justify-end gap-2">
           <Button type="button" variant="outline" onClick={() => router.back()}>বাতিল করুন</Button>
-          <Button type="submit" disabled={isSubmitting}>{isSubmitting ? 'সংরক্ষণ করা হচ্ছে...' : 'সংরক্ষণ করুন'}</Button>
+          <Button type="submit" disabled={isSubmitting || !isValid}>{isSubmitting ? 'সংরক্ষণ করা হচ্ছে...' : 'সংরক্ষণ করুন'}</Button>
       </div>
     </form>
   )
