@@ -74,13 +74,14 @@ export async function saveStaff(formData: FormData, id?: string): Promise<SaveRe
         return { success: false, error: "Database not connected." };
     }
 
-    const staffData: { [key: string]: any } = {};
-    formData.forEach((value, key) => {
-        staffData[key] = value;
-    });
-
     try {
-        const { name, role, email, phone, address, image, dataAiHint } = staffData;
+        const name = formData.get('name') as string;
+        const role = formData.get('role') as string;
+        const email = formData.get('email') as string | null;
+        const phone = formData.get('phone') as string | null;
+        const address = formData.get('address') as string | null;
+        const image = formData.get('image') as string | null;
+        const dataAiHint = formData.get('dataAiHint') as string | null;
         
         let query;
         let params;
@@ -96,7 +97,7 @@ export async function saveStaff(formData: FormData, id?: string): Promise<SaveRe
         } else {
             // Insert logic
             query = 'INSERT INTO staff (name, role, email, phone, address, image, dataAiHint) VALUES (?, ?, ?, ?, ?, ?, ?)';
-            params = [name, role, email || null, phone || null, address || null, image || null, dataAiHint || null];
+            params = [name, role, email, phone, address, image, dataAiHint];
         }
 
         await pool.query(query, params);
