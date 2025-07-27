@@ -1,12 +1,22 @@
---
--- Table structure for table `gallery_images`
---
 
 CREATE TABLE `gallery_images` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `image_url` longtext,
+  `sort_order` int DEFAULT '0',
   `data_ai_hint` varchar(255) DEFAULT 'school event',
-  `sort_order` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
+
+CREATE TABLE `site_settings` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `site_title` varchar(255) DEFAULT 'Default Site Title',
+  `meta_description` text,
+  `meta_keywords` text,
+  `favicon_url` varchar(255) DEFAULT '/favicon.ico',
+  PRIMARY KEY (`id`)
+);
+
+-- It's a good practice to insert a default row
+INSERT INTO `site_settings` (`id`, `site_title`, `meta_description`, `meta_keywords`, `favicon_url`) VALUES
+(1, 'মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়', 'Official website for মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়', 'school, education, bangladesh', '/favicon.ico');

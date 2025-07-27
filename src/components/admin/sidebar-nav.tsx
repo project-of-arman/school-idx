@@ -30,6 +30,7 @@ import {
   StickyNote,
   Link2,
   Trophy,
+  Settings,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -70,6 +71,7 @@ const navItems = [
     ]
   },
   { href: "/admin/contact", icon: MessageSquare, label: "যোগাযোগ ও ফিডব্যাক" },
+  { href: "/admin/settings", icon: Settings, label: "সাইট সেটিংস" },
 ];
 
 export default function AdminSidebarNav() {

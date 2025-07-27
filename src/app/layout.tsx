@@ -1,14 +1,20 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
+import { getSiteSettings } from '@/lib/settings-data';
 
-export const metadata: Metadata = {
-  title: 'মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়',
-  description: 'Official website for মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়',
-  icons: {
-    icon: '/favicon.ico',
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+ 
+  return {
+    title: settings.site_title || 'মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়',
+    description: settings.meta_description || 'Official website for মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়',
+    keywords: settings.meta_keywords || 'school, education, bangladesh',
+    icons: {
+      icon: settings.favicon_url || '/favicon.ico',
+    },
+  };
+}
 
 export default function RootLayout({
   children,
