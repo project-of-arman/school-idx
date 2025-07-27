@@ -3,6 +3,7 @@
 
 import pool from './db';
 import { revalidatePath } from 'next/cache';
+import { z } from 'zod';
 
 export interface CarouselItem {
   id: number;
@@ -85,24 +86,6 @@ const mockFeatures: SchoolFeature[] = [
         title: "একাডেমিক কার্যক্রম",
         description: "আমরা জাতীয় শিক্ষাক্রম অনুসরণ করে থাকি। প্রাথমিক থেকে উচ্চ মাধ্যমিক পর্যন্ত আমাদের শিক্ষা কার্যক্রম পরিচালিত হয়। সহশিক্ষা কার্যক্রমের অংশ হিসেবে রয়েছে বিতর্ক, খেলাধুলা, এবং সাংস্কৃতিক চর্চা।"
     },
-    {
-        id: 4,
-        icon: "Users",
-        title: "অভিজ্ঞ শিক্ষক মণ্ডলী",
-        description: "আমাদের প্রতিষ্ঠানে রয়েছেন একদল অভিজ্ঞ, প্রশিক্ষণপ্রাপ্ত এবং নিবেদিতপ্রাণ শিক্ষক। তারা শিক্ষার্থীদের সঠিক পথপ্রদর্শক হিসেবে কাজ করেন।"
-    },
-    {
-        id: 5,
-        icon: "Building",
-        title: "অবকাঠামো",
-        description: "আমাদের রয়েছে একটি সুবিশাল ক্যাম্পাস, আধুনিক শ্রেণীকক্ষ, সমৃদ্ধ লাইব্রেরি, বিজ্ঞানাগার এবং খেলার মাঠ। শিক্ষার্থীদের জন্য সকল সুযোগ-সুবিধা নিশ্চিত করা হয়েছে।"
-    },
-    {
-        id: 6,
-        icon: "Award",
-        title: "অর্জনসমূহ",
-        description: "বিগত বছরগুলোতে আমাদের শিক্ষার্থীরা বিভিন্ন জাতীয় ও আন্তর্জাতিক প্রতিযোগিতায় অংশগ্রহণ করে অসংখ্য পুরস্কার অর্জন করেছে, যা আমাদের জন্য অত্যন্ত গৌরবের।"
-    }
 ];
 
 const mockAboutSchool: AboutSchoolInfo = {
@@ -119,16 +102,16 @@ const mockSchoolInfo: SchoolInfo = {
     logo_url: "https://placehold.co/80x80.png"
 };
 
+type SaveResult = { success: boolean; error?: string };
+
+// ========= CAROUSEL ACTIONS =========
 export async function getCarouselItems(): Promise<CarouselItem[]> {
-    if (!pool) {
-        console.warn("Database not connected. Returning mock data for carousel items.");
-        return mockCarouselItems;
-    }
+    if (!pool) return mockCarouselItems;
     try {
         const [rows] = await pool.query('SELECT * FROM carousel_items ORDER BY sort_order ASC');
         return rows as CarouselItem[];
     } catch (error) {
-        console.error('Failed to fetch carousel items, returning mock data:', error);
+        console.error('Failed to fetch carousel items:', error);
         return mockCarouselItems;
     }
 }
@@ -139,12 +122,9 @@ export async function getCarouselItemById(id: string | number): Promise<Carousel
         const [rows] = await pool.query<CarouselItem[]>('SELECT * FROM carousel_items WHERE id = ?', [id]);
         return rows[0] || null;
     } catch (error) {
-        console.error('Failed to fetch carousel item:', error);
         return null;
     }
 }
-
-type SaveResult = { success: boolean; error?: string };
 
 export async function saveCarouselItem(formData: FormData, id?: number): Promise<SaveResult> {
     if (!pool) return { success: false, error: "Database not connected" };
@@ -167,9 +147,7 @@ export async function saveCarouselItem(formData: FormData, id?: number): Promise
                 dataAiHint: data.dataAiHint,
                 sort_order: data.sort_order 
             };
-            if (data.src) {
-                fieldsToUpdate.src = data.src;
-            }
+            if (data.src) fieldsToUpdate.src = data.src;
             await pool.query('UPDATE carousel_items SET ? WHERE id = ?', [fieldsToUpdate, id]);
         } else {
             if (!data.src) return { success: false, error: 'Image is required for new carousel items' };
@@ -187,7 +165,6 @@ export async function saveCarouselItem(formData: FormData, id?: number): Promise
 
 export async function deleteCarouselItem(id: number): Promise<SaveResult> {
     if (!pool) return { success: false, error: "Database not connected" };
-    
     try {
         await pool.query('DELETE FROM carousel_items WHERE id = ?', [id]);
         revalidatePath('/admin/gallery/carousel');
@@ -198,47 +175,95 @@ export async function deleteCarouselItem(id: number): Promise<SaveResult> {
     }
 }
 
+// ========= SCHOOL INFO ACTIONS =========
+export async function getSchoolInfo(): Promise<SchoolInfo> {
+    if (!pool) return mockSchoolInfo;
+    try {
+        const [rows] = await pool.query('SELECT * FROM school_info LIMIT 1');
+        return (rows as SchoolInfo[])[0] || mockSchoolInfo;
+    } catch (error) {
+        return mockSchoolInfo;
+    }
+}
+
+// ========= ABOUT SCHOOL ACTIONS =========
+export async function getAboutSchool(): Promise<AboutSchoolInfo> {
+    if (!pool) return mockAboutSchool;
+    try {
+        const [rows] = await pool.query('SELECT * FROM about_school LIMIT 1');
+        return (rows as AboutSchoolInfo[])[0] || mockAboutSchool;
+    } catch (error) {
+        return mockAboutSchool;
+    }
+}
+
+export async function saveAboutSchool(formData: FormData): Promise<SaveResult> {
+    if (!pool) return { success: false, error: "Database not connected" };
+    try {
+        const data = {
+            title: formData.get('title') as string,
+            description: formData.get('description') as string,
+            image_url: formData.get('image_url') as string | null
+        };
+        const fieldsToUpdate: any = { title: data.title, description: data.description };
+        if (data.image_url) fieldsToUpdate.image_url = data.image_url;
+        await pool.query('UPDATE about_school SET ? WHERE id = 1', [fieldsToUpdate]);
+        revalidatePath('/admin/school-details');
+        revalidatePath('/(site)/');
+        revalidatePath('/(site)/school-details');
+        return { success: true };
+    } catch(e: any) {
+        return { success: false, error: e.message };
+    }
+}
+
+// ========= SCHOOL FEATURES ACTIONS =========
+const featureSchema = z.object({
+  title: z.string().min(1, "শিরোনাম আবশ্যক"),
+  icon: z.string().min(1, "আইকন আবশ্যক"),
+  description: z.string().min(1, "বিবরণ আবশ্যক"),
+});
 
 export async function getSchoolFeatures(): Promise<SchoolFeature[]> {
-    if (!pool) {
-        console.warn("Database not connected. Returning mock data for school features.");
-        return mockFeatures;
-    }
+    if (!pool) return mockFeatures;
     try {
         const [rows] = await pool.query('SELECT * FROM school_features ORDER BY id ASC');
         return rows as SchoolFeature[];
     } catch (error) {
-        console.error('Failed to fetch school features, returning mock data:', error);
         return mockFeatures;
     }
 }
 
-export async function getAboutSchool(): Promise<AboutSchoolInfo> {
-    if (!pool) {
-        console.warn("Database not connected. Returning mock data for about school.");
-        return mockAboutSchool;
-    }
+export async function saveSchoolFeature(data: unknown, id?: number): Promise<SaveResult> {
+    if (!pool) return { success: false, error: "Database not connected" };
+    
+    const parsed = featureSchema.safeParse(data);
+    if (!parsed.success) return { success: false, error: "Invalid data" };
+
     try {
-        const [rows] = await pool.query('SELECT * FROM about_school LIMIT 1');
-        const results = rows as AboutSchoolInfo[];
-        return results[0] || mockAboutSchool;
-    } catch (error) {
-        console.error('Failed to fetch about school info, returning mock data:', error);
-        return mockAboutSchool;
+        if (id) {
+            await pool.query('UPDATE school_features SET ? WHERE id = ?', [parsed.data, id]);
+        } else {
+            await pool.query('INSERT INTO school_features SET ?', [parsed.data]);
+        }
+        revalidatePath('/admin/school-details');
+        revalidatePath('/(site)/');
+        revalidatePath('/(site)/school-details');
+        return { success: true };
+    } catch (e: any) {
+        return { success: false, error: e.message };
     }
 }
 
-export async function getSchoolInfo(): Promise<SchoolInfo> {
-    if (!pool) {
-        console.warn("Database not connected. Returning mock data for school info.");
-        return mockSchoolInfo;
-    }
+export async function deleteSchoolFeature(id: number): Promise<SaveResult> {
+    if (!pool) return { success: false, error: "Database not connected" };
     try {
-        const [rows] = await pool.query('SELECT * FROM school_info LIMIT 1');
-        const results = rows as SchoolInfo[];
-        return results[0] || mockSchoolInfo;
-    } catch (error) {
-        console.error('Failed to fetch school info, returning mock data:', error);
-        return mockSchoolInfo;
+        await pool.query('DELETE FROM school_features WHERE id = ?', [id]);
+        revalidatePath('/admin/school-details');
+        revalidatePath('/(site)/');
+        revalidatePath('/(site)/school-details');
+        return { success: true };
+    } catch (e: any) {
+        return { success: false, error: e.message };
     }
 }

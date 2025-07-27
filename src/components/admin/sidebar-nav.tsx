@@ -49,6 +49,7 @@ const navItems = [
     label: "স্কুল সম্পর্কিত",
     icon: BookOpen,
     subItems: [
+      { href: "/admin/school-details", icon: Building2, label: "স্কুল বিস্তারিত" },
       { href: "/admin/notices", icon: Bell, label: "নোটিশ" },
       { href: "/admin/routine", icon: Calendar, label: "রুটিন" },
       { href: "/admin/syllabus", icon: Book, label: "সিলেবাস" },
