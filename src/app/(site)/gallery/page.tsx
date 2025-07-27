@@ -65,8 +65,8 @@ export default function GalleryPage() {
                         </CardContent>
                         </Card>
                     </DialogTrigger>
-                    <DialogContent className="max-w-none w-[95vw] h-[95vh] p-2 flex items-center justify-center">
-                        <div className="relative w-full h-full">
+                    <DialogContent className="w-screen h-screen max-w-full max-h-screen p-0 m-0 bg-black/80 flex items-center justify-center border-none">
+                        <div className="relative w-[95vw] h-[95vh]">
                             <Image
                                 src={image.image_url}
                                 alt={image.title}
