@@ -31,7 +31,7 @@ import {
   Link2,
   Trophy,
   Settings,
-  Slideshow,
+  GalleryHorizontal,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -67,7 +67,7 @@ const navItems = [
     label: "গ্যালারি",
     icon: ImageIcon,
     subItems: [
-        { href: "/admin/gallery/carousel", icon: Slideshow, label: "ক্যারোসেল" },
+        { href: "/admin/gallery/carousel", icon: GalleryHorizontal, label: "ক্যারোসেল" },
         { href: "/admin/gallery/photos", icon: ImageIcon, label: "ছবি গ্যালারি" },
         { href: "/admin/gallery/videos", icon: Video, label: "ভিডিও গ্যালারি" }
     ]
