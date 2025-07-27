@@ -32,10 +32,17 @@ export default async function ImportantLinks() {
                                 <div className="w-full sm:w-2/3 flex flex-col overflow-hidden space-y-2">
                                     {card.links.map((link, linkIndex) => (
                                         <Button key={linkIndex} asChild variant="link" className="p-0 h-auto justify-start text-muted-foreground hover:text-primary text-left">
-                                            <Link href={link.href} className="flex !items-start gap-2">
-                                                <ArrowRight className="h-4 w-4 text-accent mt-1 shrink-0" />
-                                                <span className="whitespace-normal">{link.text}</span>
-                                            </Link>
+                                            {link.href ? (
+                                                <Link href={link.href} className="flex !items-start gap-2">
+                                                    <ArrowRight className="h-4 w-4 text-accent mt-1 shrink-0" />
+                                                    <span className="whitespace-normal">{link.text}</span>
+                                                </Link>
+                                            ) : (
+                                                <div className="flex !items-start gap-2 cursor-default">
+                                                    <ArrowRight className="h-4 w-4 text-accent mt-1 shrink-0" />
+                                                    <span className="whitespace-normal">{link.text}</span>
+                                                </div>
+                                            )}
                                         </Button>
                                     ))}
                                 </div>
