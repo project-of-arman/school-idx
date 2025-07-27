@@ -5,13 +5,19 @@ import { getSiteSettings } from '@/lib/settings-data';
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
+  const faviconUrl = settings.favicon_url 
+    ? `${settings.favicon_url}?v=${new Date().getTime()}`
+    : '/favicon.ico';
  
   return {
     title: settings.site_title || 'মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়',
     description: settings.meta_description || 'Official website for মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়',
     keywords: settings.meta_keywords || 'school, education, bangladesh',
     icons: {
-      icon: settings.favicon_url || '/favicon.ico',
+      icon: {
+        url: faviconUrl,
+        type: settings.favicon_url ? 'image/x-icon' : 'image/vnd.microsoft.icon',
+      }
     },
   };
 }
