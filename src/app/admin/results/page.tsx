@@ -1,13 +1,27 @@
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
-export default function AdminResultsPage() {
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getAllResultsForAdmin } from "@/lib/actions/results-actions";
+import Link from "next/link";
+import { PlusCircle } from "lucide-react";
+import ResultsTable from "@/components/admin/results/results-table";
+
+export default async function AdminResultsPage() {
+  const results = await getAllResultsForAdmin();
+
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>ফলাফল ব্যবস্থাপনা</CardTitle>
+        <Button asChild>
+          <Link href="/admin/results/new">
+            <PlusCircle className="mr-2 h-4 w-4" />
+            নতুন ফলাফল যোগ করুন
+          </Link>
+        </Button>
       </CardHeader>
       <CardContent>
-        <p>এখানে ফলাফল যুক্ত, সম্পাদনা এবং মুছে ফেলার ফরম যুক্ত করা হবে।</p>
+        <ResultsTable results={results} />
       </CardContent>
     </Card>
   );
