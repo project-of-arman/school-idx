@@ -19,17 +19,18 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { ResultWithSubjects, StudentForResultForm, saveResult } from "@/lib/actions/results-actions";
 import { PlusCircle, Trash } from "lucide-react";
+import { useEffect } from "react";
 
 const subjectSchema = z.object({
   id: z.number().optional(),
   subject_name: z.string().min(1, "বিষয় আবশ্যক"),
-  marks: z.coerce.number().min(0, "Marks must be positive").optional().nullable(),
+  marks: z.coerce.number().nullable().optional(),
   grade: z.string().min(1, "গ্রেড আবশ্যক"),
   gpa: z.coerce.number().min(0).max(5, "GPA 0 থেকে 5 এর মধ্যে হতে হবে"),
 });
 
 const formSchema = z.object({
-  student_id: z.coerce.number({required_error: "শিক্ষার্থী নির্বাচন আবশ্যক"}).min(1, "শিক্ষার্থী নির্বাচন আবশ্যক"),
+  student_id: z.coerce.number({required_error: "শিক্ষার্থী নির্বাচন আবশ্যক"}).int().positive("শিক্ষার্থী নির্বাচন আবশ্যক"),
   exam_name: z.string().min(1, "পরীক্ষার নাম আবশ্যক"),
   year: z.coerce.number().min(2000, "বছর আবশ্যক"),
   final_gpa: z.coerce.number().min(0).max(5, "চূড়ান্ত GPA আবশ্যক"),
@@ -45,10 +46,10 @@ export function ResultForm({ result, students }: { result?: ResultWithSubjects, 
   const { register, handleSubmit, control, formState: { errors, isSubmitting } } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      student_id: result?.student_id,
+      student_id: result?.student_id || undefined,
       exam_name: result?.exam_name || "",
       year: result?.year || new Date().getFullYear(),
-      final_gpa: result?.final_gpa || 0,
+      final_gpa: result?.final_gpa,
       status: result?.status || "Promoted",
       subjects: result?.subjects || [],
     },
@@ -136,7 +137,8 @@ export function ResultForm({ result, students }: { result?: ResultWithSubjects, 
                   ))}
               </div>
                {errors.subjects?.root && <p className="text-sm font-medium text-destructive mt-2">{errors.subjects.root.message}</p>}
-              <Button type="button" variant="outline" size="sm" onClick={() => append({ subject_name: '', marks: null, grade: '', gpa: 0 })} className="mt-4"><PlusCircle className="mr-2 h-4 w-4" /> বিষয় যোগ করুন</Button>
+               {errors.subjects && !errors.subjects.root && <p className="text-sm font-medium text-destructive mt-2">{errors.subjects.message}</p>}
+              <Button type="button" variant="outline" size="sm" onClick={() => append({ subject_name: '', marks: undefined, grade: '', gpa: 0 })} className="mt-4"><PlusCircle className="mr-2 h-4 w-4" /> বিষয় যোগ করুন</Button>
           </CardContent>
       </Card>
       
