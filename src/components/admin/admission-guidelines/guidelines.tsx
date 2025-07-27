@@ -24,8 +24,21 @@ import { saveGuideline, deleteGuideline } from "@/lib/actions/admission-guidelin
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import RichTextEditor from '@/components/admin/pages/rich-text-editor';
 import * as LucideIcons from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const iconNames = Object.keys(LucideIcons).filter(k => typeof LucideIcons[k as keyof typeof LucideIcons] === 'object');
+
+const educationIcons = [
+    { value: 'UserCheck', label: 'যোগ্যতা' },
+    { value: 'FileSignature', label: 'আবেদন' },
+    { value: 'ListChecks', label: 'কাগজপত্র' },
+    { value: 'Pencil', label: 'পরীক্ষা' },
+    { value: 'Banknote', label: 'ফি/বেতন' },
+    { value: 'BookOpen', label: 'বই' },
+    { value: 'Calendar', label: 'তারিখ' },
+    { value: 'Award', label: 'পুরস্কার' },
+    { value: 'GraduationCap', label: 'শিক্ষা' },
+];
 
 
 const formSchema = z.object({
@@ -67,7 +80,31 @@ function GuidelineForm({ guideline, onFinished }: { guideline?: AdmissionGuideli
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2"><Label htmlFor="title">শিরোনাম</Label><Input id="title" {...register("title")} />{errors.title && <p className="text-sm font-medium text-destructive">{errors.title.message}</p>}</div>
-      <div className="space-y-2"><Label htmlFor="icon">আইকন (Lucide)</Label><Input id="icon" {...register("icon")} placeholder="e.g., UserCheck" />{errors.icon && <p className="text-sm font-medium text-destructive">{errors.icon.message}</p>}<p className="text-xs text-muted-foreground">List of icons: <a href="https://lucide.dev/icons/" target="_blank" className="underline">lucide.dev/icons</a></p></div>
+      <div className="space-y-2">
+        <Label htmlFor="icon">আইকন</Label>
+        <Controller
+            name="icon"
+            control={control}
+            render={({ field }) => (
+                <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger>
+                        <SelectValue placeholder="আইকন নির্বাচন করুন" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {educationIcons.map(icon => (
+                            <SelectItem key={icon.value} value={icon.value}>
+                               <div className="flex items-center gap-2">
+                                    <LucideIcons.Icon name={icon.value} className="h-4 w-4" />
+                                    <span>{icon.label} ({icon.value})</span>
+                               </div>
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            )}
+        />
+        {errors.icon && <p className="text-sm font-medium text-destructive">{errors.icon.message}</p>}
+      </div>
       <div className="space-y-2"><Label htmlFor="content">বিবরণ</Label><Controller name="content" control={control} render={({ field }) => <RichTextEditor value={field.value || ''} onChange={field.onChange} />}/>{errors.content && <p className="text-sm font-medium text-destructive">{errors.content.message}</p>}</div>
       <div className="space-y-2"><Label htmlFor="sort_order">অবস্থান (Sort Order)</Label><Input id="sort_order" type="number" {...register("sort_order")} />{errors.sort_order && <p className="text-sm font-medium text-destructive">{errors.sort_order.message}</p>}</div>
       <Button type="submit" disabled={isSubmitting}>{isSubmitting ? 'সংরক্ষণ করা হচ্ছে...' : 'সংরক্ষণ করুন'}</Button>
