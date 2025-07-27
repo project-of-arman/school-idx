@@ -19,6 +19,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { ResultWithSubjects, StudentForResultForm, saveResult } from "@/lib/actions/results-actions";
 import { PlusCircle, Trash } from "lucide-react";
+import { useEffect } from "react";
 
 const subjectSchema = z.object({
   id: z.number().optional(),
@@ -42,16 +43,23 @@ type FormValues = z.infer<typeof formSchema>;
 export function ResultForm({ result, students }: { result?: ResultWithSubjects, students: StudentForResultForm[] }) {
   const { toast } = useToast();
   const router = useRouter();
-  const { register, handleSubmit, control, formState: { errors, isSubmitting, isValid } } = useForm<FormValues>({
+  
+  const { 
+    register, 
+    handleSubmit, 
+    control, 
+    formState: { errors, isSubmitting, isValid },
+    reset 
+  } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     mode: "onChange",
     defaultValues: {
-      student_id: result?.student_id.toString() || "",
+      student_id: result?.student_id?.toString() || "",
       exam_name: result?.exam_name || "",
       year: result?.year || new Date().getFullYear(),
-      final_gpa: result?.final_gpa,
+      final_gpa: result?.final_gpa ?? undefined,
       status: result?.status || "Promoted",
-      subjects: result?.subjects.length ? result.subjects : [{ subject_name: '', marks: null, grade: '', gpa: 0 }],
+      subjects: result?.subjects?.length ? result.subjects : [{ subject_name: '', marks: null, grade: '', gpa: 0 }],
     },
   });
   
@@ -153,3 +161,5 @@ export function ResultForm({ result, students }: { result?: ResultWithSubjects, 
     </form>
   )
 }
+
+    
