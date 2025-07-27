@@ -128,7 +128,7 @@ export async function getStudentsForResults(): Promise<StudentForResultForm[]> {
 
 type SaveResultType = { success: boolean; error?: string };
 
-export async function saveResult(data: Omit<ResultWithSubjects, 'id'>, id?: number): Promise<SaveResultType> {
+export async function saveResult(data: Omit<ResultWithSubjects, 'id' | 'subjects'> & {subjects: Omit<SubjectGrade, 'result_id'>[]}, id?: number): Promise<SaveResultType> {
     if (!pool) return { success: false, error: "Database not connected" };
     
     const connection = await pool.getConnection();
@@ -148,6 +148,8 @@ export async function saveResult(data: Omit<ResultWithSubjects, 'id'>, id?: numb
         if (id) {
             // Update existing result
             await connection.query('UPDATE results SET ? WHERE id = ?', [resultData, id]);
+            // Delete old subjects to re-insert them, simplifying logic
+            await connection.query('DELETE FROM subject_grades WHERE result_id = ?', [id]);
         } else {
             // Insert new result
             const [insertResult] = await connection.query<any>('INSERT INTO results SET ?', [resultData]);
@@ -157,11 +159,8 @@ export async function saveResult(data: Omit<ResultWithSubjects, 'id'>, id?: numb
         if (!resultId) {
             throw new Error("Failed to get result ID.");
         }
-
-        // Delete old subjects before inserting/updating new ones to simplify logic
-        await connection.query('DELETE FROM subject_grades WHERE result_id = ?', [resultId]);
         
-        // Insert new subjects
+        // Batch insert new subjects
         if (data.subjects && data.subjects.length > 0) {
             const subjectValues = data.subjects.map(subject => [
                 resultId,
@@ -198,7 +197,7 @@ export async function deleteResult(id: number): Promise<SaveResultType> {
     const connection = await pool.getConnection();
     try {
         await connection.beginTransaction();
-        await connection.query('DELETE FROM subject_grades WHERE result_id = ?', [id]);
+        // Deleting from results will cascade and delete subject_grades due to FOREIGN KEY constraint
         await connection.query('DELETE FROM results WHERE id = ?', [id]);
         await connection.commit();
         
