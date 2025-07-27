@@ -62,7 +62,7 @@ export async function getStaffById(id: string): Promise<Staff | null> {
         const staff = rows as Staff[];
         return staff[0] || null;
     } catch (error) {
-        console.error(`Failed to fetch staff by id ${id}, returning mock data:`, error);
+        console.error(`Failed to fetch staff by id ${id}:`, error);
         return mockStaff.find(t => t.id === id) || null;
     }
 }
@@ -78,10 +78,10 @@ export async function saveStaff(formData: FormData, id?: string): Promise<SaveRe
         const data = {
             name: formData.get('name') as string,
             role: formData.get('role') as string,
-            email: formData.get('email') as string || null,
-            phone: formData.get('phone') as string || null,
-            address: formData.get('address') as string || null,
-            dataAiHint: formData.get('dataAiHint') as string || 'staff portrait',
+            email: (formData.get('email') as string) || null,
+            phone: (formData.get('phone') as string) || null,
+            address: (formData.get('address') as string) || null,
+            dataAiHint: (formData.get('dataAiHint') as string) || 'staff portrait',
             image: formData.get('image') as string | null,
         };
 
