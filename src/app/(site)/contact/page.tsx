@@ -8,18 +8,64 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { MapPin, Phone, Mail, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { getContactInfo, saveContactSubmission } from "@/lib/contact-data";
+import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+
+type ContactInfo = {
+    school_name: string;
+    address: string;
+    phone: string;
+    email: string;
+    map_embed_url: string;
+};
+
+const contactFormSchema = z.object({
+  name: z.string().min(1, "নাম আবশ্যক"),
+  email: z.string().email("অবৈধ ইমেইল ঠিকানা"),
+  subject: z.string().min(1, "বিষয় আবশ্যক"),
+  message: z.string().min(1, "বার্তা আবশ্যক"),
+});
+
+type ContactFormValues = z.infer<typeof contactFormSchema>;
 
 export default function ContactPage() {
   const { toast } = useToast();
+  const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // Here you would typically handle form submission, e.g., send data to an API
-    toast({
-      title: "ধন্যবাদ!",
-      description: "আপনার বার্তা সফলভাবে পাঠানো হয়েছে।",
-    });
-    (e.target as HTMLFormElement).reset();
+  const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<ContactFormValues>({
+      resolver: zodResolver(contactFormSchema)
+  });
+
+  useEffect(() => {
+    async function fetchContactInfo() {
+      setLoading(true);
+      const info = await getContactInfo();
+      setContactInfo(info);
+      setLoading(false);
+    }
+    fetchContactInfo();
+  }, []);
+
+  const onSubmit = async (data: ContactFormValues) => {
+    const result = await saveContactSubmission(data);
+    if (result.success) {
+        toast({
+            title: "ধন্যবাদ!",
+            description: "আপনার বার্তা সফলভাবে পাঠানো হয়েছে।",
+        });
+        reset();
+    } else {
+        toast({
+            title: "ত্রুটি",
+            description: result.error || "বার্তা পাঠাতে একটি সমস্যা হয়েছে।",
+            variant: "destructive"
+        });
+    }
   };
 
   return (
@@ -33,51 +79,58 @@ export default function ContactPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Contact Information */}
           <div className="space-y-8">
-            <Card className="shadow-lg border-primary/20">
-              <CardHeader>
-                <CardTitle className="text-primary font-headline">আমাদের ঠিকানা</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-start gap-4">
-                  <MapPin className="h-6 w-6 text-primary mt-1" />
-                  <div>
-                    <h3 className="font-semibold">মুরাদদর্প নারায়নপুর নিম্ন মাধ্যমিক বিদ্যালয়</h3>
-                    <p className="text-muted-foreground">১ নং রোড, ব্লক এ, মিরপুর, ঢাকা-১২১৬</p>
-                  </div>
-                </div>
-                 <div className="flex items-start gap-4">
-                  <Phone className="h-6 w-6 text-primary mt-1" />
-                  <div>
-                    <h3 className="font-semibold">ফোন</h3>
-                    <a href="tel:+8801234567890" className="text-muted-foreground hover:text-primary transition-colors">+৮৮০ ১২৩৪ ৫৬৭৮৯০</a>
-                  </div>
-                </div>
-                 <div className="flex items-start gap-4">
-                  <Mail className="h-6 w-6 text-primary mt-1" />
-                  <div>
-                    <h3 className="font-semibold">ইমেইল</h3>
-                    <a href="mailto:info@shikkhaangan.edu" className="text-muted-foreground hover:text-primary transition-colors">info@shikkhaangan.edu</a>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            {loading ? (
+                <>
+                    <Skeleton className="h-48 w-full" />
+                    <Skeleton className="h-64 w-full" />
+                </>
+            ) : (
+                <>
+                    <Card className="shadow-lg border-primary/20">
+                    <CardHeader>
+                        <CardTitle className="text-primary font-headline">আমাদের ঠিকানা</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="flex items-start gap-4">
+                        <MapPin className="h-6 w-6 text-primary mt-1" />
+                        <div>
+                            <h3 className="font-semibold">{contactInfo?.school_name}</h3>
+                            <p className="text-muted-foreground">{contactInfo?.address}</p>
+                        </div>
+                        </div>
+                        <div className="flex items-start gap-4">
+                        <Phone className="h-6 w-6 text-primary mt-1" />
+                        <div>
+                            <h3 className="font-semibold">ফোন</h3>
+                            <a href={`tel:${contactInfo?.phone}`} className="text-muted-foreground hover:text-primary transition-colors">{contactInfo?.phone}</a>
+                        </div>
+                        </div>
+                        <div className="flex items-start gap-4">
+                        <Mail className="h-6 w-6 text-primary mt-1" />
+                        <div>
+                            <h3 className="font-semibold">ইমেইল</h3>
+                            <a href={`mailto:${contactInfo?.email}`} className="text-muted-foreground hover:text-primary transition-colors">{contactInfo?.email}</a>
+                        </div>
+                        </div>
+                    </CardContent>
+                    </Card>
 
-            <Card className="shadow-lg border-primary/20 overflow-hidden">
-                <div className="aspect-w-16 aspect-h-9">
-                    {/* Placeholder for Google Maps */}
-                    <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3650.0950338381005!2d90.36399991544456!3d23.81513519228574!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c1e6c38a79ef%3A0x28637993b8f683f2!2sMirpur%2C%20Dhaka!5e0!3m2!1sen!2sbd!4v1675868516053!5m2!1sen!2sbd" 
-                        width="100%" 
-                        height="100%"
-                        style={{border:0}} 
-                        allowFullScreen
-                        loading="lazy" 
-                        referrerPolicy="no-referrer-when-downgrade"
-                        title="School Location"
-                    ></iframe>
-                </div>
-            </Card>
-
+                    <Card className="shadow-lg border-primary/20 overflow-hidden">
+                        <div className="aspect-w-16 aspect-h-9">
+                            <iframe 
+                                src={contactInfo?.map_embed_url}
+                                width="100%" 
+                                height="100%"
+                                style={{border:0}} 
+                                allowFullScreen
+                                loading="lazy" 
+                                referrerPolicy="no-referrer-when-downgrade"
+                                title="School Location"
+                            ></iframe>
+                        </div>
+                    </Card>
+                </>
+            )}
           </div>
 
           {/* Feedback Form */}
@@ -86,27 +139,30 @@ export default function ContactPage() {
               <CardTitle className="text-primary font-headline">আপনার মতামত দিন</CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="space-y-2">
                   <Label htmlFor="name">আপনার নাম</Label>
-                  <Input id="name" placeholder="আপনার সম্পূর্ণ নাম" required />
+                  <Input id="name" placeholder="আপনার সম্পূর্ণ নাম" {...register("name")} />
+                  {errors.name && <p className="text-destructive text-sm mt-1">{errors.name.message}</p>}
                 </div>
                  <div className="space-y-2">
                   <Label htmlFor="email">আপনার ইমেইল</Label>
-                  <Input id="email" type="email" placeholder="আপনার ইমেইল ঠিকানা" required />
+                  <Input id="email" type="email" placeholder="আপনার ইমেইল ঠিকানা" {...register("email")} />
+                   {errors.email && <p className="text-destructive text-sm mt-1">{errors.email.message}</p>}
                 </div>
                  <div className="space-y-2">
                   <Label htmlFor="subject">বিষয়</Label>
-                  <Input id="subject" placeholder="আপনার বার্তার বিষয়" required />
+                  <Input id="subject" placeholder="আপনার বার্তার বিষয়" {...register("subject")} />
+                  {errors.subject && <p className="text-destructive text-sm mt-1">{errors.subject.message}</p>}
                 </div>
                  <div className="space-y-2">
                   <Label htmlFor="message">বার্তা</Label>
-                  <Textarea id="message" placeholder="আপনার বার্তা এখানে লিখুন..." required rows={5} />
+                  <Textarea id="message" placeholder="আপনার বার্তা এখানে লিখুন..." {...register("message")} rows={5} />
+                  {errors.message && <p className="text-destructive text-sm mt-1">{errors.message.message}</p>}
                 </div>
                 <div>
-                   <Button type="submit" className="w-full" size="lg">
-                    <Send className="mr-2 h-5 w-5" />
-                    বার্তা পাঠান
+                   <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
+                    {isSubmitting ? 'পাঠানো হচ্ছে...' : <><Send className="mr-2 h-5 w-5" />বার্তা পাঠান</>}
                   </Button>
                 </div>
               </form>
