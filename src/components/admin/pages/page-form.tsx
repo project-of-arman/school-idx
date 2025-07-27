@@ -46,17 +46,6 @@ export function PageForm({ page }: { page?: Page }) {
     },
   });
 
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const title = e.target.value;
-    const slug = title
-      .toLowerCase()
-      .trim()
-      .replace(/[^\w\s-]/g, '') // remove non-word chars
-      .replace(/[\s_-]+/g, '-') // collapse spaces and underscores to a single dash
-      .replace(/^-+|-+$/g, ''); // remove leading/trailing dashes
-    setValue('slug', slug, { shouldValidate: true });
-  }
-
   async function onSubmit(values: FormValues) {
     const formData = new FormData();
     
@@ -97,7 +86,7 @@ export function PageForm({ page }: { page?: Page }) {
           <CardContent className="space-y-6">
             <FormItem> 
                 <Label htmlFor="title">শিরোনাম</Label> 
-                <Input id="title" {...register("title", { onChange: handleTitleChange })} /> 
+                <Input id="title" {...register("title")} /> 
                 <FormMessage name="title" /> 
             </FormItem>
             <FormItem> 
