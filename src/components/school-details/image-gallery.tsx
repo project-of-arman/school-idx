@@ -16,10 +16,10 @@ export default async function ImageGallery() {
           <Link href="/gallery">সব ছবি দেখুন</Link>
         </Button>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 h-96 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {images.slice(0, 4).map((image) => (
           <Card key={image.id} className="overflow-hidden group shadow-md hover:shadow-xl transition-all duration-300">
-            <CardContent className="p-0 aspect-w-4 aspect-h-3 relative">
+            <CardContent className="p-0 aspect-w-4 w-full h-full aspect-h-3 relative">
               <Image
                 src={image.image_url}
                 alt={image.title}
