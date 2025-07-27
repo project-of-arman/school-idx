@@ -23,16 +23,16 @@ import { PlusCircle, Trash } from "lucide-react";
 const subjectSchema = z.object({
   id: z.number().optional(),
   subject_name: z.string().min(1, "বিষয় আবশ্যক"),
-  marks: z.coerce.number().nullable().optional(),
+  marks: z.string().nullable().optional(),
   grade: z.string().min(1, "গ্রেড আবশ্যক"),
-  gpa: z.coerce.number().min(0, "GPA 0 বা তার বেশি হতে হবে").max(5, "GPA 5 বা তার কম হতে হবে"),
+  gpa: z.string().min(1, "GPA আবশ্যক"),
 });
 
 const resultFormSchema = z.object({
   student_id: z.coerce.number({invalid_type_error: "শিক্ষার্থী নির্বাচন আবশ্যক"}).positive("শিক্ষার্থী নির্বাচন আবশ্যক"),
   exam_name: z.string().min(1, "পরীক্ষার নাম আবশ্যক"),
   year: z.coerce.number().int().min(2000, "বছর আবশ্যক"),
-  final_gpa: z.coerce.number().min(0).max(5, "চূড়ান্ত GPA আবশ্যক"),
+  final_gpa: z.string().min(1, "চূড়ান্ত GPA আবশ্যক"),
   status: z.string().min(1, "স্ট্যাটাস আবশ্যক"),
   subjects: z.array(subjectSchema).min(1, "ন্যূনতম একটি বিষয় যোগ করুন"),
 });
@@ -58,7 +58,7 @@ export function ResultForm({ result, students }: { result?: ResultWithSubjects, 
       exam_name: "",
       year: new Date().getFullYear(),
       status: "Promoted",
-      subjects: [{ subject_name: '', marks: null, grade: '', gpa: 0 }],
+      subjects: [{ id: undefined, subject_name: '', marks: null, grade: '', gpa: '' }],
       student_id: undefined,
     },
   });
@@ -106,7 +106,7 @@ export function ResultForm({ result, students }: { result?: ResultWithSubjects, 
           </div>
           <div><Label htmlFor="exam_name">পরীক্ষার নাম</Label><Input id="exam_name" {...register("exam_name")} /><p className="text-xs text-muted-foreground mt-1">যেমন: বার্ষিক পরীক্ষা</p>{errors.exam_name && <p className="text-sm font-medium text-destructive mt-1">{errors.exam_name.message}</p>}</div>
           <div><Label htmlFor="year">বছর</Label><Input id="year" type="number" {...register("year")} />{errors.year && <p className="text-sm font-medium text-destructive mt-1">{errors.year.message}</p>}</div>
-          <div><Label htmlFor="final_gpa">চূড়ান্ত GPA</Label><Input id="final_gpa" type="number" step="0.01" {...register("final_gpa")} />{errors.final_gpa && <p className="text-sm font-medium text-destructive mt-1">{errors.final_gpa.message}</p>}</div>
+          <div><Label htmlFor="final_gpa">চূড়ান্ত GPA</Label><Input id="final_gpa" {...register("final_gpa")} />{errors.final_gpa && <p className="text-sm font-medium text-destructive mt-1">{errors.final_gpa.message}</p>}</div>
           <div>
             <Label>স্ট্যাটাস</Label>
              <Controller
@@ -137,16 +137,16 @@ export function ResultForm({ result, students }: { result?: ResultWithSubjects, 
                       <div key={field.id} className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end p-4 border rounded-md relative">
                            <input type="hidden" {...register(`subjects.${index}.id`)} />
                            <div><Label>বিষয়ের নাম</Label><Input {...register(`subjects.${index}.subject_name`)} />{errors.subjects?.[index]?.subject_name && <p className="text-sm font-medium text-destructive mt-1">{errors.subjects?.[index]?.subject_name?.message}</p>}</div>
-                           <div><Label>মার্ক</Label><Input type="number" {...register(`subjects.${index}.marks`)} />{errors.subjects?.[index]?.marks && <p className="text-sm font-medium text-destructive mt-1">{errors.subjects?.[index]?.marks?.message}</p>}</div>
+                           <div><Label>মার্ক</Label><Input {...register(`subjects.${index}.marks`)} />{errors.subjects?.[index]?.marks && <p className="text-sm font-medium text-destructive mt-1">{errors.subjects?.[index]?.marks?.message}</p>}</div>
                            <div><Label>গ্রেড</Label><Input {...register(`subjects.${index}.grade`)} />{errors.subjects?.[index]?.grade && <p className="text-sm font-medium text-destructive mt-1">{errors.subjects?.[index]?.grade?.message}</p>}</div>
-                           <div><Label>GPA</Label><Input type="number" step="0.01" {...register(`subjects.${index}.gpa`)} />{errors.subjects?.[index]?.gpa && <p className="text-sm font-medium text-destructive mt-1">{errors.subjects?.[index]?.gpa?.message}</p>}</div>
+                           <div><Label>GPA</Label><Input {...register(`subjects.${index}.gpa`)} />{errors.subjects?.[index]?.gpa && <p className="text-sm font-medium text-destructive mt-1">{errors.subjects?.[index]?.gpa?.message}</p>}</div>
                            <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)}><Trash className="h-4 w-4" /></Button>
                       </div>
                   ))}
               </div>
                {errors.subjects?.root && <p className="text-sm font-medium text-destructive mt-2">{errors.subjects.root.message}</p>}
                {errors.subjects && !errors.subjects.root && !Array.isArray(errors.subjects) && <p className="text-sm font-medium text-destructive mt-2">{errors.subjects.message}</p>}
-              <Button type="button" variant="outline" size="sm" onClick={() => append({ id: undefined, subject_name: '', marks: null, grade: '', gpa: 0 })} className="mt-4"><PlusCircle className="mr-2 h-4 w-4" /> বিষয় যোগ করুন</Button>
+              <Button type="button" variant="outline" size="sm" onClick={() => append({ subject_name: '', marks: null, grade: '', gpa: '' })} className="mt-4"><PlusCircle className="mr-2 h-4 w-4" /> বিষয় যোগ করুন</Button>
           </CardContent>
       </Card>
       

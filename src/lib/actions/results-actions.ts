@@ -6,14 +6,14 @@ import { revalidatePath } from 'next/cache';
 import { RowDataPacket } from 'mysql2';
 
 /*
-SQL for creating the results and subject_grades tables:
+Updated SQL based on user request:
 
 CREATE TABLE `results` (
   `id` int NOT NULL AUTO_INCREMENT,
   `student_id` int NOT NULL,
   `exam_name` varchar(255) NOT NULL,
   `year` int NOT NULL,
-  `final_gpa` decimal(4,2) NOT NULL,
+  `final_gpa` varchar(5) NOT NULL,
   `status` enum('Promoted','Failed') NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -27,9 +27,9 @@ CREATE TABLE `subject_grades` (
   `id` int NOT NULL AUTO_INCREMENT,
   `result_id` int NOT NULL,
   `subject_name` varchar(255) NOT NULL,
-  `marks` int DEFAULT NULL,
+  `marks` varchar(5) DEFAULT NULL,
   `grade` varchar(10) NOT NULL,
-  `gpa` decimal(3,2) NOT NULL,
+  `gpa` varchar(5) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `result_id` (`result_id`),
   CONSTRAINT `subject_grades_ibfk_1` FOREIGN KEY (`result_id`) REFERENCES `results` (`id`) ON DELETE CASCADE
@@ -47,7 +47,7 @@ export interface ResultForAdmin extends RowDataPacket {
     class_name: string;
     exam_name: string;
     year: number;
-    final_gpa: number;
+    final_gpa: string;
 }
 
 export interface StudentForResultForm extends RowDataPacket {
@@ -59,9 +59,9 @@ export interface StudentForResultForm extends RowDataPacket {
 export interface SubjectGrade extends RowDataPacket {
     id?: number;
     subject_name: string;
-    marks: number | null;
+    marks: string | null;
     grade: string;
-    gpa: number;
+    gpa: string;
 }
 
 export interface ResultWithSubjects {
@@ -69,7 +69,7 @@ export interface ResultWithSubjects {
     student_id: number;
     exam_name: string;
     year: number;
-    final_gpa: number;
+    final_gpa: string;
     status: string;
     subjects: SubjectGrade[];
 }

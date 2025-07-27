@@ -116,14 +116,14 @@ export default function ResultsPage() {
                                                 <TableCell className="font-medium">{subject.name}</TableCell>
                                                 <TableCell className="text-center">{subject.marks ?? 'N/A'}</TableCell>
                                                 <TableCell className="text-center">{subject.grade}</TableCell>
-                                                <TableCell className="text-right">{subject.gpa.toFixed(2)}</TableCell>
+                                                <TableCell className="text-right">{subject.gpa}</TableCell>
                                             </TableRow>
                                             ))}
                                         </TableBody>
                                         <ResultsTableFooter>
                                              <TableRow className="bg-muted/50 font-bold">
                                                 <TableCell colSpan={3} className="text-right">মোট জিপিএ:</TableCell>
-                                                <TableCell className="text-right">{studentResult.final_gpa.toFixed(2)}</TableCell>
+                                                <TableCell className="text-right">{studentResult.final_gpa}</TableCell>
                                              </TableRow>
                                         </ResultsTableFooter>
                                     </Table>

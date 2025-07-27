@@ -5,9 +5,9 @@ import pool from './db';
 
 interface SubjectGrade {
     name: string;
-    marks: number | null;
+    marks: string | null;
     grade: string;
-    gpa: number;
+    gpa: string;
 }
 
 export interface StudentResult {
@@ -21,7 +21,7 @@ export interface StudentResult {
     mother_name: string;
     image: string | null;
     data_ai_hint: string | null;
-    final_gpa: number;
+    final_gpa: string;
     status: string;
     subjects: SubjectGrade[];
 }
@@ -38,17 +38,17 @@ const mockResults: StudentResult[] = [
     mother_name: 'ফাতেমা বেগম',
     image: 'https://placehold.co/300x400.png',
     data_ai_hint: 'male student portrait',
-    final_gpa: 4.44,
+    final_gpa: '4.44',
     status: 'Promoted',
     subjects: [
-        { name: 'বাংলা ১ম পত্র', marks: 85, grade: 'A+', gpa: 5.00 },
-        { name: 'বাংলা ২য় পত্র', marks: 75, grade: 'A', gpa: 4.00 },
-        { name: 'ইংরেজি ১ম পত্র', marks: 72, grade: 'A', gpa: 4.00 },
-        { name: 'ইংরেজি ২য় পত্র', marks: 78, grade: 'A', gpa: 4.00 },
-        { name: 'গণিত', marks: 90, grade: 'A+', gpa: 5.00 },
-        { name: 'পদার্থবিজ্ঞান', marks: 76, grade: 'A', gpa: 4.00 },
-        { name: 'রসায়ন', marks: 65, grade: 'A-', gpa: 3.50 },
-        { name: 'জীববিজ্ঞান', marks: 88, grade: 'A+', gpa: 5.00 },
+        { name: 'বাংলা ১ম পত্র', marks: '85', grade: 'A+', gpa: '5.00' },
+        { name: 'বাংলা ২য় পত্র', marks: '75', grade: 'A', gpa: '4.00' },
+        { name: 'ইংরেজি ১ম পত্র', marks: '72', grade: 'A', gpa: '4.00' },
+        { name: 'ইংরেজি ২য় পত্র', marks: '78', grade: 'A', gpa: '4.00' },
+        { name: 'গণিত', marks: '90', grade: 'A+', gpa: '5.00' },
+        { name: 'পদার্থবিজ্ঞান', marks: '76', grade: 'A', gpa: '4.00' },
+        { name: 'রসায়ন', marks: '65', grade: 'A-', gpa: '3.50' },
+        { name: 'জীববিজ্ঞান', marks: '88', grade: 'A+', gpa: '5.00' },
     ],
   },
   { 
@@ -62,17 +62,17 @@ const mockResults: StudentResult[] = [
     mother_name: 'জোহরা বেগম',
     image: 'https://placehold.co/300x400.png',
     data_ai_hint: 'male student portrait',
-    final_gpa: 3.88,
+    final_gpa: '3.88',
     status: 'Promoted',
     subjects: [
-        { name: 'বাংলা ১ম পত্র', marks: 75, grade: 'A', gpa: 4.00 },
-        { name: 'বাংলা ২য় পত্র', marks: 65, grade: 'A-', gpa: 3.50 },
-        { name: 'ইংরেজি ১ম পত্র', marks: 72, grade: 'A', gpa: 4.00 },
-        { name: 'ইংরেজি ২য় পত্র', marks: 55, grade: 'B', gpa: 3.00 },
-        { name: 'গণিত', marks: 78, grade: 'A', gpa: 4.00 },
-        { name: 'বিজ্ঞান', marks: 68, grade: 'A-', gpa: 3.50 },
-        { name: 'হিসাববিজ্ঞান', marks: 71, grade: 'A', gpa: 4.00 },
-        { name: 'ব্যবসায় উদ্যোগ', marks: 82, grade: 'A+', gpa: 5.00 },
+        { name: 'বাংলা ১ম পত্র', marks: '75', grade: 'A', gpa: '4.00' },
+        { name: 'বাংলা ২য় পত্র', marks: '65', grade: 'A-', gpa: '3.50' },
+        { name: 'ইংরেজি ১ম পত্র', marks: '72', grade: 'A', gpa: '4.00' },
+        { name: 'ইংরেজি ২য় পত্র', marks: '55', grade: 'B', gpa: '3.00' },
+        { name: 'গণিত', marks: '78', grade: 'A', gpa: '4.00' },
+        { name: 'বিজ্ঞান', marks: '68', grade: 'A-', gpa: '3.50' },
+        { name: 'হিসাববিজ্ঞান', marks: '71', grade: 'A', gpa: '4.00' },
+        { name: 'ব্যবসায় উদ্যোগ', marks: '82', grade: 'A+', gpa: '5.00' },
     ],
   },
 ];
@@ -114,12 +114,11 @@ export async function getResultByRollAndClass(roll: string, className: string): 
             name: row.subject_name,
             marks: row.marks,
             grade: row.grade,
-            gpa: parseFloat(row.gpa)
+            gpa: row.gpa
         }));
 
         return {
             ...studentResultData,
-            final_gpa: parseFloat(studentResultData.final_gpa),
             subjects: subjects
         };
 
