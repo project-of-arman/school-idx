@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from "next/image";
@@ -16,7 +15,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 
 const GallerySkeleton = () => (
-    <div className="grid grid-cols-1 h-96 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 h-80 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {Array.from({ length: 4 }).map((_, i) => (
              <Skeleton key={i} className="h-full w-full rounded-lg" />
         ))}
@@ -48,7 +47,7 @@ export default function ImageGallery() {
        {loading ? (
             <GallerySkeleton />
         ) : (
-          <div className="grid grid-cols-1 h-96 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 h-80 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {images.slice(0, 4).map((image) => (
                <Dialog key={image.id}>
                     <DialogTrigger asChild>
