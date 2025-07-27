@@ -29,8 +29,8 @@ const subjectSchema = z.object({
   gpa: z.coerce.number().min(0, "GPA 0 বা তার বেশি হতে হবে").max(5, "GPA 5 বা তার কম হতে হবে"),
 });
 
-const formSchema = z.object({
-  student_id: z.string().min(1, "শিক্ষার্থী নির্বাচন আবশ্যক"),
+const resultFormSchema = z.object({
+  student_id: z.coerce.number({invalid_type_error: "শিক্ষার্থী নির্বাচন আবশ্যক"}).positive("শিক্ষার্থী নির্বাচন আবশ্যক"),
   exam_name: z.string().min(1, "পরীক্ষার নাম আবশ্যক"),
   year: z.coerce.number().int().min(2000, "বছর আবশ্যক"),
   final_gpa: z.coerce.number().min(0).max(5, "চূড়ান্ত GPA আবশ্যক"),
@@ -38,7 +38,7 @@ const formSchema = z.object({
   subjects: z.array(subjectSchema).min(1, "ন্যূনতম একটি বিষয় যোগ করুন"),
 });
 
-type FormValues = z.infer<typeof formSchema>;
+type FormValues = z.infer<typeof resultFormSchema>;
 
 export function ResultForm({ result, students }: { result?: ResultWithSubjects, students: StudentForResultForm[] }) {
   const { toast } = useToast();
@@ -50,9 +50,9 @@ export function ResultForm({ result, students }: { result?: ResultWithSubjects, 
     control, 
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(resultFormSchema),
     defaultValues: {
-      student_id: result?.student_id?.toString() || "",
+      student_id: result?.student_id ?? undefined,
       exam_name: result?.exam_name || "",
       year: result?.year || new Date().getFullYear(),
       final_gpa: result?.final_gpa ?? undefined,
@@ -67,11 +67,7 @@ export function ResultForm({ result, students }: { result?: ResultWithSubjects, 
   });
 
   async function onSubmit(values: FormValues) {
-    const dataToSave = {
-        ...values,
-        student_id: parseInt(values.student_id, 10)
-    };
-    const res = await saveResult(dataToSave, result?.id);
+    const res = await saveResult(values, result?.id);
     if (res.success) {
       toast({ title: "সফল!", description: `ফলাফল সফলভাবে ${result ? 'আপডেট' : 'তৈরি'} করা হয়েছে।` });
       router.push("/admin/results");
@@ -94,7 +90,7 @@ export function ResultForm({ result, students }: { result?: ResultWithSubjects, 
               render={({ field }) => (
                 <Select 
                   onValueChange={field.onChange} 
-                  value={field.value}
+                  value={field.value?.toString()}
                   disabled={!!result} // Disable only when editing
                 >
                   <SelectTrigger><SelectValue placeholder="শিক্ষার্থী নির্বাচন করুন" /></SelectTrigger>
@@ -159,5 +155,3 @@ export function ResultForm({ result, students }: { result?: ResultWithSubjects, 
     </form>
   )
 }
-
-    
