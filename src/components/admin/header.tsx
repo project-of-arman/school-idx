@@ -8,7 +8,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  DropdownMenuFooter,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -78,13 +77,11 @@ function Notifications() {
                     <DropdownMenuItem>কোনো নতুন ঘোষণা নেই।</DropdownMenuItem>
                 )}
                 <DropdownMenuSeparator />
-                <DropdownMenuFooter>
-                    <DropdownMenuItem asChild>
-                        <Link href="/admin/notifications" className="w-full justify-center">
-                            সকল ঘোষণা দেখুন
-                        </Link>
-                    </DropdownMenuItem>
-                </DropdownMenuFooter>
+                <DropdownMenuItem asChild>
+                    <Link href="/admin/notifications" className="w-full justify-center">
+                        সকল ঘোষণা দেখুন
+                    </Link>
+                </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     );
