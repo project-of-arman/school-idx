@@ -1,16 +1,13 @@
+
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { getGalleryImages } from "@/lib/gallery-data";
 
-const images = [
-  { src: "https://placehold.co/600x400.png", alt: "Classroom", dataAiHint: "classroom students" },
-  { src: "https://placehold.co/600x400.png", alt: "School library", dataAiHint: "school library" },
-  { src: "https://placehold.co/600x400.png", alt: "Science lab", dataAiHint: "science lab" },
-  { src: "https://placehold.co/600x400.png", alt: "Playground", dataAiHint: "school playground" },
-];
-
-export default function ImageGallery() {
+export default async function ImageGallery() {
+  const images = await getGalleryImages();
+  
   return (
     <section id="image-gallery">
       <div className="flex justify-between items-center mb-8">
@@ -20,17 +17,19 @@ export default function ImageGallery() {
         </Button>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {images.map((image, index) => (
-          <Card key={index} className="overflow-hidden group shadow-md hover:shadow-xl transition-all duration-300">
-            <CardContent className="p-0 aspect-w-4 aspect-h-3">
+        {images.slice(0, 4).map((image) => (
+          <Card key={image.id} className="overflow-hidden group shadow-md hover:shadow-xl transition-all duration-300">
+            <CardContent className="p-0 aspect-w-4 aspect-h-3 relative">
               <Image
-                src={image.src}
-                alt={image.alt}
-                width={600}
-                height={400}
+                src={image.image_url}
+                alt={image.title}
+                fill
                 className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
-                data-ai-hint={image.dataAiHint}
+                data-ai-hint={image.data_ai_hint}
               />
+               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+                  <h3 className="font-semibold text-white text-sm">{image.title}</h3>
+                </div>
             </CardContent>
           </Card>
         ))}

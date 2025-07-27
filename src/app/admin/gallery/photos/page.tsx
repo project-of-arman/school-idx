@@ -1,14 +1,27 @@
 
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getGalleryImages } from "@/lib/gallery-data";
+import Link from "next/link";
+import { PlusCircle } from "lucide-react";
+import GalleryImageTable from "@/components/admin/gallery/gallery-image-table";
 
-export default function AdminPhotosPage() {
+export default async function AdminPhotosPage() {
+  const images = await getGalleryImages();
+
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>ছবি গ্যালারি ব্যবস্থাপনা</CardTitle>
+        <Button asChild>
+          <Link href="/admin/gallery/photos/new">
+            <PlusCircle className="mr-2 h-4 w-4" />
+            নতুন ছবি যোগ করুন
+          </Link>
+        </Button>
       </CardHeader>
       <CardContent>
-        <p>এখানে ছবি যুক্ত, সম্পাদনা এবং মুছে ফেলার ফরম যুক্ত করা হবে।</p>
+        <GalleryImageTable images={images} />
       </CardContent>
     </Card>
   );
