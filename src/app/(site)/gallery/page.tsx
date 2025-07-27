@@ -27,12 +27,17 @@ export default function GalleryPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchImages() {
-        setLoading(true);
+    const fetchImages = async () => {
+      setLoading(true);
+      try {
         const data = await getGalleryImages();
         setImages(data);
+      } catch (error) {
+        console.error("Failed to fetch gallery images:", error);
+      } finally {
         setLoading(false);
-    }
+      }
+    };
     fetchImages();
   }, []);
 
