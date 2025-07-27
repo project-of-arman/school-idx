@@ -81,7 +81,7 @@ export function ResultForm({ result, students }: { result?: ResultWithSubjects, 
               name="student_id"
               control={control}
               render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value?.toString()} disabled={!!result?.id}>
+                <Select onValueChange={(value) => field.onChange(parseInt(value, 10))} value={field.value?.toString()} disabled={!!result?.id}>
                   <SelectTrigger><SelectValue placeholder="শিক্ষার্থী নির্বাচন করুন" /></SelectTrigger>
                   <SelectContent>
                     {students.map(s => <SelectItem key={s.id} value={s.id.toString()}>{s.name_bn} (রোল: {s.roll})</SelectItem>)}
