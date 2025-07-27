@@ -2,11 +2,11 @@
 "use client";
 
 import 'react-quill/dist/quill.snow.css';
-import { useCallback, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import type Quill from 'quill';
 
 interface RichTextEditorProps {
-    value: string;
+    value?: string | null;
     onChange: (value: string) => void;
 }
 
@@ -25,41 +25,48 @@ const modules = {
   }
 }
 
-// This is a workaround for the findDOMNode error in React 18 Strict Mode.
-// We are dynamically importing Quill and creating the editor manually.
 export default function RichTextEditor({ value, onChange }: RichTextEditorProps) {
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const quillRef = useRef<Quill | null>(null);
+  const isInitialized = useRef(false);
 
-  const wrapperCallback = useCallback((wrapper: HTMLDivElement | null) => {
-    if (typeof window === 'undefined') {
-        return;
+  useEffect(() => {
+    if (typeof window !== 'undefined' && wrapperRef.current && !isInitialized.current) {
+        import('quill').then((Quill) => {
+            if (!quillRef.current) { // Ensure it's only created once
+                 quillRef.current = new Quill.default(wrapperRef.current!, {
+                    theme: 'snow',
+                    modules: modules,
+                });
+
+                quillRef.current.on('text-change', () => {
+                    if (quillRef.current) {
+                        onChange(quillRef.current.root.innerHTML);
+                    }
+                });
+
+                if (value) {
+                    quillRef.current.clipboard.dangerouslyPasteHTML(value);
+                }
+            }
+        });
+        isInitialized.current = true;
     }
-    
-    if (wrapper === null) return;
-    if (quillRef.current) return;
-
-    // Dynamically import Quill only on the client-side
-    import('quill').then((Quill) => {
-        const editor = new Quill.default(wrapper, {
-            theme: 'snow',
-            modules: modules,
-        });
-
-        quillRef.current = editor;
-
-        // Set initial value
-        if (value) {
-            editor.clipboard.dangerouslyPasteHTML(value);
-        }
-        
-        // Listen for changes
-        editor.on('text-change', () => {
-            onChange(editor.root.innerHTML);
-        });
-    });
   }, [onChange, value]);
 
+  // Handle updates to the value from outside
+  useEffect(() => {
+    if (quillRef.current && value !== quillRef.current.root.innerHTML) {
+        // Only update if the content is different to prevent cursor jumps
+        const selection = quillRef.current.getSelection();
+        quillRef.current.clipboard.dangerouslyPasteHTML(value || '');
+        if (selection && quillRef.current.hasFocus()) {
+            quillRef.current.setSelection(selection);
+        }
+    }
+  }, [value]);
+
   return (
-    <div ref={wrapperCallback} className="bg-white"></div>
+    <div ref={wrapperRef} className="bg-white"></div>
   );
 }
