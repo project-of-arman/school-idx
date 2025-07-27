@@ -32,7 +32,7 @@ const subjectSchema = z.object({
 const formSchema = z.object({
   student_id: z.string().min(1, "শিক্ষার্থী নির্বাচন আবশ্যক"),
   exam_name: z.string().min(1, "পরীক্ষার নাম আবশ্যক"),
-  year: z.coerce.number().min(2000, "বছর আবশ্যক"),
+  year: z.coerce.number().int().min(2000, "বছর আবশ্যক"),
   final_gpa: z.coerce.number().min(0).max(5, "চূড়ান্ত GPA আবশ্যক"),
   status: z.string().min(1, "স্ট্যাটাস আবশ্যক"),
   subjects: z.array(subjectSchema).min(1, "ন্যূনতম একটি বিষয় যোগ করুন"),
@@ -48,11 +48,9 @@ export function ResultForm({ result, students }: { result?: ResultWithSubjects, 
     register, 
     handleSubmit, 
     control, 
-    formState: { errors, isSubmitting, isValid },
-    reset 
+    formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    mode: "onChange",
     defaultValues: {
       student_id: result?.student_id?.toString() || "",
       exam_name: result?.exam_name || "",
@@ -97,7 +95,7 @@ export function ResultForm({ result, students }: { result?: ResultWithSubjects, 
                 <Select 
                   onValueChange={field.onChange} 
                   value={field.value}
-                  disabled={!!result}
+                  disabled={!!result} // Disable only when editing
                 >
                   <SelectTrigger><SelectValue placeholder="শিক্ষার্থী নির্বাচন করুন" /></SelectTrigger>
                   <SelectContent>
@@ -156,7 +154,7 @@ export function ResultForm({ result, students }: { result?: ResultWithSubjects, 
       
       <div className="flex justify-end gap-2">
           <Button type="button" variant="outline" onClick={() => router.back()}>বাতিল করুন</Button>
-          <Button type="submit" disabled={isSubmitting || !isValid}>{isSubmitting ? 'সংরক্ষণ করা হচ্ছে...' : 'সংরক্ষণ করুন'}</Button>
+          <Button type="submit" disabled={isSubmitting}>{isSubmitting ? 'সংরক্ষণ করা হচ্ছে...' : 'সংরক্ষণ করুন'}</Button>
       </div>
     </form>
   )
