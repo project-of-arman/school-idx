@@ -29,7 +29,7 @@ const subjectSchema = z.object({
 });
 
 const formSchema = z.object({
-  student_id: z.coerce.number({invalid_type_error: "শিক্ষার্থী নির্বাচন আবশ্যক"}).positive("শিক্ষার্থী নির্বাচন আবশ্যক"),
+  student_id: z.coerce.number({ required_error: "শিক্ষার্থী নির্বাচন আবশ্যক", invalid_type_error: "শিক্ষার্থী নির্বাচন আবশ্যক"}).min(1, "শিক্ষার্থী নির্বাচন আবশ্যক"),
   exam_name: z.string().min(1, "পরীক্ষার নাম আবশ্যক"),
   year: z.coerce.number().min(2000, "বছর আবশ্যক"),
   final_gpa: z.coerce.number().min(0).max(5, "চূড়ান্ত GPA আবশ্যক"),
@@ -46,7 +46,7 @@ export function ResultForm({ result, students }: { result?: ResultWithSubjects, 
     resolver: zodResolver(formSchema),
     mode: "onChange",
     defaultValues: {
-      student_id: result?.student_id,
+      student_id: result?.student_id || undefined,
       exam_name: result?.exam_name || "",
       year: result?.year || new Date().getFullYear(),
       final_gpa: result?.final_gpa,
@@ -137,7 +137,7 @@ export function ResultForm({ result, students }: { result?: ResultWithSubjects, 
                   ))}
               </div>
                {errors.subjects?.root && <p className="text-sm font-medium text-destructive mt-2">{errors.subjects.root.message}</p>}
-               {errors.subjects && !errors.subjects.root && <p className="text-sm font-medium text-destructive mt-2">{errors.subjects.message}</p>}
+               {errors.subjects && !errors.subjects.root && !Array.isArray(errors.subjects) && <p className="text-sm font-medium text-destructive mt-2">{errors.subjects.message}</p>}
               <Button type="button" variant="outline" size="sm" onClick={() => append({ subject_name: '', marks: null, grade: '', gpa: 0 })} className="mt-4"><PlusCircle className="mr-2 h-4 w-4" /> বিষয় যোগ করুন</Button>
           </CardContent>
       </Card>
