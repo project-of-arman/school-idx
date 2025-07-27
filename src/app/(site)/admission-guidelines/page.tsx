@@ -7,9 +7,10 @@ import {
 } from "@/components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, Phone, Calendar, BookOpen } from 'lucide-react';
+import { Download, Phone, Calendar, BookOpen, FilePenLine } from 'lucide-react';
 import { getAdmissionGuidelines, getAdmissionImportantDates, getAdmissionPageContent } from "@/lib/admission-data";
 import * as LucideIcons from "lucide-react";
+import Link from "next/link";
 
 type IconName = keyof typeof LucideIcons;
 
@@ -77,12 +78,18 @@ export default async function AdmissionGuidelinesPage() {
         </div>
 
         <div className="mt-12 text-center space-y-6">
-            <div>
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
                  <Button size="lg" asChild>
                     <a href={pageContent.form_download_url || '#'} download>
                         <Download className="mr-2 h-5 w-5" />
                         ভর্তি ফরম ডাউনলোড করুন
                     </a>
+                </Button>
+                <Button size="lg" asChild variant="outline">
+                    <Link href="/forms/admission-apply">
+                        <FilePenLine className="mr-2 h-5 w-5" />
+                        অনলাইনে আবেদন করুন
+                    </Link>
                 </Button>
             </div>
             <Card className="max-w-md mx-auto bg-primary/5 border-primary/20 p-6">
