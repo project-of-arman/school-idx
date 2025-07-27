@@ -105,6 +105,7 @@ export default function ResultsPage() {
                                         <TableHeader className="bg-muted/50">
                                             <TableRow>
                                             <TableHead>বিষয়</TableHead>
+                                            <TableHead className="text-center">মার্ক</TableHead>
                                             <TableHead className="text-center">গ্রেড</TableHead>
                                             <TableHead className="text-right">জিপিএ</TableHead>
                                             </TableRow>
@@ -113,6 +114,7 @@ export default function ResultsPage() {
                                             {studentResult.subjects.map((subject, index) => (
                                             <TableRow key={index}>
                                                 <TableCell className="font-medium">{subject.name}</TableCell>
+                                                <TableCell className="text-center">{subject.marks ?? 'N/A'}</TableCell>
                                                 <TableCell className="text-center">{subject.grade}</TableCell>
                                                 <TableCell className="text-right">{subject.gpa.toFixed(2)}</TableCell>
                                             </TableRow>
@@ -120,7 +122,7 @@ export default function ResultsPage() {
                                         </TableBody>
                                         <ResultsTableFooter>
                                              <TableRow className="bg-muted/50 font-bold">
-                                                <TableCell colSpan={2} className="text-right">মোট জিপিএ:</TableCell>
+                                                <TableCell colSpan={3} className="text-right">মোট জিপিএ:</TableCell>
                                                 <TableCell className="text-right">{studentResult.final_gpa.toFixed(2)}</TableCell>
                                              </TableRow>
                                         </ResultsTableFooter>
@@ -217,4 +219,3 @@ export default function ResultsPage() {
         </div>
     );
 }
-

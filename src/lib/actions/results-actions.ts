@@ -25,6 +25,7 @@ export interface StudentForResultForm {
 export interface SubjectGrade {
     id?: number;
     subject_name: string;
+    marks: number | null;
     grade: string;
     gpa: number;
 }
@@ -65,7 +66,7 @@ export async function getResultByIdForAdmin(id: string | number): Promise<Result
         
         const resultData = resultRows[0];
         
-        const [subjectRows] = await pool.query<SubjectGrade[]>('SELECT id, subject_name, grade, gpa FROM subject_grades WHERE result_id = ? ORDER BY id ASC', [id]);
+        const [subjectRows] = await pool.query<SubjectGrade[]>('SELECT id, subject_name, marks, grade, gpa FROM subject_grades WHERE result_id = ? ORDER BY id ASC', [id]);
 
         return {
             ...resultData,
@@ -138,6 +139,7 @@ export async function saveResult(data: Omit<ResultWithSubjects, 'id'>, id?: numb
             const subjectData = {
                 result_id: resultId,
                 subject_name: subject.subject_name,
+                marks: subject.marks,
                 grade: subject.grade,
                 gpa: subject.gpa
             };

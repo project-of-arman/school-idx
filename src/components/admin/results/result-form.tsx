@@ -23,6 +23,7 @@ import { PlusCircle, Trash } from "lucide-react";
 const subjectSchema = z.object({
   id: z.number().optional(),
   subject_name: z.string().min(1, "বিষয় আবশ্যক"),
+  marks: z.coerce.number().min(0, "Marks must be positive").optional().nullable(),
   grade: z.string().min(1, "গ্রেড আবশ্যক"),
   gpa: z.coerce.number().min(0).max(5, "GPA 0 থেকে 5 এর মধ্যে হতে হবে"),
 });
@@ -120,9 +121,10 @@ export function ResultForm({ result, students }: { result?: ResultWithSubjects, 
           <CardContent>
               <div className="space-y-4">
                   {fields.map((field, index) => (
-                      <div key={field.id} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end p-4 border rounded-md relative">
+                      <div key={field.id} className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end p-4 border rounded-md relative">
                            <input type="hidden" {...register(`subjects.${index}.id`)} />
                            <div><Label>বিষয়ের নাম</Label><Input {...register(`subjects.${index}.subject_name`)} />{errors.subjects?.[index]?.subject_name && <p className="text-sm font-medium text-destructive">{errors.subjects?.[index]?.subject_name?.message}</p>}</div>
+                           <div><Label>মার্ক</Label><Input type="number" {...register(`subjects.${index}.marks`)} />{errors.subjects?.[index]?.marks && <p className="text-sm font-medium text-destructive">{errors.subjects?.[index]?.marks?.message}</p>}</div>
                            <div><Label>গ্রেড</Label><Input {...register(`subjects.${index}.grade`)} />{errors.subjects?.[index]?.grade && <p className="text-sm font-medium text-destructive">{errors.subjects?.[index]?.grade?.message}</p>}</div>
                            <div><Label>GPA</Label><Input type="number" step="0.01" {...register(`subjects.${index}.gpa`)} />{errors.subjects?.[index]?.gpa && <p className="text-sm font-medium text-destructive">{errors.subjects?.[index]?.gpa?.message}</p>}</div>
                            <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)}><Trash className="h-4 w-4" /></Button>
@@ -130,7 +132,7 @@ export function ResultForm({ result, students }: { result?: ResultWithSubjects, 
                   ))}
               </div>
                {errors.subjects?.root && <p className="text-sm font-medium text-destructive mt-2">{errors.subjects.root.message}</p>}
-              <Button type="button" variant="outline" size="sm" onClick={() => append({ subject_name: '', grade: '', gpa: 0 })} className="mt-4"><PlusCircle className="mr-2 h-4 w-4" /> বিষয় যোগ করুন</Button>
+              <Button type="button" variant="outline" size="sm" onClick={() => append({ subject_name: '', marks: null, grade: '', gpa: 0 })} className="mt-4"><PlusCircle className="mr-2 h-4 w-4" /> বিষয় যোগ করুন</Button>
           </CardContent>
       </Card>
       

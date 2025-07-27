@@ -5,6 +5,7 @@ import pool from './db';
 
 interface SubjectGrade {
     name: string;
+    marks: number | null;
     grade: string;
     gpa: number;
 }
@@ -40,14 +41,14 @@ const mockResults: StudentResult[] = [
     final_gpa: 4.44,
     status: 'Promoted',
     subjects: [
-        { name: 'বাংলা ১ম পত্র', grade: 'A+', gpa: 5.00 },
-        { name: 'বাংলা ২য় পত্র', grade: 'A', gpa: 4.00 },
-        { name: 'ইংরেজি ১ম পত্র', grade: 'A', gpa: 4.00 },
-        { name: 'ইংরেজি ২য় পত্র', grade: 'A', gpa: 4.00 },
-        { name: 'গণিত', grade: 'A+', gpa: 5.00 },
-        { name: 'পদার্থবিজ্ঞান', grade: 'A', gpa: 4.00 },
-        { name: 'রসায়ন', grade: 'A-', gpa: 3.50 },
-        { name: 'জীববিজ্ঞান', grade: 'A+', gpa: 5.00 },
+        { name: 'বাংলা ১ম পত্র', marks: 85, grade: 'A+', gpa: 5.00 },
+        { name: 'বাংলা ২য় পত্র', marks: 75, grade: 'A', gpa: 4.00 },
+        { name: 'ইংরেজি ১ম পত্র', marks: 72, grade: 'A', gpa: 4.00 },
+        { name: 'ইংরেজি ২য় পত্র', marks: 78, grade: 'A', gpa: 4.00 },
+        { name: 'গণিত', marks: 90, grade: 'A+', gpa: 5.00 },
+        { name: 'পদার্থবিজ্ঞান', marks: 76, grade: 'A', gpa: 4.00 },
+        { name: 'রসায়ন', marks: 65, grade: 'A-', gpa: 3.50 },
+        { name: 'জীববিজ্ঞান', marks: 88, grade: 'A+', gpa: 5.00 },
     ],
   },
   { 
@@ -64,14 +65,14 @@ const mockResults: StudentResult[] = [
     final_gpa: 3.88,
     status: 'Promoted',
     subjects: [
-        { name: 'বাংলা ১ম পত্র', grade: 'A', gpa: 4.00 },
-        { name: 'বাংলা ২য় পত্র', grade: 'A-', gpa: 3.50 },
-        { name: 'ইংরেজি ১ম পত্র', grade: 'A', gpa: 4.00 },
-        { name: 'ইংরেজি ২য় পত্র', grade: 'B', gpa: 3.00 },
-        { name: 'গণিত', grade: 'A', gpa: 4.00 },
-        { name: 'বিজ্ঞান', grade: 'A-', gpa: 3.50 },
-        { name: 'হিসাববিজ্ঞান', grade: 'A', gpa: 4.00 },
-        { name: 'ব্যবসায় উদ্যোগ', grade: 'A+', gpa: 5.00 },
+        { name: 'বাংলা ১ম পত্র', marks: 75, grade: 'A', gpa: 4.00 },
+        { name: 'বাংলা ২য় পত্র', marks: 65, grade: 'A-', gpa: 3.50 },
+        { name: 'ইংরেজি ১ম পত্র', marks: 72, grade: 'A', gpa: 4.00 },
+        { name: 'ইংরেজি ২য় পত্র', marks: 55, grade: 'B', gpa: 3.00 },
+        { name: 'গণিত', marks: 78, grade: 'A', gpa: 4.00 },
+        { name: 'বিজ্ঞান', marks: 68, grade: 'A-', gpa: 3.50 },
+        { name: 'হিসাববিজ্ঞান', marks: 71, grade: 'A', gpa: 4.00 },
+        { name: 'ব্যবসায় উদ্যোগ', marks: 82, grade: 'A+', gpa: 5.00 },
     ],
   },
 ];
@@ -85,24 +86,33 @@ export async function getResultByRollAndClass(roll: string, className: string): 
     }
 
     try {
-        const [resultRows] = await pool.query<any[]>(
-            'SELECT * FROM results WHERE roll = ? AND class_name = ?',
-            [roll, className]
-        );
+        const [resultRows] = await pool.query<any[]>(`
+            SELECT 
+                r.id, s.roll, s.class_name, s.name_bn as name, r.exam_name,
+                s.father_name_bn as father_name, s.mother_name_bn as mother_name,
+                s.image, s.data_ai_hint, r.final_gpa, r.status
+            FROM results r
+            JOIN students s ON r.student_id = s.id
+            WHERE s.roll = ? AND s.class_name = ?
+        `, [roll, className]);
 
         if (resultRows.length === 0) {
             return null;
         }
 
         const studentResultData = resultRows[0];
+         // In a real app, you might have a 'group' field in the students or results table.
+        // For now, we'll determine it based on subjects or set a default.
+        studentResultData.group_name = 'বিজ্ঞান'; 
 
         const [subjectRows] = await pool.query<any[]>(
-            'SELECT * FROM subject_grades WHERE result_id = ?',
+            'SELECT subject_name, marks, grade, gpa FROM subject_grades WHERE result_id = ?',
             [studentResultData.id]
         );
 
         const subjects: SubjectGrade[] = subjectRows.map(row => ({
             name: row.subject_name,
+            marks: row.marks,
             grade: row.grade,
             gpa: parseFloat(row.gpa)
         }));
