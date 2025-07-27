@@ -1,9 +1,11 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LinkForm } from "@/components/admin/important-links/link-form";
+import { getPages } from "@/lib/page-data";
 
-export default function NewLinkPage({ searchParams }: { searchParams: { groupId: string }}) {
+export default async function NewLinkPage({ searchParams }: { searchParams: { groupId: string }}) {
   const groupId = parseInt(searchParams.groupId, 10);
+  const pages = await getPages();
   
   if (isNaN(groupId)) {
       return <p>Invalid Group ID</p>;
@@ -15,7 +17,7 @@ export default function NewLinkPage({ searchParams }: { searchParams: { groupId:
         <CardTitle>নতুন লিংক যোগ করুন</CardTitle>
       </CardHeader>
       <CardContent>
-        <LinkForm groupId={groupId} />
+        <LinkForm groupId={groupId} pages={pages} />
       </CardContent>
     </Card>
   );
