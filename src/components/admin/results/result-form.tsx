@@ -29,7 +29,7 @@ const subjectSchema = z.object({
 });
 
 const formSchema = z.object({
-  student_id: z.coerce.number({ required_error: "শিক্ষার্থী নির্বাচন আবশ্যক", invalid_type_error: "শিক্ষার্থী নির্বাচন আবশ্যক"}).min(1, "শিক্ষার্থী নির্বাচন আবশ্যক"),
+  student_id: z.string().min(1, "শিক্ষার্থী নির্বাচন আবশ্যক"),
   exam_name: z.string().min(1, "পরীক্ষার নাম আবশ্যক"),
   year: z.coerce.number().min(2000, "বছর আবশ্যক"),
   final_gpa: z.coerce.number().min(0).max(5, "চূড়ান্ত GPA আবশ্যক"),
@@ -46,12 +46,12 @@ export function ResultForm({ result, students }: { result?: ResultWithSubjects, 
     resolver: zodResolver(formSchema),
     mode: "onChange",
     defaultValues: {
-      student_id: result?.student_id || undefined,
+      student_id: result?.student_id.toString() || "",
       exam_name: result?.exam_name || "",
       year: result?.year || new Date().getFullYear(),
       final_gpa: result?.final_gpa,
       status: result?.status || "Promoted",
-      subjects: result?.subjects || [],
+      subjects: result?.subjects.length ? result.subjects : [{ subject_name: '', marks: null, grade: '', gpa: 0 }],
     },
   });
   
@@ -61,7 +61,11 @@ export function ResultForm({ result, students }: { result?: ResultWithSubjects, 
   });
 
   async function onSubmit(values: FormValues) {
-    const res = await saveResult(values, result?.id);
+    const dataToSave = {
+        ...values,
+        student_id: parseInt(values.student_id, 10)
+    };
+    const res = await saveResult(dataToSave, result?.id);
     if (res.success) {
       toast({ title: "সফল!", description: `ফলাফল সফলভাবে ${result ? 'আপডেট' : 'তৈরি'} করা হয়েছে।` });
       router.push("/admin/results");
@@ -83,8 +87,8 @@ export function ResultForm({ result, students }: { result?: ResultWithSubjects, 
               control={control}
               render={({ field }) => (
                 <Select 
-                  onValueChange={(value) => field.onChange(parseInt(value, 10))} 
-                  value={field.value?.toString()}
+                  onValueChange={field.onChange} 
+                  value={field.value}
                   disabled={!!result}
                 >
                   <SelectTrigger><SelectValue placeholder="শিক্ষার্থী নির্বাচন করুন" /></SelectTrigger>
