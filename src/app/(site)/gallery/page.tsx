@@ -51,7 +51,7 @@ export default function GalleryPage() {
                 <Dialog key={image.id}>
                     <DialogTrigger asChild>
                         <Card className="overflow-hidden group shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer">
-                        <CardContent className="p-0 aspect-w-4 aspect-h-3 relative">
+                        <CardContent className="p-0 relative aspect-[4/3]">
                             <Image
                                 src={image.image_url}
                                 alt={image.title}
