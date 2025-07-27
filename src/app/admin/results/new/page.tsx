@@ -1,17 +1,15 @@
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ResultForm } from "@/components/admin/results/result-form";
-import { getStudentsForResults } from "@/lib/actions/results-actions";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import Link from "next/link";
 
-export default async function NewResultPage() {
-  const students = await getStudentsForResults();
+export default function MovedPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>নতুন ফলাফল যোগ করুন</CardTitle>
+        <CardTitle>পেজটি সরানো হয়েছে</CardTitle>
       </CardHeader>
       <CardContent>
-        <ResultForm students={students} />
+        <p>এই পেজটি <Link href="/admin/results/create" className="text-primary underline">/admin/results/create</Link> এ সরানো হয়েছে।</p>
       </CardContent>
     </Card>
   );

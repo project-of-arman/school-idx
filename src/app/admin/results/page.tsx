@@ -14,7 +14,7 @@ export default async function AdminResultsPage() {
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>ফলাফল ব্যবস্থাপনা</CardTitle>
         <Button asChild>
-          <Link href="/admin/results/new">
+          <Link href="/admin/results/create">
             <PlusCircle className="mr-2 h-4 w-4" />
             নতুন ফলাফল যোগ করুন
           </Link>
