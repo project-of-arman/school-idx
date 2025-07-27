@@ -52,6 +52,7 @@ const navItems = [
       { href: "/admin/syllabus", icon: Book, label: "সিলেবাস" },
       { href: "/admin/students", icon: User, label: "শিক্ষার্থী" },
       { href: "/admin/teachers", icon: Users, label: "শিক্ষক" },
+      { href: "/admin/staff", icon: Users, label: "কর্মচারী" },
       { href: "/admin/committee", icon: Users, label: "কমিটি" },
     ],
   },
@@ -81,8 +82,7 @@ export default function AdminSidebarNav() {
   const getAccordionDefaultValue = () => {
     const activeItem = navItems.find(item => item.subItems && isSubItemActive(item.subItems));
     if (activeItem) {
-        // A bit of a special case for committee since it's inside an accordion
-        if (pathname.startsWith('/admin/committee')) return activeItem.label;
+        if (pathname.startsWith('/admin/committee') || pathname.startsWith('/admin/staff')) return activeItem.label;
     }
     return activeItem ? activeItem.label : undefined;
   }

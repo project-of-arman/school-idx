@@ -74,45 +74,32 @@ export async function saveStaff(formData: FormData, id?: string): Promise<SaveRe
         return { success: false, error: "Database not connected." };
     }
 
+    const staffData: { [key: string]: any } = {};
+    formData.forEach((value, key) => {
+        staffData[key] = value || null;
+    });
+
     try {
-        const data = {
-            name: formData.get('name') as string,
-            role: formData.get('role') as string,
-            email: (formData.get('email') as string) || null,
-            phone: (formData.get('phone') as string) || null,
-            address: (formData.get('address') as string) || null,
-            dataAiHint: (formData.get('dataAiHint') as string) || 'staff portrait',
-            image: formData.get('image') as string | null,
-        };
-
+        const { name, role, email, phone, address, image, dataAiHint } = staffData;
+        
+        let query;
+        let params;
+        
         if (id) {
-            // Update operation
-            const fieldsToUpdate: { [key: string]: any } = {
-                name: data.name,
-                role: data.role,
-                email: data.email,
-                phone: data.phone,
-                address: data.address,
-                dataAiHint: data.dataAiHint,
-            };
-
-            // Only include the image field if a new one was uploaded
-            if (data.image) {
-                fieldsToUpdate.image = data.image;
+            // Update
+            const fieldsToUpdate: { [key: string]: any } = { name, role, email, phone, address, dataAiHint };
+            if (image) {
+                fieldsToUpdate.image = image;
             }
-
-            const query = 'UPDATE staff SET ? WHERE id = ?';
-            await pool.query(query, [fieldsToUpdate, id]);
-
+            query = 'UPDATE staff SET ? WHERE id = ?';
+            params = [fieldsToUpdate, id];
         } else {
-            // Insert operation
-            const query = `
-                INSERT INTO staff (name, role, email, phone, address, image, dataAiHint)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            `;
-            const params = [data.name, data.role, data.email, data.phone, data.address, data.image, data.dataAiHint];
-            await pool.query(query, params);
+            // Insert
+            query = 'INSERT INTO staff (name, role, email, phone, address, image, dataAiHint) VALUES (?, ?, ?, ?, ?, ?, ?)';
+            params = [name, role, email, phone, address, image, dataAiHint];
         }
+
+        await pool.query(query, params);
 
         revalidatePath('/admin/staff');
         revalidatePath('/(site)/staff');
@@ -123,6 +110,7 @@ export async function saveStaff(formData: FormData, id?: string): Promise<SaveRe
         return { success: false, error: "একটি সার্ভার ত্রুটি হয়েছে।" };
     }
 }
+
 
 export async function deleteStaff(id: string): Promise<SaveResult> {
     if (!pool) {
